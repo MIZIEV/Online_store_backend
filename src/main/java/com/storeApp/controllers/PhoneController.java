@@ -1,6 +1,8 @@
 package com.storeApp.controllers;
 
 import com.storeApp.models.Phone;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -44,7 +46,18 @@ public class PhoneController {
         return null;
     }
     @PostMapping("/add")
-    public void addNewPhone(@RequestBody Phone phone){
+    public ResponseEntity<HttpStatus> addNewPhone(@RequestBody Phone phone){
         newList.add(phone);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<HttpStatus> deletePhone(@PathVariable("id") int id){
+
+        for(Phone phone: newList){
+            if(phone.getId() == id){
+                newList.remove(id);
+            }
+        }
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }
