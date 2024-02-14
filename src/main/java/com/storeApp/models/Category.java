@@ -1,14 +1,27 @@
 package com.storeApp.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "category")
 public class Category {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "category_name")
     private String categoryName;
 
-    public Category() {
-    }
+    @OneToMany(mappedBy = "category")
+    @JsonManagedReference
+    private List<Product> productList;
+
+    public Category() {}
 
     public Category(Long id, String categoryName) {
         this.id = id;
@@ -29,6 +42,14 @@ public class Category {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 
     @Override

@@ -1,16 +1,36 @@
 package com.storeApp.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "user")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "email")
     private String email;
+    @Column(name = "role")
     private String role;
+    @Column(name = "created_at")
     private Date createdAt;
+
+    @OneToMany(mappedBy = "orderOwner")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @JsonManagedReference
+    private List<Order> orderList;
 
     public User() {}
 
@@ -70,6 +90,10 @@ public class User {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    public List<Order> getOrderList() { return orderList; }
+
+    public void setOrderList(List<Order> orderList) { this.orderList = orderList; }
 
     @Override
     public int hashCode() {

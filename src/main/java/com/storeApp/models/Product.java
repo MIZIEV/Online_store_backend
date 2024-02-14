@@ -1,27 +1,42 @@
 package com.storeApp.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "product")
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "brand")
     private String brand;
+    @Column(name = "model")
     private String model;
+    @Column(name = "description")
     private String description;
+    @Column(name = "picture_URL")
     private String pictureURL;
+    @Column(name = "price")
     private Double price;
-    private Long categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @JsonBackReference
+    private Category category;
 
     public Product() {
     }
 
-    public Product(Long id, String brand, String model, String description, String pictureURL, Double price, Long categoryId) {
+    public Product(Long id, String brand, String model, String description, String pictureURL, Double price) {
         this.id = id;
         this.brand = brand;
         this.model = model;
         this.description = description;
         this.pictureURL = pictureURL;
         this.price = price;
-        this.categoryId = categoryId;
     }
 
     public long getId() {
@@ -72,17 +87,9 @@ public class Product {
         this.price = price;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(id, brand, model, description, pictureURL, price, categoryId);
+        return Objects.hash(id, brand, model, description, pictureURL, price, category);
     }
 
     @Override
@@ -98,7 +105,7 @@ public class Product {
                 Objects.equals(description, product.description) &&
                 Objects.equals(pictureURL, product.pictureURL) &&
                 Objects.equals(price, product.price) &&
-                Objects.equals(categoryId, product.categoryId);
+                Objects.equals(category, product.category);
     }
 
     @Override
