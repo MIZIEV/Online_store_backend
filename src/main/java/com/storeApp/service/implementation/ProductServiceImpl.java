@@ -5,10 +5,12 @@ import com.storeApp.repository.ProductRepository;
 import com.storeApp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -19,6 +21,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void addNewProduct(Product product) {
         productRepository.save(product);
     }
@@ -31,11 +34,25 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(Long id) {
 
-        return null;
+        Product product = null;
+
+        if (productRepository.findProductById(id).isPresent()) {
+            product = productRepository.findProductById(id).get();
+        }
+
+        return product;
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void deleteProduct(Long id) {
+
+        Product product = null;
+
+        if (productRepository.findProductById(id).isPresent()) {
+            product = productRepository.findProductById(id).get();
+            productRepository.delete(product);
+        }
 
     }
 }
