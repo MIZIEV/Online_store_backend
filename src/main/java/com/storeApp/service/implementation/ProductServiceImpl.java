@@ -55,4 +55,23 @@ public class ProductServiceImpl implements ProductService {
         }
 
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateProduct(Product editedProduct, Long id) {
+
+        Product productForUpdating = null;
+
+        if (productRepository.findProductById(id).isPresent()) {
+            productForUpdating = productRepository.findProductById(id).get();
+
+            productForUpdating.setBrand(editedProduct.getBrand());
+            productForUpdating.setModel(editedProduct.getModel());
+            productForUpdating.setDescription(editedProduct.getDescription());
+            productForUpdating.setPrice(editedProduct.getPrice());
+            productForUpdating.setPictureURL(editedProduct.getPictureURL());
+
+            productRepository.save(productForUpdating);
+        }
+    }
 }
