@@ -3,9 +3,12 @@ package com.storeApp.controllers;
 import com.storeApp.dto.ProductDto;
 import com.storeApp.models.Product;
 import com.storeApp.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -42,10 +45,20 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<?> addNewProduct(@Valid @RequestBody ProductDto productDto, BindingResult result) {
 
-        productService.addNewProduct(convertToProduct(productDto));
-        return new ResponseEntity<>(productDto, HttpStatus.OK);
+        if (result.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation error: ");
+
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append(";");
+            }
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+
+        } else {
+            productService.addNewProduct(convertToProduct(productDto));
+            return new ResponseEntity<>(productDto, HttpStatus.OK);
+        }
     }
 
     @PutMapping("/{id}")
