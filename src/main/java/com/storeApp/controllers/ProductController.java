@@ -1,5 +1,6 @@
 package com.storeApp.controllers;
 
+import com.storeApp.dto.ProductDto;
 import com.storeApp.models.Product;
 import com.storeApp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,10 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewProduct(@RequestBody Product product) {
-        Product newProduct = product;
-        productService.addNewProduct(newProduct);
-        return new ResponseEntity<>(newProduct,HttpStatus.OK);
+    public ResponseEntity<?> addNewProduct(@RequestBody ProductDto productDto) {
+
+        productService.addNewProduct(convertToProduct(productDto));
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
@@ -65,5 +66,18 @@ public class ProductController {
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private Product convertToProduct(ProductDto productDto) {
+
+        Product product = new Product();
+
+        product.setBrand(productDto.getBrand());
+        product.setModel(productDto.getModel());
+        product.setDescription(productDto.getDescription());
+        product.setPictureURL(productDto.getPictureURL());
+        product.setPrice(productDto.getPrice());
+
+        return product;
     }
 }
