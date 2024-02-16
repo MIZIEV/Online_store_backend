@@ -1,10 +1,14 @@
 package com.storeApp.controllers;
 
+import com.storeApp.dto.ProductDto;
 import com.storeApp.models.Product;
 import com.storeApp.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -41,10 +45,20 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewProduct(@RequestBody Product product) {
-        Product newProduct = product;
-        productService.addNewProduct(newProduct);
-        return new ResponseEntity<>(newProduct,HttpStatus.OK);
+    public ResponseEntity<?> addNewProduct(@Valid @RequestBody ProductDto productDto, BindingResult result) {
+
+        if (result.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation error: ");
+
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append(";");
+            }
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+
+        } else {
+            productService.addNewProduct(convertToProduct(productDto));
+            return new ResponseEntity<>(productDto, HttpStatus.OK);
+        }
     }
 
     @PutMapping("/{id}")
@@ -65,5 +79,18 @@ public class ProductController {
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private Product convertToProduct(ProductDto productDto) {
+
+        Product product = new Product();
+
+        product.setBrand(productDto.getBrand());
+        product.setModel(productDto.getModel());
+        product.setDescription(productDto.getDescription());
+        product.setPictureURL(productDto.getPictureURL());
+        product.setPrice(productDto.getPrice());
+
+        return product;
     }
 }
