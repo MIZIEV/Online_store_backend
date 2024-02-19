@@ -39,7 +39,6 @@ public class ProductServiceImpl implements ProductService {
         if (productRepository.findProductById(id).isPresent()) {
             product = productRepository.findProductById(id).get();
         }
-
         return product;
     }
 
@@ -54,5 +53,27 @@ public class ProductServiceImpl implements ProductService {
             productRepository.delete(product);
         }
 
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Product updateProduct(Product editedProduct, Long id) {
+
+        Product productForUpdating = null;
+
+        if (productRepository.findProductById(id).isPresent()) {
+            productForUpdating = productRepository.findProductById(id).get();
+
+            productForUpdating.setId(id);
+            productForUpdating.setBrand(editedProduct.getBrand());
+            productForUpdating.setModel(editedProduct.getModel());
+            productForUpdating.setDescription(editedProduct.getDescription());
+            productForUpdating.setPrice(editedProduct.getPrice());
+            productForUpdating.setPictureURL(editedProduct.getPictureURL());
+
+            productRepository.save(productForUpdating);
+            return productForUpdating;
+        }
+        return null;
     }
 }

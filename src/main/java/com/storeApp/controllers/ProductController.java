@@ -1,16 +1,21 @@
 package com.storeApp.controllers;
 
+import com.storeApp.dto.ProductDto;
 import com.storeApp.models.Product;
 import com.storeApp.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/phone")
+@RequestMapping("/api/product")
 @CrossOrigin("*")
 public class ProductController {
 
@@ -22,24 +27,70 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public List<Product> getAllPhones() {
+    public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
-    public Product getPhoneById(@PathVariable("id") long id) {
-        return productService.getProductById(id);
+    public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
+        Product product = productService.getProductById(id);
+
+        if (product != null) {
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        } else {
+            String message = "Error: " + "Product with id - " + id + " not found!!!\n" +
+                    "Timestamp: " + LocalDateTime.now();
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addNewPhone(@RequestBody Product product) {
-        productService.addNewProduct(product);
-        return ResponseEntity.ok(HttpStatus.OK);
+    public ResponseEntity<?> addNewProduct(@Valid @RequestBody ProductDto productDto, BindingResult result) {
+
+        if (result.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation error: ");
+
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append(";");
+            }
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+
+        } else {
+            productService.addNewProduct(convertToProduct(productDto));
+            return new ResponseEntity<>(productDto, HttpStatus.OK);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(@RequestBody Product editedProduct, @PathVariable Long id) {
+
+        Product product = productService.updateProduct(editedProduct, id);
+
+        if (product != null) {
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        } else {
+            String message = "Error: " + "Product with id - " + id + " not found!!!\n" +
+                    "Timestamp: " + LocalDateTime.now();
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/remove/{id}")
-    public ResponseEntity<HttpStatus> deletePhone(@PathVariable("id") long id) {
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private Product convertToProduct(ProductDto productDto) {
+
+        Product product = new Product();
+
+        product.setBrand(productDto.getBrand());
+        product.setModel(productDto.getModel());
+        product.setDescription(productDto.getDescription());
+        product.setPictureURL(productDto.getPictureURL());
+        product.setPrice(productDto.getPrice());
+
+        return product;
     }
 }
