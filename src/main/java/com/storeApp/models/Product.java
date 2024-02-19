@@ -87,6 +87,10 @@ public class Product {
         this.price = price;
     }
 
+    public Category getCategory() { return category; }
+
+    public void setCategory(Category category) { this.category = category; }
+
     @Override
     public int hashCode() {
         return Objects.hash(id, brand, model, description, pictureURL, price, category);

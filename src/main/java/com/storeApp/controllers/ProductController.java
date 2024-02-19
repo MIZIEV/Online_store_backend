@@ -2,6 +2,7 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.ProductDto;
 import com.storeApp.models.Product;
+import com.storeApp.service.CategoryService;
 import com.storeApp.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/list")
@@ -90,6 +93,7 @@ public class ProductController {
         product.setDescription(productDto.getDescription());
         product.setPictureURL(productDto.getPictureURL());
         product.setPrice(productDto.getPrice());
+        product.setCategory(categoryService.getCategoryById(productDto.getCategoryId()).get());
 
         return product;
     }
