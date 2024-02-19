@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     private final CategoryService categoryService;
+
     @Autowired
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewCategory(@RequestBody Category category){
+    public ResponseEntity<?> addNewCategory(@RequestBody Category category) {
 
         categoryService.addNewCategory(category);
 
@@ -27,7 +28,18 @@ public class CategoryController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllCategories(){
-        return new ResponseEntity<>(categoryService.getAllCategories(),HttpStatus.OK);
+    public ResponseEntity<?> getAllCategories() {
+        return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategory(@PathVariable long id) {
+        return new ResponseEntity<>(categoryService.getCategoryById(id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable long id) {
+        categoryService.deleteCategory(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
