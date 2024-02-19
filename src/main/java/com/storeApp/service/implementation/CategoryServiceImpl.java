@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -30,5 +31,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public Optional<Category> getCategoryById(Long id) {
+        return categoryRepository.findCategoryById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteCategory(Long id){
+        categoryRepository.delete(getCategoryById(id).get());
     }
 }
