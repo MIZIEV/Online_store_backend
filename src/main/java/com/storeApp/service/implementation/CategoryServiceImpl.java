@@ -40,7 +40,25 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteCategory(Long id){
+    public Category updateCategory(Category editedCategory, long id) {
+
+        Category categoryForUpdating = null;
+
+        if (categoryRepository.findCategoryById(id).isPresent()) {
+
+            categoryForUpdating = categoryRepository.findCategoryById(id).get();
+            categoryForUpdating.setCategoryName(editedCategory.getCategoryName());
+            categoryRepository.save(categoryForUpdating);
+            return categoryForUpdating;
+
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteCategory(Long id) {
         categoryRepository.delete(getCategoryById(id).get());
     }
 }
