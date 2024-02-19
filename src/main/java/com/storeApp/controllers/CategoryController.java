@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
 
     private final CategoryService categoryService;
-
     @Autowired
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -25,5 +24,10 @@ public class CategoryController {
         categoryService.addNewCategory(category);
 
         return new ResponseEntity<>(category, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllCategories(){
+        return new ResponseEntity<>(categoryService.getAllCategories(),HttpStatus.OK);
     }
 }
