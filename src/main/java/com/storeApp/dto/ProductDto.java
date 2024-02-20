@@ -1,5 +1,6 @@
 package com.storeApp.dto;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
@@ -7,14 +8,19 @@ import org.hibernate.validator.constraints.URL;
 import java.util.Objects;
 
 public class ProductDto {
+    @NotNull(message = "The field `brand` mustn't be null!!!")
     @Size(min = 5, message = "The field must be longer than 5 characters!!!")
     private String brand;
+    @NotNull(message = "The field `model` mustn't be null!!!")
     @Size(min = 5, message = "The field must be longer than 5 characters!!!")
     private String model;
+    @NotNull(message = "The field `description` mustn't be null!!!")
     @Size(min = 5, message = "The field must be longer than 5 characters!!!")
     private String description;
+    @NotNull(message = "The field `pictureURL` mustn't be null!!!")
     @URL(message = "Invalid URL, check the correctness of your url!!! ")
     private String pictureURL;
+    @NotNull(message = "The field `price` mustn't be null!!!")
     @Positive(message = "The price mustn't be a negative value or equal to zero!!!")
     private Double price;
 
