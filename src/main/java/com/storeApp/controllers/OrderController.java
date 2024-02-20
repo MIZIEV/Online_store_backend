@@ -23,18 +23,37 @@ public class OrderController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllOrders(){
+    public ResponseEntity<?> getAllOrders() {
         return new ResponseEntity<>(orderService.getOrderList(), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOrder(@PathVariable long id) {
+
+        return new ResponseEntity<>(orderService.getProductById(id), HttpStatus.OK);
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<?> addNewOrder(@RequestBody  OrderDto orderDto){
+    public ResponseEntity<?> addNewOrder(@RequestBody OrderDto orderDto) {
         Order order = convertToOrder(orderDto);
         orderService.addNewOrder(order);
 
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
-    private Order convertToOrder(OrderDto orderDto){
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateOrder(@RequestBody OrderDto editedOrder, @PathVariable long id) {
+
+        return new ResponseEntity<>(orderService.updateOrder(convertToOrder(editedOrder), id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable long id) {
+        orderService.deleteOrder(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private Order convertToOrder(OrderDto orderDto) {
         Order order = new Order();
 
         order.setTotalAmount(orderDto.getTotalAmount());
