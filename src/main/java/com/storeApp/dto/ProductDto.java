@@ -18,14 +18,18 @@ public class ProductDto {
     @Positive(message = "The price mustn't be a negative value or equal to zero!!!")
     private Double price;
 
-    public ProductDto() {}
+    private Long categoryId;
 
-    public ProductDto(String brand, String model, String description, String pictureURL, Double price) {
+    public ProductDto() {
+    }
+
+    public ProductDto(String brand, String model, String description, String pictureURL, Double price, Long categoryId) {
         this.brand = brand;
         this.model = model;
         this.description = description;
         this.pictureURL = pictureURL;
         this.price = price;
+        this.categoryId = categoryId;
     }
 
     public String getBrand() {
@@ -68,9 +72,17 @@ public class ProductDto {
         this.price = price;
     }
 
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(brand, model, description, pictureURL, price);
+        return Objects.hash(brand, model, description, pictureURL, price, categoryId);
     }
 
     @Override
@@ -83,7 +95,8 @@ public class ProductDto {
                 Objects.equals(model, productDto.model) &&
                 Objects.equals(description, productDto.description) &&
                 Objects.equals(pictureURL, productDto.pictureURL) &&
-                Objects.equals(price, productDto.price);
+                Objects.equals(price, productDto.price) &&
+                Objects.equals(categoryId, productDto.categoryId);
     }
 
     @Override
