@@ -2,13 +2,13 @@ package com.storeApp.util;
 
 import java.time.LocalDateTime;
 
-public class ProductErrorResponse {
+public class ErrorResponse {
 
     private String errorMessage;
 
     private LocalDateTime timestamp;
 
-    public ProductErrorResponse(String errorMessage, LocalDateTime timestamp) {
+    public ErrorResponse(String errorMessage, LocalDateTime timestamp) {
         this.errorMessage = errorMessage;
         this.timestamp = timestamp;
     }

@@ -1,18 +1,21 @@
 package com.storeApp.dto;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class OrderDto {
+    @Positive(message = "The total amount mustn't be a negative value or equal to zero!!!")
+    @NotNull(message = "The field `totalAmount` mustn't be null!!!")
     private Double totalAmount;
+    @NotNull(message = "The field `status` mustn't be null!!!")
     private Boolean status;
     private Long ownerId;
     private LocalDateTime createdAt;
 
-    public OrderDto() {
-    }
+    public OrderDto() {}
 
     public OrderDto(Double totalAmount, Boolean status, Long ownerId, LocalDateTime createdAt) {
         this.totalAmount = totalAmount;
