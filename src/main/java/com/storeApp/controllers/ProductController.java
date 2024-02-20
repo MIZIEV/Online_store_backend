@@ -60,7 +60,7 @@ public class ProductController {
 
         } else {
             productService.addNewProduct(convertToProduct(productDto));
-            return new ResponseEntity<>(productDto, HttpStatus.OK);
+            return new ResponseEntity<>(productDto, HttpStatus.CREATED);
         }
     }
 
