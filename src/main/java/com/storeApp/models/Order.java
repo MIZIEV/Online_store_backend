@@ -3,7 +3,7 @@ package com.storeApp.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -14,12 +14,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "created_at")
-    private Date createdAt;
     @Column(name = "total_amount")
     private Double totalAmount;
     @Column(name = "status")
     private Boolean status;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonBackReference
@@ -27,7 +27,7 @@ public class Order {
 
     public Order() {}
 
-    public Order(Long id, Date createdAt, Double totalAmount, Boolean status) {
+    public Order(Long id, LocalDateTime createdAt, Double totalAmount, Boolean status) {
         this.id = id;
         this.createdAt = createdAt;
         this.totalAmount = totalAmount;
@@ -42,11 +42,11 @@ public class Order {
         this.id = id;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
