@@ -3,12 +3,13 @@ package com.storeApp.service;
 import com.storeApp.models.Order;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderService {
 
     void addNewOrder(Order order);
-    Order getProductById(long id);
+    Optional<Order> getProductById(long id);
     List<Order> getOrderList();
-    void deleteOrder(long id);
+    boolean deleteOrder(long id);
     Order updateOrder(Order editedOrder, long id);
 }

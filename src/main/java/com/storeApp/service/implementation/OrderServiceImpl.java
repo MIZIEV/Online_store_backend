@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,8 +28,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getProductById(long id) {
-        return orderRepository.findOrderById(id).get();
+    public Optional<Order> getProductById(long id) {
+        return orderRepository.findOrderById(id);
     }
 
     @Override
@@ -38,8 +39,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteOrder(long id) {
-        orderRepository.delete(orderRepository.findOrderById(id).get());
+    public boolean deleteOrder(long id) {
+
+        Optional<Order> order = orderRepository.findOrderById(id);
+
+        if (order.isPresent()) {
+            orderRepository.delete(orderRepository.findOrderById(id).get());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
