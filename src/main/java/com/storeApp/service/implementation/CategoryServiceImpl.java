@@ -58,7 +58,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteCategory(Long id) {
-        categoryRepository.delete(getCategoryById(id).get());
+    public boolean deleteCategory(Long id) {
+        Optional<Category> category = getCategoryById(id);
+
+        if (category.isPresent()) {
+            categoryRepository.delete(category.get());
+            return true;
+        } else {
+            return false;
+        }
     }
 }

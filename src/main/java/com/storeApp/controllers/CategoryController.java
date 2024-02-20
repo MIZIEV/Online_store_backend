@@ -1,11 +1,18 @@
 package com.storeApp.controllers;
 
+import com.storeApp.dto.CategoryDto;
 import com.storeApp.models.Category;
 import com.storeApp.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/category")
@@ -20,11 +27,23 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewCategory(@RequestBody Category category) {
+    public ResponseEntity<?> addNewCategory(@Valid @RequestBody CategoryDto categoryDto, BindingResult result) {
 
-        categoryService.addNewCategory(category);
+        if (result.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation error:\n");
 
-        return new ResponseEntity<>(category, HttpStatus.CREATED);
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage());
+            }
+
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        } else {
+
+            Category category = convertToCategory(categoryDto);
+
+            categoryService.addNewCategory(category);
+            return new ResponseEntity<>(category, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/list")
@@ -34,17 +53,50 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCategory(@PathVariable long id) {
-        return new ResponseEntity<>(categoryService.getCategoryById(id), HttpStatus.OK);
+
+        Optional<Category> category = categoryService.getCategoryById(id);
+
+        if (category.isPresent()) {
+            return new ResponseEntity<>(category.get(), HttpStatus.OK);
+        } else {
+            String message = "Error: " + "Category with id - " + id + " not found!!!\n" +
+                    "Timestamp: " + LocalDateTime.now();
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable long id, @RequestBody Category category) {
-        return new ResponseEntity<>(categoryService.updateCategory(category, id), HttpStatus.OK);
+    public ResponseEntity<?> updateCategory(@PathVariable long id, @RequestBody CategoryDto categoryDto) {
+
+        Optional<Category> category = categoryService.getCategoryById(id);
+
+        if (category.isPresent()) {
+            return new ResponseEntity<>(categoryService.updateCategory(convertToCategory(categoryDto), id), HttpStatus.OK);
+        } else {
+            String message = "Error: " + "Category with id - " + id + " not found!!!\n" +
+                    "Timestamp: " + LocalDateTime.now();
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable long id) {
-        categoryService.deleteCategory(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean isDeleted = categoryService.deleteCategory(id);
+        if (isDeleted) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            String message = "Error: " + "Category with id - " + id + " not found!!!\n" +
+                    "Timestamp: " + LocalDateTime.now();
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private Category convertToCategory(CategoryDto categoryDto) {
+        Category category = new Category();
+
+        category.setId(categoryDto.getId());
+        category.setCategoryName(categoryDto.getCategoryName());
+
+        return category;
     }
 }

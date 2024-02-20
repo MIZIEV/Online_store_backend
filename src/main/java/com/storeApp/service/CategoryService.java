@@ -13,7 +13,7 @@ public interface CategoryService {
 
     Optional<Category> getCategoryById(Long id);
 
-    void deleteCategory(Long id);
+    boolean deleteCategory(Long id);
 
     Category updateCategory(Category editedCategory, long id);
 }
