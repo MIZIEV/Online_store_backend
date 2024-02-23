@@ -25,16 +25,20 @@ public class SpringSecurityConfiguration {
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.cors().disable()
-                .authorizeHttpRequests((authorize)->authorize.anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults());
+        http.csrf().disable()
+                .authorizeHttpRequests((authorize) -> {
+
+                    authorize.requestMatchers("/api/auth/**").permitAll();
+                    authorize.anyRequest().authenticated();
+
+                }).httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

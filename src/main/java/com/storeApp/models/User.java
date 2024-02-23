@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -26,6 +26,7 @@ public class User {
     private String username;
     @Column(name = "email")
     private String email;
+
     @Column(name = "role")
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",
@@ -35,7 +36,7 @@ public class User {
 
     private String password;
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "orderOwner")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -45,7 +46,7 @@ public class User {
     public User() {}
 
     public User(Long id, String firstName, String lastName,String username,
-                String email, Set<Role> role, Date createdAt) {
+                String email, Set<Role> role, LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -103,11 +104,11 @@ public class User {
         this.role = role;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

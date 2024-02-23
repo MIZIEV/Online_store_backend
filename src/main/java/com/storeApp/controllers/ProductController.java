@@ -37,6 +37,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN,USER')")
     public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
         Product product = productService.getProductById(id);
 
@@ -50,6 +51,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> addNewProduct(@Valid @RequestBody ProductDto productDto, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -67,6 +69,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> updateProduct(@RequestBody Product editedProduct, @PathVariable Long id) {
 
         Product product = productService.updateProduct(editedProduct, id);
@@ -81,6 +84,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/remove/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(HttpStatus.OK);
