@@ -6,6 +6,7 @@ import com.storeApp.models.Role;
 import com.storeApp.models.User;
 import com.storeApp.repository.RoleRepository;
 import com.storeApp.repository.UserRepository;
+import com.storeApp.security.JwtTokenProvider;
 import com.storeApp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,13 +27,15 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -72,6 +75,9 @@ public class AuthServiceImpl implements AuthService {
                 ));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "User logged -in successfully!!!";
+
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        return token;
     }
 }

@@ -1,5 +1,6 @@
 package com.storeApp.controllers;
 
+import com.storeApp.dto.JwtAuthResponse;
 import com.storeApp.dto.LoginDto;
 import com.storeApp.dto.RegisterDto;
 import com.storeApp.service.AuthService;
@@ -28,8 +29,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        String response = authService.login(loginDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
+        String token = authService.login(loginDto);
+
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+
+        jwtAuthResponse.setAccessToken(token);
+        return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
     }
 }
