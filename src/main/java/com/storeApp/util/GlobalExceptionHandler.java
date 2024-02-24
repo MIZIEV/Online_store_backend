@@ -1,6 +1,7 @@
 package com.storeApp.util;
 
 
+import com.storeApp.util.exception.IncorrectUsernameOrPasswordException;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,4 +24,17 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IncorrectUsernameOrPasswordException.class)
+    public ResponseEntity<ErrorDetails> handleAuthExceptions(IncorrectUsernameOrPasswordException exception,
+                                                             WebRequest webRequest) {
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false)
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
 }

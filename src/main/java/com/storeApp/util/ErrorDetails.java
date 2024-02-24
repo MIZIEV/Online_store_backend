@@ -2,7 +2,7 @@ package com.storeApp.util;
 
 import java.time.LocalDateTime;
 
-public class ErrorDetails {
+public final class ErrorDetails {
 
     private LocalDateTime timeStamp;
     private String message;
@@ -16,9 +16,7 @@ public class ErrorDetails {
         this.description = description;
     }
 
-    public LocalDateTime getTimeStamp() {
-        return timeStamp;
-    }
+    public LocalDateTime getTimeStamp() { return timeStamp; }
 
     public String getMessage() {
         return message;
