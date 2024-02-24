@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -20,12 +21,22 @@ public class User {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "username")
+    private String username;
     @Column(name = "email")
     private String email;
+
     @Column(name = "role")
-    private String role;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role",
+    joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
+    private Set<Role> role;
+
+    private String password;
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "orderOwner")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -34,10 +45,12 @@ public class User {
 
     public User() {}
 
-    public User(Long id, String firstName, String lastName, String email, String role, Date createdAt) {
+    public User(Long id, String firstName, String lastName,String username,
+                String email, Set<Role> role, LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.username=username;
         this.email = email;
         this.role = role;
         this.createdAt = createdAt;
@@ -67,6 +80,14 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -75,20 +96,28 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
+    public Set<Role> getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Set<Role> role) {
         this.role = role;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<Order> getOrderList() { return orderList; }
@@ -97,7 +126,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, role, createdAt);
+        return Objects.hash(id, firstName, lastName,username, email, role, createdAt);
     }
 
     @Override
@@ -110,6 +139,7 @@ public class User {
         return Objects.equals(id, user.id) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
+                Objects.equals(username, user.username) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(role, user.role) &&
                 Objects.equals(createdAt, user.createdAt);
