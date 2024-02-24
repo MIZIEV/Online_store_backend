@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +31,13 @@ public class ProductController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN,USER')")
     public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
         Product product = productService.getProductById(id);
 
@@ -48,6 +51,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> addNewProduct(@Valid @RequestBody ProductDto productDto, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -65,6 +69,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> updateProduct(@RequestBody Product editedProduct, @PathVariable Long id) {
 
         Product product = productService.updateProduct(editedProduct, id);
@@ -79,6 +84,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/remove/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(HttpStatus.OK);
