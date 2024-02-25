@@ -30,6 +30,10 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
+    @Override
+    public List<Product> getAllProductOrderedByPrice() { return productRepository.findAllOrderedByPrice(); }
+    @Override
+    public List<Product> getAllProductOrderedByPriceDesc() { return productRepository.findAllOrderByPriceDesc(); }
 
     @Override
     public Product getProductById(Long id) {
@@ -52,7 +56,6 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.findProductById(id).get();
             productRepository.delete(product);
         }
-
     }
 
     @Override

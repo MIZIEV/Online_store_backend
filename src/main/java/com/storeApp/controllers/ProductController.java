@@ -31,9 +31,21 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
+    }
+
+    @GetMapping("/list-ordered")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public List<Product> getAllProductOrderedByPrice() {
+        return productService.getAllProductOrderedByPrice();
+    }
+
+    @GetMapping("/list-ordered-des")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public List<Product> getAllProductOrderedByPriceDesc() {
+        return productService.getAllProductOrderedByPriceDesc();
     }
 
     @GetMapping("/{id}")
