@@ -1,5 +1,6 @@
 package com.storeApp.repository;
 
+import com.storeApp.models.Category;
 import com.storeApp.models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p ORDER BY p.price DESC")
     List<Product> findAllOrderByPriceDesc();
+
+    List<Product> findByCategory(Category category);
 }

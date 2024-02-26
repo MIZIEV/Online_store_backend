@@ -1,5 +1,6 @@
 package com.storeApp.service.implementation;
 
+import com.storeApp.models.Category;
 import com.storeApp.models.Product;
 import com.storeApp.repository.ProductRepository;
 import com.storeApp.service.ProductService;
@@ -34,7 +35,8 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProductOrderedByPrice() { return productRepository.findAllOrderedByPrice(); }
     @Override
     public List<Product> getAllProductOrderedByPriceDesc() { return productRepository.findAllOrderByPriceDesc(); }
-
+    @Override
+    public List<Product> getAllProductsFilteredByCategory(Category category) { return productRepository.findByCategory(category); }
     @Override
     public Product getProductById(Long id) {
 
