@@ -5,6 +5,7 @@ import com.storeApp.models.Category;
 import com.storeApp.models.Product;
 import com.storeApp.service.CategoryService;
 import com.storeApp.service.ProductService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,31 +33,26 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/list-ordered")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<Product> getAllProductOrderedByPrice() {
         return productService.getAllProductOrderedByPrice();
     }
 
     @GetMapping("/list-ordered-des")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<Product> getAllProductOrderedByPriceDesc() {
         return productService.getAllProductOrderedByPriceDesc();
     }
 
     @GetMapping("/list-ordered-category/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public List<Product> getAllProductsFilteredByCategory(@PathVariable("id") long id){
+    public List<Product> getAllProductsFilteredByCategory(@PathVariable("id") long id) {
         return productService.getAllProductsFilteredByCategory(categoryService.getCategoryById(id).get());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
         Product product = productService.getProductById(id);
 

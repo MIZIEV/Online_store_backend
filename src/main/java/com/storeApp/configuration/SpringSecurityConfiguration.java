@@ -43,6 +43,12 @@ public class SpringSecurityConfiguration {
                 .authorizeHttpRequests((authorize) -> {
 
                     authorize.requestMatchers("/api/auth/**").permitAll();
+                    authorize.requestMatchers("/api/product/list").permitAll();
+                    authorize.requestMatchers("/api/product/list-ordered").permitAll();
+                    authorize.requestMatchers("/api/product/list-ordered-des").permitAll();
+                    authorize.requestMatchers("/api/product/list-ordered-category/{id}").permitAll();
+                    authorize.requestMatchers("/api/product/{id}").permitAll();
+
                     authorize.anyRequest().authenticated();
 
                 }).httpBasic(Customizer.withDefaults());
