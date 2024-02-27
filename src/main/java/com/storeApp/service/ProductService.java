@@ -9,8 +9,7 @@ public interface ProductService {
 
     void addNewProduct(Product product);
     List<Product> getAllProducts(String sort);
-    List<Product> getAllProductOrderedByPrice();
-    List<Product> getAllProductOrderedByPriceDesc();
+
     List<Product> getAllProductsFilteredByCategory(Category category);
     Product getProductById(Long id);
     void deleteProduct(Long id);

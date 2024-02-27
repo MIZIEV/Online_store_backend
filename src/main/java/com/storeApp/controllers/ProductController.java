@@ -33,21 +33,9 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public List<Product> getAllProducts(@RequestParam(name = "sort",defaultValue = "asc")String sort) {
+    public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort) {
         return productService.getAllProducts(sort);
     }
-/*
-
-    @GetMapping("/list-ordered")
-    public List<Product> getAllProductOrderedByPrice() {
-        return productService.getAllProductOrderedByPrice();
-    }
-
-    @GetMapping("/list-ordered-des")
-    public List<Product> getAllProductOrderedByPriceDesc() {
-        return productService.getAllProductOrderedByPriceDesc();
-    }
-*/
 
     @GetMapping("/list-ordered-category/{id}")
     public List<Product> getAllProductsFilteredByCategory(@PathVariable("id") long id) {

@@ -42,16 +42,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProductOrderedByPrice() {
-        return productRepository.findAllOrderedByPrice();
-    }
-
-    @Override
-    public List<Product> getAllProductOrderedByPriceDesc() {
-        return productRepository.findAllOrderByPriceDesc();
-    }
-
-    @Override
     public List<Product> getAllProductsFilteredByCategory(Category category) {
         return productRepository.findByCategory(category);
     }
