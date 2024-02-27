@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -28,15 +29,33 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<Product> getAllProducts(String sort) {
+
+        List<Product> products = productRepository.findAll();
+
+        if ("min".equalsIgnoreCase(sort)) {
+            products.sort(Comparator.comparing(Product::getPrice));
+        } else if ("max".equalsIgnoreCase(sort)) {
+            products.sort(Comparator.comparing(Product::getPrice).reversed());
+        }
+        return products;
     }
+
     @Override
-    public List<Product> getAllProductOrderedByPrice() { return productRepository.findAllOrderedByPrice(); }
+    public List<Product> getAllProductOrderedByPrice() {
+        return productRepository.findAllOrderedByPrice();
+    }
+
     @Override
-    public List<Product> getAllProductOrderedByPriceDesc() { return productRepository.findAllOrderByPriceDesc(); }
+    public List<Product> getAllProductOrderedByPriceDesc() {
+        return productRepository.findAllOrderByPriceDesc();
+    }
+
     @Override
-    public List<Product> getAllProductsFilteredByCategory(Category category) { return productRepository.findByCategory(category); }
+    public List<Product> getAllProductsFilteredByCategory(Category category) {
+        return productRepository.findByCategory(category);
+    }
+
     @Override
     public Product getProductById(Long id) {
 

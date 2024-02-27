@@ -8,7 +8,7 @@ import java.util.List;
 public interface ProductService {
 
     void addNewProduct(Product product);
-    List<Product> getAllProducts();
+    List<Product> getAllProducts(String sort);
     List<Product> getAllProductOrderedByPrice();
     List<Product> getAllProductOrderedByPriceDesc();
     List<Product> getAllProductsFilteredByCategory(Category category);
