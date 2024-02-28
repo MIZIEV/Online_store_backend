@@ -3,7 +3,9 @@ package com.storeApp.service.implementation;
 import com.storeApp.models.Category;
 import com.storeApp.repository.CategoryRepository;
 import com.storeApp.service.CategoryService;
+import com.storeApp.util.exception.CategoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<Category> getCategoryById(Long id) {
-        return categoryRepository.findCategoryById(id);
+
+
+        if(categoryRepository.findCategoryById(id).isPresent()){
+            return categoryRepository.findCategoryById(id);
+        } else{
+            throw new CategoryNotFoundException(HttpStatus.NOT_FOUND,"Category not found");
+        }
     }
 
     @Override
