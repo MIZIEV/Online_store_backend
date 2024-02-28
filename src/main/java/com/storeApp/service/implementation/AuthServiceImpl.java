@@ -1,5 +1,6 @@
 package com.storeApp.service.implementation;
 
+import com.storeApp.dto.JwtAuthResponse;
 import com.storeApp.dto.LoginDto;
 import com.storeApp.dto.RegisterDto;
 import com.storeApp.models.Role;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -74,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(LoginDto loginDto) {
+    public JwtAuthResponse login(LoginDto loginDto) {
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -85,7 +87,26 @@ public class AuthServiceImpl implements AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String token = jwtTokenProvider.generateToken(authentication);
-            return token;
+
+            Optional<User> userOptional = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(),
+                    loginDto.getUsernameOrEmail());
+
+            String role = null;
+
+            if (userOptional.isPresent()) {
+                User loggedUser = userOptional.get();
+                Optional<Role> optionalRole = loggedUser.getRole().stream().findFirst();
+                if (optionalRole.isPresent()) {
+                    Role userRole = optionalRole.get();
+                    role = userRole.getName();
+                }
+            }
+
+            JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+            jwtAuthResponse.setRole(role);
+            jwtAuthResponse.setAccessToken(token);
+
+            return jwtAuthResponse;
 
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
