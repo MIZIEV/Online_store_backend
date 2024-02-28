@@ -1,6 +1,7 @@
 package com.storeApp.util;
 
 
+import com.storeApp.util.exception.CategoryNotFoundException;
 import com.storeApp.util.exception.IncorrectUsernameOrPasswordException;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.http.HttpStatus;
@@ -36,5 +37,15 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleCategoryExceptions(CategoryNotFoundException exception,
+                                                             WebRequest webRequest) {
 
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false)
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
 }

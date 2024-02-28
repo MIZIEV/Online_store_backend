@@ -1,9 +1,11 @@
 package com.storeApp.controllers;
 
 import com.storeApp.dto.ProductDto;
+import com.storeApp.models.Category;
 import com.storeApp.models.Product;
 import com.storeApp.service.CategoryService;
 import com.storeApp.service.ProductService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,13 +33,16 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort) {
+        return productService.getAllProducts(sort);
+    }
+
+    @GetMapping("/list-ordered-category/{id}")
+    public List<Product> getAllProductsFilteredByCategory(@PathVariable("id") long id) {
+        return productService.getAllProductsFilteredByCategory(categoryService.getCategoryById(id).get());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN,USER')")
     public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
         Product product = productService.getProductById(id);
 
@@ -51,7 +56,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addNewProduct(@Valid @RequestBody ProductDto productDto, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -69,7 +74,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateProduct(@RequestBody Product editedProduct, @PathVariable Long id) {
 
         Product product = productService.updateProduct(editedProduct, id);
@@ -84,7 +89,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/remove/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(HttpStatus.OK);
