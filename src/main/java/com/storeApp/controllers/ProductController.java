@@ -1,11 +1,9 @@
 package com.storeApp.controllers;
 
 import com.storeApp.dto.ProductDto;
-import com.storeApp.models.Category;
 import com.storeApp.models.Product;
 import com.storeApp.service.CategoryService;
 import com.storeApp.service.ProductService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,11 +34,6 @@ public class ProductController {
     public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
                                         @RequestParam(name = "categoryid",required = false) Long categoryid) {
         return productService.getAllProducts(sort,categoryid);
-    }
-
-    @GetMapping("/list-ordered-category/{id}")
-    public List<Product> getAllProductsFilteredByCategory(@PathVariable("id") long id) {
-        return productService.getAllProductsFilteredByCategory(categoryService.getCategoryById(id).get());
     }
 
     @GetMapping("/{id}")
