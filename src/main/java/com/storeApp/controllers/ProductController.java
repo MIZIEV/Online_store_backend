@@ -32,8 +32,24 @@ public class ProductController {
 
     @GetMapping("/list")
     public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                        @RequestParam(name = "categoryid",required = false) Long categoryid) {
-        return productService.getAllProducts(sort,categoryid);
+                                        @RequestParam(name = "categoryid", required = false) Long categoryid) {
+        return productService.getAllProducts(sort, categoryid);
+    }
+
+    @GetMapping("/list/search")
+    public List<Product> getProductsByBrandAndModel(@RequestParam String searchTerm) {
+        String[] searchTerms = searchTerm.split("\\s+");
+
+        if (searchTerms.length == 2) {
+            return productService.getProductsByBrandAndModel(searchTerms[0], searchTerms[1]);
+        } else {
+            List<Product> byBrandOrModel = productService.getProductsByBrandOrModel(searchTerm, searchTerm);
+            List<Product> byPartialModel = productService.getProductsByModelContainingIgnoreCase(searchTerm);
+
+            byBrandOrModel.addAll(byPartialModel);
+
+            return byBrandOrModel;
+        }
     }
 
     @GetMapping("/{id}")
@@ -102,4 +118,5 @@ public class ProductController {
 
         return product;
     }
+
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,6 +52,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> getProductsByBrandAndModel(String brand, String model) {
+        return productRepository.findByBrandAndModel(brand, model);
+    }
+
+    @Override
+    public List<Product> getProductsByBrandOrModel(String brand, String model) {
+        return productRepository.findByBrandOrModel(brand, model);
+    }
+
+    @Override
+    public List<Product> getProductsByModelContainingIgnoreCase(String model) {
+        return productRepository.findByModelContainingIgnoreCase(model);
+    }
+
+    @Override
     public List<Product> getAllProductsFilteredByCategory(Category category) {
         return productRepository.findByCategory(category);
     }
@@ -62,6 +78,18 @@ public class ProductServiceImpl implements ProductService {
 
         if (productRepository.findProductById(id).isPresent()) {
             product = productRepository.findProductById(id).get();
+        }
+        return product;
+    }
+
+    @Override
+    public Product getProductByModel(String model) {
+        Optional<Product> optionalProduct = productRepository.findProductByModel(model);
+        Product product = null;
+        if (optionalProduct.isPresent()) {
+            product = optionalProduct.get();
+        } else {
+            throw null;         //todo create exception for non existing product
         }
         return product;
     }
