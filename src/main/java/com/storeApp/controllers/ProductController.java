@@ -33,8 +33,9 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort) {
-        return productService.getAllProducts(sort);
+    public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
+                                        @RequestParam(name = "categoryid",required = false) Long categoryid) {
+        return productService.getAllProducts(sort,categoryid);
     }
 
     @GetMapping("/list-ordered-category/{id}")

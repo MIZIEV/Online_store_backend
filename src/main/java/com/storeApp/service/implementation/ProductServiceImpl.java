@@ -2,6 +2,7 @@ package com.storeApp.service.implementation;
 
 import com.storeApp.models.Category;
 import com.storeApp.models.Product;
+import com.storeApp.repository.CategoryRepository;
 import com.storeApp.repository.ProductRepository;
 import com.storeApp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -29,9 +32,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts(String sort) {
+    public List<Product> getAllProducts(String sort, Long categoryId) {
 
-        List<Product> products = productRepository.findAll();
+        List<Product> products = null;
+
+        if (categoryId != null) {
+            products = getAllProductsFilteredByCategory(categoryRepository.findCategoryById(categoryId).get());
+        } else {
+            products = productRepository.findAll();
+        }
 
         if ("min".equalsIgnoreCase(sort)) {
             products.sort(Comparator.comparing(Product::getPrice));
