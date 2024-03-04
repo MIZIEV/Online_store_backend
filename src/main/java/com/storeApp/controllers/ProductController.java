@@ -1,11 +1,9 @@
 package com.storeApp.controllers;
 
 import com.storeApp.dto.ProductDto;
-import com.storeApp.models.Category;
 import com.storeApp.models.Product;
 import com.storeApp.service.CategoryService;
 import com.storeApp.service.ProductService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,13 +31,25 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort) {
-        return productService.getAllProducts(sort);
+    public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
+                                        @RequestParam(name = "categoryid", required = false) Long categoryid) {
+        return productService.getAllProducts(sort, categoryid);
     }
 
-    @GetMapping("/list-ordered-category/{id}")
-    public List<Product> getAllProductsFilteredByCategory(@PathVariable("id") long id) {
-        return productService.getAllProductsFilteredByCategory(categoryService.getCategoryById(id).get());
+    @GetMapping("/list/search")
+    public List<Product> getProductsByBrandAndModel(@RequestParam String searchTerm) {
+        String[] searchTerms = searchTerm.split("\\s+");
+
+        if (searchTerms.length == 2) {
+            return productService.getProductsByBrandAndModel(searchTerms[0], searchTerms[1]);
+        } else {
+            List<Product> byBrandOrModel = productService.getProductsByBrandOrModel(searchTerm, searchTerm);
+            List<Product> byPartialModel = productService.getProductsByModelContainingIgnoreCase(searchTerm);
+
+            byBrandOrModel.addAll(byPartialModel);
+
+            return byBrandOrModel;
+        }
     }
 
     @GetMapping("/{id}")
