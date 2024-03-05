@@ -14,7 +14,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/product")
@@ -41,14 +43,30 @@ public class ProductController {
             if (searchTerms.length == 2) {
                 return productService.getProductsByBrandAndModel(searchTerms[0], searchTerms[1]);
             } else {
-                List<Product> byBrandOrModel = productService.getProductsByBrandOrModel(searchTerm, searchTerm);
-                List<Product> byPartialModel = productService.getProductsByModelContainingIgnoreCase(searchTerm);
+                List<Product> byBrandOrModel = null;
+                if (categoryid != null) {
+                    byBrandOrModel = productService.getAllProductsFilteredByCategory(categoryService.getCategoryById(categoryid).get());
+                }
 
-                byBrandOrModel.addAll(byPartialModel);
+                byBrandOrModel = byBrandOrModel.stream()
+                        .filter(product ->
+                                product.getBrand().toLowerCase().contains(searchTerm.toLowerCase()) ||
+                                        product.getModel().toLowerCase().contains(searchTerm.toLowerCase()))
+                        .collect(Collectors.toList());
+
+                //  productService.getProductsByBrandOrModel(searchTerm, searchTerm);
+                // List<Product> byPartialModel = productService.getProductsByModelContainingIgnoreCase(searchTerm);
+
+                // byBrandOrModel.addAll(byPartialModel);
+
+                if ("min".equalsIgnoreCase(sort)) {
+                    byBrandOrModel.sort(Comparator.comparing(Product::getPrice));
+                } else if ("max".equalsIgnoreCase(sort)) {
+                    byBrandOrModel.sort(Comparator.comparing(Product::getPrice).reversed());
+                }
                 return byBrandOrModel;
             }
         } else {
-
             return productService.getAllProducts(sort, categoryid);
         }
     }
