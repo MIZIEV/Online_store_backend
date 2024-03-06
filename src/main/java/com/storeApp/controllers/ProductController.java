@@ -14,9 +14,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/product")
@@ -37,57 +36,31 @@ public class ProductController {
                                         @RequestParam(name = "categoryid", required = false) Long categoryid,
                                         @RequestParam(name = "searchTerm", required = false) String searchTerm) {
 
+        List<Product> filteredList = new ArrayList<>();
         if (searchTerm != null && !searchTerm.isEmpty()) {
             String[] searchTerms = searchTerm.split("\\s+");
 
-            if (searchTerms.length == 2) {
-                return productService.getProductsByBrandAndModel(searchTerms[0], searchTerms[1]);
-            } else {
-                List<Product> byBrandOrModel = null;
-                if (categoryid != null) {
-                    byBrandOrModel = productService.getAllProductsFilteredByCategory(categoryService.getCategoryById(categoryid).get());
+            List<Product> productList = null;
+
+
+            productList = productService.getAllProducts(sort, categoryid);
+
+
+            for (Product element : productList) {
+                StringBuffer stringBuffer = new StringBuffer();
+
+                stringBuffer.append(element.getBrand()).append(" ").append(element.getModel());
+
+                if (containsAllWord(stringBuffer.toString(), searchTerms)) {
+                    filteredList.add(element);
                 }
-
-                byBrandOrModel = byBrandOrModel.stream()
-                        .filter(product ->
-                                product.getBrand().toLowerCase().contains(searchTerm.toLowerCase()) ||
-                                        product.getModel().toLowerCase().contains(searchTerm.toLowerCase()))
-                        .collect(Collectors.toList());
-
-                //  productService.getProductsByBrandOrModel(searchTerm, searchTerm);
-                // List<Product> byPartialModel = productService.getProductsByModelContainingIgnoreCase(searchTerm);
-
-                // byBrandOrModel.addAll(byPartialModel);
-
-                if ("min".equalsIgnoreCase(sort)) {
-                    byBrandOrModel.sort(Comparator.comparing(Product::getPrice));
-                } else if ("max".equalsIgnoreCase(sort)) {
-                    byBrandOrModel.sort(Comparator.comparing(Product::getPrice).reversed());
-                }
-                return byBrandOrModel;
             }
-        } else {
-            return productService.getAllProducts(sort, categoryid);
+
+            return filteredList;
         }
+        return filteredList;
     }
 
-    /*
-        @GetMapping("/list/search")
-        public List<Product> getProductsByBrandAndModel(@RequestParam String searchTerm) {
-            String[] searchTerms = searchTerm.split("\\s+");
-
-            if (searchTerms.length == 2) {
-                return productService.getProductsByBrandAndModel(searchTerms[0], searchTerms[1]);
-            } else {
-                List<Product> byBrandOrModel = productService.getProductsByBrandOrModel(searchTerm, searchTerm);
-                List<Product> byPartialModel = productService.getProductsByModelContainingIgnoreCase(searchTerm);
-
-                byBrandOrModel.addAll(byPartialModel);
-
-                return byBrandOrModel;
-            }
-        }
-    */
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
         Product product = productService.getProductById(id);
@@ -155,4 +128,12 @@ public class ProductController {
         return product;
     }
 
+    private static boolean containsAllWord(String text, String... words) {
+        for (String word : words) {
+            if (!text.toLowerCase().contains(word.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
