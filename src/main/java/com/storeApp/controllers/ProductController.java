@@ -57,8 +57,14 @@ public class ProductController {
             }
 
             return filteredList;
+        } else if (sort == null && categoryid == null && searchTerm == null) {
+
+            return productService.getAllProducts();
+        } else {
+            filteredList = productService.getAllProducts(sort, categoryid);
         }
         return filteredList;
+
     }
 
     @GetMapping("/{id}")

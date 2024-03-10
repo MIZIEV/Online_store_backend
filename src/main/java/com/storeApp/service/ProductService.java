@@ -11,6 +11,8 @@ public interface ProductService {
 
     List<Product> getAllProducts(String sort, Long categoryId);
 
+    List<Product> getAllProducts();
+
     List<Product> getAllProductsFilteredByCategory(Category category);
 
     Product getProductById(Long id);
