@@ -1,10 +1,12 @@
 package com.storeApp.dto;
 
+import com.storeApp.models.Rating;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ProductDto {
@@ -23,11 +25,12 @@ public class ProductDto {
     @NotNull(message = "The field `price` mustn't be null!!!")
     @Positive(message = "The price mustn't be a negative value or equal to zero!!!")
     private Double price;
-
+    private List<Rating> rating;
+    private Double totalMark;
+    private Integer numberOfMarks;
     private Long categoryId;
 
-    public ProductDto() {
-    }
+    public ProductDto() {}
 
     public ProductDto(String brand, String model, String description, String pictureURL, Double price, Long categoryId) {
         this.brand = brand;
@@ -84,6 +87,22 @@ public class ProductDto {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Double getTotalMark() {
+        return totalMark;
+    }
+
+    public void setTotalMark(Double totalMark) {
+        this.totalMark = totalMark;
+    }
+
+    public Integer getNumberOfMarks() {
+        return numberOfMarks;
+    }
+
+    public void setNumberOfMarks(Integer numberOfMarks) {
+        this.numberOfMarks = numberOfMarks;
     }
 
     @Override
