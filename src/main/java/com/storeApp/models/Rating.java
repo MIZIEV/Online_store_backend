@@ -13,7 +13,7 @@ public class Rating {
     private Long id;
 
     @Column(name = "score")
-    private Double score;
+    private Double mark;
 
     @ManyToOne
     @JsonBackReference
@@ -22,9 +22,9 @@ public class Rating {
 
     public Rating(){}
 
-    public Rating(Long id, Double score, Product product) {
+    public Rating(Long id, Double mark, Product product) {
         this.id = id;
-        this.score = score;
+        this.mark = mark;
         this.product = product;
     }
 
@@ -36,12 +36,12 @@ public class Rating {
         this.id = id;
     }
 
-    public Double getScore() {
-        return score;
+    public Double getMark() {
+        return mark;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
+    public void setMark(Double score) {
+        this.mark = score;
     }
 
     public Product getProduct() {

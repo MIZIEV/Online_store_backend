@@ -2,6 +2,7 @@ package com.storeApp.service.implementation;
 
 import com.storeApp.models.Category;
 import com.storeApp.models.Product;
+import com.storeApp.models.Rating;
 import com.storeApp.repository.CategoryRepository;
 import com.storeApp.repository.ProductRepository;
 import com.storeApp.service.ProductService;
@@ -50,8 +51,9 @@ public class ProductServiceImpl implements ProductService {
         }
         return products;
     }
+
     @Override
-    public List<Product> getAllProducts(){
+    public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
@@ -85,6 +87,29 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.findProductById(id).get();
         }
         return product;
+    }
+
+    @Override
+    public void putTheMarkToProduct(Long productId, Double mark) {
+        Product product = productRepository.findProductById(productId).get();
+        Rating rating = new Rating();
+        rating.setMark(mark);
+        product.getRating().add(rating);
+    }
+
+    @Override
+    public Double getProductMark(Long productId) {
+
+        Product product = productRepository.findProductById(productId).get();
+        List<Rating> markList = product.getRating();
+        double sum = 0.0;
+
+        for (Rating num : markList) {
+            sum += num.getMark();
+        }
+        Double average = sum / markList.size();
+
+        return average;
     }
 
     @Override
