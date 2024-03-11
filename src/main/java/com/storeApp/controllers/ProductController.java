@@ -113,6 +113,13 @@ public class ProductController {
         }
     }
 
+    @PostMapping("/{id}/mark")
+    public ResponseEntity<?> putTheProductMark(@PathVariable("id") Long id, @RequestParam(name = "mark") Double mark) {
+        productService.putTheMarkToProduct(id, mark);
+
+        return new ResponseEntity<>("Mark is putted", HttpStatus.OK);
+    }
+
     @DeleteMapping("/remove/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {

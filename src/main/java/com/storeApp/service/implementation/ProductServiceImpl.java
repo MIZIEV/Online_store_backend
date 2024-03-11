@@ -90,11 +90,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void putTheMarkToProduct(Long productId, Double mark) {
         Product product = productRepository.findProductById(productId).get();
         Rating rating = new Rating();
         rating.setMark(mark);
+        rating.setProduct(product);
         product.getRating().add(rating);
+
+        productRepository.save(product);
     }
 
     @Override
