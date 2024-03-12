@@ -5,6 +5,8 @@ import com.storeApp.models.Product;
 import com.storeApp.service.CategoryService;
 import com.storeApp.service.ProductService;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/product")
@@ -131,28 +134,17 @@ public class ProductController {
 
     private Product convertToProduct(ProductDto productDto) {
 
-        Product product = new Product();
+        ModelMapper modelMapper = new ModelMapper();
 
-        product.setBrand(productDto.getBrand());
-        product.setModel(productDto.getModel());
-        product.setDescription(productDto.getDescription());
-        product.setPictureURL(productDto.getPictureURL());
-        product.setPrice(productDto.getPrice());
-        product.setCategory(categoryService.getCategoryById(productDto.getCategoryId()).get());
+        return modelMapper.map(productDto, Product.class);
 
-        return product;
     }
 
     private ProductDto convertToDto(Product product) {
 
-        ProductDto productDto = new ProductDto();
+        ModelMapper modelMapper = new ModelMapper();
 
-        productDto.setBrand(product.getBrand());
-        productDto.setModel(product.getModel());
-        productDto.setDescription(product.getDescription());
-        productDto.setPictureURL(product.getPictureURL());
-        productDto.setPrice(product.getPrice());
-        productDto.setCategoryId(product.getCategory().getId());
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
         productDto.setTotalMark(productService.getProductMark(product.getId()));
         productDto.setNumberOfMarks(product.getRating().size());
 
@@ -162,10 +154,13 @@ public class ProductController {
     private List<ProductDto> convertListToDto(List<Product> productList) {
 
         List<ProductDto> convertedList = new ArrayList<>();
+
         for (Product product : productList) {
-            convertedList.add(convertToDto(product));
+           convertedList.add(convertToDto(product));
         }
-        return convertedList;
+        //return convertedList;
+
+        return productList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     private static boolean containsAllWord(String text, String... words) {
