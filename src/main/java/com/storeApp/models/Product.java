@@ -1,8 +1,11 @@
 package com.storeApp.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -22,6 +25,11 @@ public class Product {
     private String pictureURL;
     @Column(name = "price")
     private Double price;
+
+    @OneToMany(mappedBy = "product")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @JsonManagedReference
+    private List<Rating> rating;
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @JsonBackReference
@@ -90,6 +98,14 @@ public class Product {
     public Category getCategory() { return category; }
 
     public void setCategory(Category category) { this.category = category; }
+
+    public List<Rating> getRating() {
+        return rating;
+    }
+
+    public void setRating(List<Rating> rating) {
+        this.rating = rating;
+    }
 
     @Override
     public int hashCode() {

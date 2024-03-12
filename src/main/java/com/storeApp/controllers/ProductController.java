@@ -32,11 +32,13 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public List<Product> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                        @RequestParam(name = "categoryid", required = false) Long categoryid,
-                                        @RequestParam(name = "searchTerm", required = false) String searchTerm) {
+    public List<ProductDto> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
+                                           @RequestParam(name = "categoryid", required = false) Long categoryid,
+                                           @RequestParam(name = "searchTerm", required = false) String searchTerm) {
 
         List<Product> filteredList = new ArrayList<>();
+
+        List<Product> fullList = productService.getAllProducts();
         if (searchTerm != null && !searchTerm.isEmpty()) {
             String[] searchTerms = searchTerm.split("\\s+");
 
@@ -56,14 +58,14 @@ public class ProductController {
                 }
             }
 
-            return filteredList;
+            return convertListToDto(filteredList);
         } else if (sort == null && categoryid == null && searchTerm == null) {
 
-            return productService.getAllProducts();
+            return convertListToDto(filteredList);
         } else {
             filteredList = productService.getAllProducts(sort, categoryid);
         }
-        return filteredList;
+        return convertListToDto(filteredList);
 
     }
 
@@ -113,6 +115,13 @@ public class ProductController {
         }
     }
 
+    @PostMapping("/{id}/mark")
+    public ResponseEntity<?> putTheProductMark(@PathVariable("id") Long id, @RequestParam(name = "mark") Double mark) {
+        productService.putTheMarkToProduct(id, mark);
+
+        return new ResponseEntity<>("Mark is putted", HttpStatus.OK);
+    }
+
     @DeleteMapping("/remove/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
@@ -132,6 +141,31 @@ public class ProductController {
         product.setCategory(categoryService.getCategoryById(productDto.getCategoryId()).get());
 
         return product;
+    }
+
+    private ProductDto convertToDto(Product product) {
+
+        ProductDto productDto = new ProductDto();
+
+        productDto.setBrand(product.getBrand());
+        productDto.setModel(product.getModel());
+        productDto.setDescription(product.getDescription());
+        productDto.setPictureURL(product.getPictureURL());
+        productDto.setPrice(product.getPrice());
+        productDto.setCategoryId(product.getCategory().getId());
+        productDto.setTotalMark(productService.getProductMark(product.getId()));
+        productDto.setNumberOfMarks(product.getRating().size());
+
+        return productDto;
+    }
+
+    private List<ProductDto> convertListToDto(List<Product> productList) {
+
+        List<ProductDto> convertedList = new ArrayList<>();
+        for (Product product : productList) {
+            convertedList.add(convertToDto(product));
+        }
+        return convertedList;
     }
 
     private static boolean containsAllWord(String text, String... words) {

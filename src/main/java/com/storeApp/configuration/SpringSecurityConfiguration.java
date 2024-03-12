@@ -47,6 +47,7 @@ public class SpringSecurityConfiguration {
                     authorize.requestMatchers("/api/product/list/search").permitAll();
                     authorize.requestMatchers("/api/product/{id}").permitAll();
                     authorize.requestMatchers("/api/category/**").permitAll();
+                    authorize.requestMatchers("/api/product/{id}/mark").permitAll();
 
                     authorize.anyRequest().authenticated();
 
