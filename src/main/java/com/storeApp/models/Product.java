@@ -26,7 +26,7 @@ public class Product {
     @Column(name = "price")
     private Double price;
 
-    @OneToMany(mappedBy = "")
+    @OneToMany(mappedBy = "product")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JsonManagedReference
     private List<ProductCharacteristic> characteristicList;

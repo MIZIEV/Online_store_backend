@@ -23,8 +23,11 @@ public class CharacteristicController {
     }
 
     @GetMapping("/list")
-    public List<ProductCharacteristic> getAllCharacteristics() {
-        return characteristicService.getAllCharacteristics();
+    public ResponseEntity<?> getAllCharacteristics() {
+
+        List<ProductCharacteristic> characteristicList = characteristicService.getAllCharacteristics();
+
+        return new ResponseEntity<>(characteristicList,HttpStatus.OK);
     }
 
     @PostMapping("/add")
