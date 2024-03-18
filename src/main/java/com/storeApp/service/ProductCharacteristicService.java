@@ -2,7 +2,12 @@ package com.storeApp.service;
 
 import com.storeApp.models.ProductCharacteristic;
 
+import java.util.List;
+
 public interface ProductCharacteristicService {
 
+    List<ProductCharacteristic> getAllCharacteristics();
     void addNewCharacteristic(ProductCharacteristic characteristic);
+    ProductCharacteristic updateCharacteristic(ProductCharacteristic characteristic,Long characteristicId);
+    void deleteCharacteristic(Long characteristicId);
 }
