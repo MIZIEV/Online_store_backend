@@ -1,5 +1,6 @@
 package com.storeApp.dto;
 
+import com.storeApp.models.ProductCharacteristic;
 import com.storeApp.models.Rating;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -31,16 +32,24 @@ public class ProductDto {
     private Double totalMark;
     private Integer numberOfMarks;
     private Long categoryId;
+    private List<ProductCharacteristic> characteristicList;
 
     public ProductDto() {}
 
-    public ProductDto(String brand, String model, String description, String pictureURL, Double price, Long categoryId) {
+    public ProductDto(Long id, String brand, String model, String description, String pictureURL, Double price,
+                      List<Rating> rating, Double totalMark, Integer numberOfMarks,
+                      Long categoryId, List<ProductCharacteristic> characteristicList) {
+        this.id = id;
         this.brand = brand;
         this.model = model;
         this.description = description;
         this.pictureURL = pictureURL;
         this.price = price;
+        this.rating = rating;
+        this.totalMark = totalMark;
+        this.numberOfMarks = numberOfMarks;
         this.categoryId = categoryId;
+        this.characteristicList = characteristicList;
     }
 
     public Long getId() {
@@ -113,6 +122,14 @@ public class ProductDto {
 
     public void setNumberOfMarks(Integer numberOfMarks) {
         this.numberOfMarks = numberOfMarks;
+    }
+
+    public List<ProductCharacteristic> getCharacteristicList() {
+        return characteristicList;
+    }
+
+    public void setCharacteristicList(List<ProductCharacteristic> characteristicList) {
+        this.characteristicList = characteristicList;
     }
 
     @Override
