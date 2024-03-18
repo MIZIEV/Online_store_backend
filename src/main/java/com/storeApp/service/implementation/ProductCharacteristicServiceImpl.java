@@ -27,25 +27,26 @@ public class ProductCharacteristicServiceImpl implements ProductCharacteristicSe
 
     @Override
     @Transactional(readOnly = false)
-    public void addNewCharacteristic(ProductCharacteristic characteristic) {
-        productCharacteristicRepository.save(characteristic);
+    public ProductCharacteristic addNewCharacteristic(ProductCharacteristic characteristic) {
+        ProductCharacteristic newCharacteristic = productCharacteristicRepository.save(characteristic);
+        return newCharacteristic;
     }
 
     @Override
     @Transactional(readOnly = false)
     public ProductCharacteristic updateCharacteristic(ProductCharacteristic characteristic, Long characteristicId) {
 
-        ProductCharacteristic characteristicForUpdate=null;
+        ProductCharacteristic characteristicForUpdate = null;
 
-        if(productCharacteristicRepository.findProductCharacteristicById(characteristicId).isPresent()){
-            characteristicForUpdate=productCharacteristicRepository.findProductCharacteristicById(characteristicId).get();
+        if (productCharacteristicRepository.findProductCharacteristicById(characteristicId).isPresent()) {
+            characteristicForUpdate = productCharacteristicRepository.findProductCharacteristicById(characteristicId).get();
 
             characteristicForUpdate.setId(characteristicId);
             characteristicForUpdate.setCharacteristicName(characteristic.getCharacteristicName());
             characteristicForUpdate.setCharacteristicValue(characteristic.getCharacteristicValue());
 
             productCharacteristicRepository.save(characteristicForUpdate);
-        }else{
+        } else {
             throw null;  //todo create exception
         }
 
