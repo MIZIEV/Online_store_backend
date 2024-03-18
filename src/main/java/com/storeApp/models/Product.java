@@ -29,6 +29,11 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JsonManagedReference
+    private List<ProductCharacteristic> characteristicList;
+
+    @OneToMany(mappedBy = "product")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @JsonManagedReference
     private List<Rating> rating;
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
@@ -105,6 +110,14 @@ public class Product {
 
     public void setRating(List<Rating> rating) {
         this.rating = rating;
+    }
+
+    public List<ProductCharacteristic> getCharacteristicList() {
+        return characteristicList;
+    }
+
+    public void setCharacteristicList(List<ProductCharacteristic> characteristicList) {
+        this.characteristicList = characteristicList;
     }
 
     @Override

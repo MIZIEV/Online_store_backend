@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class ProductDto {
+
+    private Long id;
     @NotNull(message = "The field `brand` mustn't be null!!!")
     @Size(min = 5, message = "The field must be longer than 5 characters!!!")
     private String brand;
@@ -39,6 +41,14 @@ public class ProductDto {
         this.pictureURL = pictureURL;
         this.price = price;
         this.categoryId = categoryId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getBrand() {
