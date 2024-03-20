@@ -5,7 +5,9 @@ import com.storeApp.models.ProductCharacteristic;
 import com.storeApp.repository.ProductCharacteristicRepository;
 import com.storeApp.repository.ProductRepository;
 import com.storeApp.service.ProductCharacteristicService;
+import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +61,8 @@ public class ProductCharacteristicServiceImpl implements ProductCharacteristicSe
 
             productCharacteristicRepository.save(characteristicForUpdate);
         } else {
-            throw null;  //todo create exception
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND,
+                    "Characteristic with id-" + characteristicId + " not found!");
         }
 
         return characteristicForUpdate;
@@ -68,10 +71,14 @@ public class ProductCharacteristicServiceImpl implements ProductCharacteristicSe
     @Override
     @Transactional(readOnly = false)
     public void deleteCharacteristic(Long characteristicId) {
-        ProductCharacteristic characteristic =
-                productCharacteristicRepository.findProductCharacteristicById(characteristicId).get();
+        Optional<ProductCharacteristic> characteristic =
+                productCharacteristicRepository.findProductCharacteristicById(characteristicId);
 
-        productCharacteristicRepository.delete(characteristic);
-
+        if (characteristic.isPresent()) {
+            productCharacteristicRepository.delete(characteristic.get());
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND,
+                    "Characteristic with id-" + characteristicId + " not found!");
+        }
     }
 }
