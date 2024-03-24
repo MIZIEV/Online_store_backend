@@ -1,7 +1,6 @@
 package com.storeApp.dto;
 
 import com.storeApp.models.ProductCharacteristic;
-import com.storeApp.models.Rating;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -28,26 +27,23 @@ public class ProductDto {
     @NotNull(message = "The field `price` mustn't be null!!!")
     @Positive(message = "The price mustn't be a negative value or equal to zero!!!")
     private Double price;
-    private List<Rating> rating;
+    private Double rating;
+    private Long voteCount;
     private Double totalMark;
-    private Integer numberOfMarks;
     private Long categoryId;
     private List<ProductCharacteristic> characteristicList;
 
     public ProductDto() {}
 
     public ProductDto(Long id, String brand, String model, String description, String pictureURL, Double price,
-                      List<Rating> rating, Double totalMark, Integer numberOfMarks,
-                      Long categoryId, List<ProductCharacteristic> characteristicList) {
+                      Double totalMark, Long categoryId, List<ProductCharacteristic> characteristicList) {
         this.id = id;
         this.brand = brand;
         this.model = model;
         this.description = description;
         this.pictureURL = pictureURL;
         this.price = price;
-        this.rating = rating;
         this.totalMark = totalMark;
-        this.numberOfMarks = numberOfMarks;
         this.categoryId = categoryId;
         this.characteristicList = characteristicList;
     }
@@ -116,12 +112,20 @@ public class ProductDto {
         this.totalMark = totalMark;
     }
 
-    public Integer getNumberOfMarks() {
-        return numberOfMarks;
+    public Double getRating() {
+        return rating;
     }
 
-    public void setNumberOfMarks(Integer numberOfMarks) {
-        this.numberOfMarks = numberOfMarks;
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public Long getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(Long voteCount) {
+        this.voteCount = voteCount;
     }
 
     public List<ProductCharacteristic> getCharacteristicList() {

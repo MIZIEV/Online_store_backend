@@ -2,16 +2,13 @@ package com.storeApp.service.implementation;
 
 import com.storeApp.models.Category;
 import com.storeApp.models.Product;
-import com.storeApp.models.Rating;
 import com.storeApp.repository.CategoryRepository;
 import com.storeApp.repository.ProductRepository;
-import com.storeApp.repository.RatingRepository;
 import com.storeApp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +18,33 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final RatingRepository ratingRepository;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, RatingRepository ratingRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.ratingRepository = ratingRepository;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void putTheMark(Long id, Double mark) {
+        Product product = productRepository.findProductById(id).get();
+        Double currentRating = null;
+        Long voteCount = null;
+
+        if (product.getVoteCount() == null) {
+            product.setRating(0.0);
+            product.setVoteCount(0L);
+        }
+
+        currentRating = product.getRating() * product.getVoteCount();
+        voteCount = product.getVoteCount() + 1;
+
+
+        product.setVoteCount(voteCount);
+        product.setRating((currentRating + mark) / voteCount);
+
+        productRepository.save(product);
     }
 
     @Override
@@ -93,20 +110,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public void putTheMarkToProduct(Long productId, Double mark) {
-        Product product = productRepository.findProductById(productId).get();
-        Rating rating = new Rating();
-        rating.setMark(mark);
-        rating.setProduct(product);
-        product.getRating().add(rating);
-
-        productRepository.save(product);
-    }
-
-    @Override
     public Double getProductMark(Product product) {
-        return ratingRepository.findAverageMarkForProduct(product);
+        return null;
     }
 
     @Override
@@ -154,4 +159,6 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
     }
+
+
 }

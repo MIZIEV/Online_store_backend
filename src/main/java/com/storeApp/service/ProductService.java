@@ -21,13 +21,15 @@ public interface ProductService {
 
     Product updateProduct(Product editedProduct, Long id);
 
-    void putTheMarkToProduct(Long productId,Double mark);
     Double getProductMark(Product product);
+
+    void putTheMark(Long id, Double mark);
 
     Product getProductByModel(String mode);
 
     List<Product> getProductsByBrandAndModel(String brand, String model);
 
     List<Product> getProductsByBrandOrModel(String brand, String model);
+
     List<Product> getProductsByModelContainingIgnoreCase(String model);
 }

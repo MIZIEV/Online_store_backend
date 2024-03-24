@@ -2,6 +2,7 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.ProductDto;
 import com.storeApp.models.Product;
+import com.storeApp.repository.ProductRepository;
 import com.storeApp.service.CategoryService;
 import com.storeApp.service.ProductService;
 import jakarta.validation.Valid;
@@ -34,10 +35,20 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
+
+
+        productService.putTheMark(id,productDto.getRating());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/list")
     public List<ProductDto> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
                                            @RequestParam(name = "categoryid", required = false) Long categoryid,
-                                           @RequestParam(name = "searchTerm", required = false) String searchTerm) {
+                                           @RequestParam(name = "searchTerm", required = false) String searchTerm,
+                                           @RequestParam(name = "rating", required = false) String rating) {
 
         List<Product> filteredList = new ArrayList<>();
 
@@ -118,13 +129,6 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/{id}/mark")
-    public ResponseEntity<?> putTheProductMark(@PathVariable("id") Long id, @RequestParam(name = "mark") Double mark) {
-        productService.putTheMarkToProduct(id, mark);
-
-        return new ResponseEntity<>("Mark is putted", HttpStatus.OK);
-    }
-
     @DeleteMapping("/remove/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
@@ -144,11 +148,7 @@ public class ProductController {
 
         ModelMapper modelMapper = new ModelMapper();
 
-        ProductDto productDto = modelMapper.map(product, ProductDto.class);
-        productDto.setTotalMark(productService.getProductMark(product.getId()));
-        productDto.setNumberOfMarks(product.getRating().size());
-
-        return productDto;
+        return modelMapper.map(product, ProductDto.class);
     }
 
     private List<ProductDto> convertListToDto(List<Product> productList) {
@@ -156,9 +156,8 @@ public class ProductController {
         List<ProductDto> convertedList = new ArrayList<>();
 
         for (Product product : productList) {
-           convertedList.add(convertToDto(product));
+            convertedList.add(convertToDto(product));
         }
-        //return convertedList;
 
         return productList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
