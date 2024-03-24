@@ -22,7 +22,7 @@ public interface ProductService {
     Product updateProduct(Product editedProduct, Long id);
 
     void putTheMarkToProduct(Long productId,Double mark);
-    Double getProductMark(Long productId);
+    Double getProductMark(Product product);
 
     Product getProductByModel(String mode);
 

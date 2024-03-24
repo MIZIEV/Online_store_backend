@@ -5,6 +5,7 @@ import com.storeApp.models.Product;
 import com.storeApp.models.Rating;
 import com.storeApp.repository.CategoryRepository;
 import com.storeApp.repository.ProductRepository;
+import com.storeApp.repository.RatingRepository;
 import com.storeApp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,13 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final RatingRepository ratingRepository;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, RatingRepository ratingRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.ratingRepository = ratingRepository;
     }
 
     @Override
@@ -45,9 +48,9 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if ("min".equalsIgnoreCase(sort)) {
-            products.sort(Comparator.comparing(Product::getPrice));
+            products = productRepository.findAllProductsOrderedByPrice();
         } else if ("max".equalsIgnoreCase(sort)) {
-            products.sort(Comparator.comparing(Product::getPrice).reversed());
+            products = productRepository.findAllProductsOrderedByPriceDesc();
         }
         return products;
     }
@@ -102,18 +105,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Double getProductMark(Long productId) {
-
-        Product product = productRepository.findProductById(productId).get();
-        List<Rating> markList = product.getRating();
-        double sum = 0.0;
-
-        for (Rating num : markList) {
-            sum += num.getMark();
-        }
-        Double average = sum / markList.size();
-
-        return average;
+    public Double getProductMark(Product product) {
+        return ratingRepository.findAverageMarkForProduct(product);
     }
 
     @Override
