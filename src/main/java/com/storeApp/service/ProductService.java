@@ -11,7 +11,6 @@ public interface ProductService {
 
     List<Product> getAllProducts(String sort, Long categoryId);
 
-    List<Product> getAllProducts();
 
     List<Product> getAllProductsFilteredByCategory(Category category);
 
@@ -21,15 +20,5 @@ public interface ProductService {
 
     Product updateProduct(Product editedProduct, Long id);
 
-    Double getProductMark(Product product);
-
     void putTheMark(Long id, Double mark);
-
-    Product getProductByModel(String mode);
-
-    List<Product> getProductsByBrandAndModel(String brand, String model);
-
-    List<Product> getProductsByBrandOrModel(String brand, String model);
-
-    List<Product> getProductsByModelContainingIgnoreCase(String model);
 }

@@ -52,7 +52,6 @@ public class ProductController {
 
         List<Product> filteredList = new ArrayList<>();
 
-        List<Product> fullList = productService.getAllProducts();
         if (searchTerm != null && !searchTerm.isEmpty()) {
             String[] searchTerms = searchTerm.split("\\s+");
 
