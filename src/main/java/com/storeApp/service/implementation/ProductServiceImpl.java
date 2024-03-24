@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -31,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts(String sort, Long categoryId) {
+    public List<Product> getAllProducts(String sort, String rating, Long categoryId) {
 
         List<Product> products = null;
 
@@ -41,10 +42,15 @@ public class ProductServiceImpl implements ProductService {
             products = productRepository.findAll();
         }
         if ("min".equalsIgnoreCase(sort)) {
-            products = productRepository.findAllProductsOrderedByPrice();
+            products.sort(Comparator.comparing(Product::getPrice));
         } else if ("max".equalsIgnoreCase(sort)) {
-            products = productRepository.findAllProductsOrderedByPriceDesc();
+            products.sort(Comparator.comparing(Product::getPrice).reversed());
+        } else if ("min".equalsIgnoreCase(rating)) {
+            products.sort(Comparator.comparing(Product::getRating));
+        } else if ("max".equalsIgnoreCase(rating)) {
+            products.sort(Comparator.comparing(Product::getRating).reversed());
         }
+
         return products;
     }
 
@@ -63,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
         }
         return product;
     }
+
     @Override
     @Transactional(readOnly = false)
     public void putTheMark(Long id, Double mark) {
@@ -106,6 +113,7 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
     }
+
     @Override
     @Transactional(readOnly = false)
     public void deleteProduct(Long id) {

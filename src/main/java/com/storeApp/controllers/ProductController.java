@@ -39,7 +39,7 @@ public class ProductController {
     public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
 
 
-        productService.putTheMark(id,productDto.getRating());
+        productService.putTheMark(id, productDto.getRating());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -57,9 +57,7 @@ public class ProductController {
 
             List<Product> productList = null;
 
-
-            productList = productService.getAllProducts(sort, categoryid);
-
+            productList = productService.getAllProducts(sort, rating, categoryid);
 
             for (Product element : productList) {
                 StringBuffer stringBuffer = new StringBuffer();
@@ -76,10 +74,9 @@ public class ProductController {
 
             return convertListToDto(filteredList);
         } else {
-            filteredList = productService.getAllProducts(sort, categoryid);
+            filteredList = productService.getAllProducts(sort, rating, categoryid);
         }
         return convertListToDto(filteredList);
-
     }
 
     @GetMapping("/{id}")
