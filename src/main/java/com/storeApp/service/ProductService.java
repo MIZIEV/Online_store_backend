@@ -9,9 +9,7 @@ public interface ProductService {
 
     void addNewProduct(Product product);
 
-    List<Product> getAllProducts(String sort, Long categoryId);
-
-    List<Product> getAllProducts();
+    List<Product> getAllProducts(String sort, String rating, Long categoryId);
 
     List<Product> getAllProductsFilteredByCategory(Category category);
 
@@ -21,13 +19,5 @@ public interface ProductService {
 
     Product updateProduct(Product editedProduct, Long id);
 
-    void putTheMarkToProduct(Long productId,Double mark);
-    Double getProductMark(Long productId);
-
-    Product getProductByModel(String mode);
-
-    List<Product> getProductsByBrandAndModel(String brand, String model);
-
-    List<Product> getProductsByBrandOrModel(String brand, String model);
-    List<Product> getProductsByModelContainingIgnoreCase(String model);
+    void putTheMark(Long id, Double mark);
 }

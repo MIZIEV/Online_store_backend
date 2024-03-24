@@ -2,7 +2,6 @@ package com.storeApp.service.implementation;
 
 import com.storeApp.models.Category;
 import com.storeApp.models.Product;
-import com.storeApp.models.Rating;
 import com.storeApp.repository.CategoryRepository;
 import com.storeApp.repository.ProductRepository;
 import com.storeApp.service.ProductService;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts(String sort, Long categoryId) {
+    public List<Product> getAllProducts(String sort, String rating, Long categoryId) {
 
         List<Product> products = null;
 
@@ -43,34 +41,17 @@ public class ProductServiceImpl implements ProductService {
         } else {
             products = productRepository.findAll();
         }
-
         if ("min".equalsIgnoreCase(sort)) {
             products.sort(Comparator.comparing(Product::getPrice));
         } else if ("max".equalsIgnoreCase(sort)) {
             products.sort(Comparator.comparing(Product::getPrice).reversed());
+        } else if ("min".equalsIgnoreCase(rating)) {
+            products.sort(Comparator.comparing(Product::getRating));
+        } else if ("max".equalsIgnoreCase(rating)) {
+            products.sort(Comparator.comparing(Product::getRating).reversed());
         }
+
         return products;
-    }
-
-    @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-
-    @Override
-    public List<Product> getProductsByBrandAndModel(String brand, String model) {
-        return productRepository.findByBrandAndModel(brand, model);
-    }
-
-    @Override
-    public List<Product> getProductsByBrandOrModel(String brand, String model) {
-        return productRepository.findByBrandOrModel(brand, model);
-    }
-
-    @Override
-    public List<Product> getProductsByModelContainingIgnoreCase(String model) {
-        return productRepository.findByModelContainingIgnoreCase(model);
     }
 
     @Override
@@ -91,53 +72,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = false)
-    public void putTheMarkToProduct(Long productId, Double mark) {
-        Product product = productRepository.findProductById(productId).get();
-        Rating rating = new Rating();
-        rating.setMark(mark);
-        rating.setProduct(product);
-        product.getRating().add(rating);
+    public void putTheMark(Long id, Double mark) {
+        Product product = productRepository.findProductById(id).get();
+        Double currentRating = null;
+        Long voteCount = null;
+
+        if (product.getVoteCount() == null) {
+            product.setRating(0.0);
+            product.setVoteCount(0L);
+        }
+
+        currentRating = product.getRating() * product.getVoteCount();
+        voteCount = product.getVoteCount() + 1;
+
+
+        product.setVoteCount(voteCount);
+        product.setRating((currentRating + mark) / voteCount);
 
         productRepository.save(product);
-    }
-
-    @Override
-    public Double getProductMark(Long productId) {
-
-        Product product = productRepository.findProductById(productId).get();
-        List<Rating> markList = product.getRating();
-        double sum = 0.0;
-
-        for (Rating num : markList) {
-            sum += num.getMark();
-        }
-        Double average = sum / markList.size();
-
-        return average;
-    }
-
-    @Override
-    public Product getProductByModel(String model) {
-        Optional<Product> optionalProduct = productRepository.findProductByModel(model);
-        Product product = null;
-        if (optionalProduct.isPresent()) {
-            product = optionalProduct.get();
-        } else {
-            throw null;         //todo create exception for non existing product
-        }
-        return product;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteProduct(Long id) {
-
-        Product product = null;
-
-        if (productRepository.findProductById(id).isPresent()) {
-            product = productRepository.findProductById(id).get();
-            productRepository.delete(product);
-        }
     }
 
     @Override
@@ -160,5 +112,17 @@ public class ProductServiceImpl implements ProductService {
             return productForUpdating;
         }
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteProduct(Long id) {
+
+        Product product = null;
+
+        if (productRepository.findProductById(id).isPresent()) {
+            product = productRepository.findProductById(id).get();
+            productRepository.delete(product);
+        }
     }
 }

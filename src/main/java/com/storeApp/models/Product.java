@@ -26,30 +26,40 @@ public class Product {
     @Column(name = "price")
     private Double price;
 
+    @Column(name = "rating")
+    private Double rating;
+
+    @Column(name = "vote_count")
+    private Long voteCount;
+
     @OneToMany(mappedBy = "product")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JsonManagedReference
     private List<ProductCharacteristic> characteristicList;
 
-    @OneToMany(mappedBy = "product")
+  /*  @OneToMany(mappedBy = "product")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JsonManagedReference
-    private List<Rating> rating;
+    private List<Rating> rating;*/
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @JsonBackReference
     private Category category;
 
-    public Product() {
-    }
+    public Product() {}
 
-    public Product(Long id, String brand, String model, String description, String pictureURL, Double price) {
+    public Product(Long id, String brand, String model, String description, String pictureURL, Double price,
+                   Double rating, Long voteCount, List<ProductCharacteristic> characteristicList, Category category) {
         this.id = id;
         this.brand = brand;
         this.model = model;
         this.description = description;
         this.pictureURL = pictureURL;
         this.price = price;
+        this.rating = rating;
+        this.voteCount = voteCount;
+        this.characteristicList = characteristicList;
+        this.category = category;
     }
 
     public long getId() {
@@ -104,12 +114,20 @@ public class Product {
 
     public void setCategory(Category category) { this.category = category; }
 
-    public List<Rating> getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(List<Rating> rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public Long getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(Long voteCount) {
+        this.voteCount = voteCount;
     }
 
     public List<ProductCharacteristic> getCharacteristicList() {
