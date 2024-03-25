@@ -32,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts(String sort, String rating, Long categoryId) {
+    public List<Product> getAllProducts(String sort, Long categoryId) {
 
         List<Product> products = null;
 
@@ -41,13 +41,11 @@ public class ProductServiceImpl implements ProductService {
         } else {
             products = productRepository.findAll();
         }
-        if ("min".equalsIgnoreCase(sort)) {
+        if ("minPrice".equalsIgnoreCase(sort)) {
             products.sort(Comparator.comparing(Product::getPrice));
-        } else if ("max".equalsIgnoreCase(sort)) {
+        } else if ("maxPrice".equalsIgnoreCase(sort)) {
             products.sort(Comparator.comparing(Product::getPrice).reversed());
-        } else if ("min".equalsIgnoreCase(rating)) {
-            products.sort(Comparator.comparing(Product::getRating));
-        } else if ("max".equalsIgnoreCase(rating)) {
+        } else if ("maxRating".equalsIgnoreCase(sort)) {
             products.sort(Comparator.comparing(Product::getRating).reversed());
         }
 
