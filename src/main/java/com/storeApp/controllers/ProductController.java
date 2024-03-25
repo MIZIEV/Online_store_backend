@@ -47,8 +47,7 @@ public class ProductController {
     @GetMapping("/list")
     public List<ProductDto> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
                                            @RequestParam(name = "categoryid", required = false) Long categoryid,
-                                           @RequestParam(name = "searchTerm", required = false) String searchTerm,
-                                           @RequestParam(name = "rating", required = false) String rating) {
+                                           @RequestParam(name = "searchTerm", required = false) String searchTerm) {
 
         List<Product> filteredList = new ArrayList<>();
 
@@ -57,7 +56,7 @@ public class ProductController {
 
             List<Product> productList = null;
 
-            productList = productService.getAllProducts(sort, rating, categoryid);
+            productList = productService.getAllProducts(sort, categoryid);
 
             for (Product element : productList) {
                 StringBuffer stringBuffer = new StringBuffer();
@@ -74,7 +73,7 @@ public class ProductController {
 
             return convertListToDto(filteredList);
         } else {
-            filteredList = productService.getAllProducts(sort, rating, categoryid);
+            filteredList = productService.getAllProducts(sort, categoryid);
         }
         return convertListToDto(filteredList);
     }
