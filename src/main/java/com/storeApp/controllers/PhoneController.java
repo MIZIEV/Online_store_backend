@@ -1,13 +1,11 @@
 package com.storeApp.controllers;
 
-import com.storeApp.dto.ProductDto;
-import com.storeApp.models.Product;
-import com.storeApp.repository.ProductRepository;
+import com.storeApp.dto.PhoneDto;
+import com.storeApp.models.Phone;
 import com.storeApp.service.CategoryService;
-import com.storeApp.service.ProductService;
+import com.storeApp.service.PhoneService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,43 +20,42 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/phone")
 @CrossOrigin("*")
-public class ProductController {
+public class PhoneController {
 
-    private final ProductService productService;
+    private final PhoneService productService;
     private final CategoryService categoryService;
 
     @Autowired
-    public ProductController(ProductService productService, CategoryService categoryService) {
+    public PhoneController(PhoneService productService, CategoryService categoryService) {
         this.productService = productService;
         this.categoryService = categoryService;
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
+    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody PhoneDto phoneDto) {
 
-
-        productService.putTheMark(id, productDto.getRating());
+        productService.putTheMark(id, phoneDto.getRating());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/list")
-    public List<ProductDto> getAllProducts(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                           @RequestParam(name = "categoryid", required = false) Long categoryid,
-                                           @RequestParam(name = "searchTerm", required = false) String searchTerm) {
+    public List<PhoneDto> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
+                                         @RequestParam(name = "categoryid", required = false) Long categoryid,
+                                         @RequestParam(name = "searchTerm", required = false) String searchTerm) {
 
-        List<Product> filteredList = new ArrayList<>();
+        List<Phone> filteredList = new ArrayList<>();
 
         if (searchTerm != null && !searchTerm.isEmpty()) {
             String[] searchTerms = searchTerm.split("\\s+");
 
-            List<Product> productList = null;
+            List<Phone> phoneList = null;
 
-            productList = productService.getAllProducts(sort, categoryid);
+            phoneList = productService.getAllPhones(sort, categoryid);
 
-            for (Product element : productList) {
+            for (Phone element : phoneList) {
                 StringBuffer stringBuffer = new StringBuffer();
 
                 stringBuffer.append(element.getBrand()).append(" ").append(element.getModel());
@@ -73,17 +70,17 @@ public class ProductController {
 
             return convertListToDto(filteredList);
         } else {
-            filteredList = productService.getAllProducts(sort, categoryid);
+            filteredList = productService.getAllPhones(sort, categoryid);
         }
         return convertListToDto(filteredList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
-        Product product = productService.getProductById(id);
+        Phone phone = productService.getPhoneById(id);
 
-        if (product != null) {
-            return new ResponseEntity<>(product, HttpStatus.OK);
+        if (phone != null) {
+            return new ResponseEntity<>(phone, HttpStatus.OK);
         } else {
             String message = "Error: " + "Product with id - " + id + " not found!!!\n" +
                     "Timestamp: " + LocalDateTime.now();
@@ -92,8 +89,8 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> addNewProduct(@Valid @RequestBody ProductDto productDto, BindingResult result) {
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> addNewPhone(@Valid @RequestBody PhoneDto phoneDto, BindingResult result) {
 
         if (result.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder("Validation error: ");
@@ -104,19 +101,19 @@ public class ProductController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 
         } else {
-            productService.addNewProduct(convertToProduct(productDto));
-            return new ResponseEntity<>(productDto, HttpStatus.CREATED);
+            productService.addNewPhone(convertToProduct(phoneDto));
+            return new ResponseEntity<>(phoneDto, HttpStatus.CREATED);
         }
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateProduct(@RequestBody Product editedProduct, @PathVariable Long id) {
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updatePhone(@RequestBody Phone editedPhone, @PathVariable Long id) {
 
-        Product product = productService.updateProduct(editedProduct, id);
+        Phone phone = productService.updatePhone(editedPhone, id);
 
-        if (product != null) {
-            return new ResponseEntity<>(product, HttpStatus.OK);
+        if (phone != null) {
+            return new ResponseEntity<>(phone, HttpStatus.OK);
         } else {
             String message = "Error: " + "Product with id - " + id + " not found!!!\n" +
                     "Timestamp: " + LocalDateTime.now();
@@ -125,36 +122,36 @@ public class ProductController {
     }
 
     @DeleteMapping("/remove/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable("id") long id) {
-        productService.deleteProduct(id);
+    //PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> deletePhone(@PathVariable("id") long id) {
+        productService.deletePhone(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    private Product convertToProduct(ProductDto productDto) {
+    private Phone convertToProduct(PhoneDto phoneDto) {
 
         ModelMapper modelMapper = new ModelMapper();
 
-        return modelMapper.map(productDto, Product.class);
+        return modelMapper.map(phoneDto, Phone.class);
 
     }
 
-    private ProductDto convertToDto(Product product) {
+    private PhoneDto convertToDto(Phone phone) {
 
         ModelMapper modelMapper = new ModelMapper();
 
-        return modelMapper.map(product, ProductDto.class);
+        return modelMapper.map(phone, PhoneDto.class);
     }
 
-    private List<ProductDto> convertListToDto(List<Product> productList) {
+    private List<PhoneDto> convertListToDto(List<Phone> phoneList) {
 
-        List<ProductDto> convertedList = new ArrayList<>();
+        List<PhoneDto> convertedList = new ArrayList<>();
 
-        for (Product product : productList) {
-            convertedList.add(convertToDto(product));
+        for (Phone phone : phoneList) {
+            convertedList.add(convertToDto(phone));
         }
 
-        return productList.stream().map(this::convertToDto).collect(Collectors.toList());
+        return phoneList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     private static boolean containsAllWord(String text, String... words) {

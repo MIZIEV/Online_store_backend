@@ -1,88 +1,57 @@
-package com.storeApp.models;
+package com.storeApp.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.storeApp.models.*;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.validator.constraints.URL;
 
 import java.util.List;
 
-@Entity
-@Table(name = "phone")
-public class Phone {
+public class PhoneDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    @Column(name = "model")
     private String model;
-    @Column(name = "main_picture_URL")
     private String mainPictureURL;
-    @Column(name = "operation_system")
     private String os;
-    @Column(name = "os_verion")
     private String osVersion;
-    @Column(name = "screen_size")
     private Double screenSize;
-    @Column(name = "resolution")
     private String resolution;
-    @Column(name = "main_camera")
     private String mainCamera;
-    @Column(name = "front_camera")
     private Short frontCamera;
-    @Column(name = "processor")
     private String processor;
-    @Column(name = "count_of_cores")
     private Byte countOfCores;
-    @Column(name = "ram")
     private Short ram;
-    @Column(name = "rom")
     private Short rom;
-    @Column(name = "weight")
     private Short weight;
-    @Column(name = "battary_capacity")
     private Short batteryCapacity;
-    @Column(name = "count_of_sim_card")
     private Byte countOfSimCard;
-    @Column(name = "price")
     private Double price;
-    @Column(name = "rating")
     private Double rating;
-    @Column(name = "vote_count")
     private Long voteCount;
-    @Column(name = "description")
     private String description;
     @Enumerated(EnumType.STRING)
     private Brand brand;
-    @Column(name = "is_used")
     private boolean isUsed;
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private Category category;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "phone")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private Long categoryId;
     private List<PhonePictureURL> phonePictureURLS;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "phone")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<MobileCommunicationStandard> standardList;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "phone")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+
+    private List<MobileCommunicationStandard> standartList;
+
     private List<OtherFeatures> featuresList;
 
-    public Phone() {}
+    public PhoneDto() {}
 
-    public Phone(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
-                 String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
-                 Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                 Double rating, Long voteCount, String description, Brand brand, boolean isUsed, Category category,
-                 List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standardList,
-                 List<OtherFeatures> featuresList) {
+    public PhoneDto(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
+                    String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
+                    Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
+                    Double rating, Long voteCount, String description, Brand brand, boolean isUsed, Long categoryId,
+                    List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standartList,
+                    List<OtherFeatures> featuresList) {
         this.id = id;
         this.model = model;
         this.mainPictureURL = mainPictureURL;
@@ -105,9 +74,9 @@ public class Phone {
         this.description = description;
         this.brand = brand;
         this.isUsed = isUsed;
-        this.category = category;
+        this.categoryId = categoryId;
         this.phonePictureURLS = phonePictureURLS;
-        this.standardList = standardList;
+        this.standartList = standartList;
         this.featuresList = featuresList;
     }
 
@@ -287,12 +256,12 @@ public class Phone {
         isUsed = used;
     }
 
-    public Category getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public List<PhonePictureURL> getPhonePictureURLS() {
@@ -303,12 +272,12 @@ public class Phone {
         this.phonePictureURLS = phonePictureURLS;
     }
 
-    public List<MobileCommunicationStandard> getStandardList() {
-        return standardList;
+    public List<MobileCommunicationStandard> getStandartList() {
+        return standartList;
     }
 
-    public void setStandardList(List<MobileCommunicationStandard> standartList) {
-        this.standardList = standartList;
+    public void setStandartList(List<MobileCommunicationStandard> standartList) {
+        this.standartList = standartList;
     }
 
     public List<OtherFeatures> getFeaturesList() {
