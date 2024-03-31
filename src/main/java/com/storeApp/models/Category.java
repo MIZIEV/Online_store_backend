@@ -19,7 +19,7 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     @JsonManagedReference
-    private List<Product> productList;
+    private List<Phone> phoneList;
 
     public Category() {}
 
@@ -44,12 +44,12 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public List<Product> getProductList() {
-        return productList;
+    public List<Phone> getProductList() {
+        return phoneList;
     }
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
+    public void setProductList(List<Phone> phoneList) {
+        this.phoneList = phoneList;
     }
 
     @Override
