@@ -1,6 +1,5 @@
 package com.storeApp.service;
 
-import com.storeApp.models.Category;
 import com.storeApp.models.Phone;
 
 import java.util.List;
@@ -11,7 +10,6 @@ public interface PhoneService {
 
     List<Phone> getAllPhones(String sort, Long categoryId);
 
-    List<Phone> getAllPhonesFilteredByCategory(Category category);
 
     Phone getPhoneById(Long id);
 

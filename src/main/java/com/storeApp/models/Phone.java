@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "phone")
@@ -58,10 +60,13 @@ public class Phone {
     @Column(name = "is_used")
     private boolean isUsed;
 
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private Category category;
+    @ManyToMany
+    @JsonManagedReference
+    @JoinTable(name = "phone_colors",
+            joinColumns = @JoinColumn(name = "phone_id"),
+            inverseJoinColumns = @JoinColumn(name = "color_id"))
+    private Set<Color> colors=new HashSet<>();
+
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -80,7 +85,7 @@ public class Phone {
     public Phone(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                  String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
                  Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                 Double rating, Long voteCount, String description, Brand brand, boolean isUsed, Category category,
+                 Double rating, Long voteCount, String description, Brand brand, boolean isUsed,
                  List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standardList,
                  List<OtherFeatures> featuresList) {
         this.id = id;
@@ -105,7 +110,6 @@ public class Phone {
         this.description = description;
         this.brand = brand;
         this.isUsed = isUsed;
-        this.category = category;
         this.phonePictureURLS = phonePictureURLS;
         this.standardList = standardList;
         this.featuresList = featuresList;
@@ -287,12 +291,12 @@ public class Phone {
         isUsed = used;
     }
 
-    public Category getCategory() {
-        return category;
+    public Set<Color> getColors() {
+        return colors;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setColors(Set<Color> colors) {
+        this.colors = colors;
     }
 
     public List<PhonePictureURL> getPhonePictureURLS() {

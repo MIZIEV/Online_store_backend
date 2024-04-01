@@ -1,8 +1,6 @@
 package com.storeApp.service.implementation;
 
-import com.storeApp.models.Category;
 import com.storeApp.models.Phone;
-import com.storeApp.repository.CategoryRepository;
 import com.storeApp.repository.PhoneRepository;
 import com.storeApp.service.PhoneService;
 
@@ -20,12 +18,10 @@ import java.util.List;
 public class PhoneServiceImpl implements PhoneService {
 
     private final PhoneRepository phoneRepository;
-    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public PhoneServiceImpl(PhoneRepository phoneRepository, CategoryRepository categoryRepository) {
+    public PhoneServiceImpl(PhoneRepository phoneRepository) {
         this.phoneRepository = phoneRepository;
-        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -40,7 +36,7 @@ public class PhoneServiceImpl implements PhoneService {
         List<Phone> phones = null;
 
         if (categoryId != null) {
-            phones = getAllPhonesFilteredByCategory(categoryRepository.findCategoryById(categoryId).get());
+           // phones = getAllPhonesFilteredByCategory(categoryRepository.findCategoryById(categoryId).get());
         } else {
             phones = phoneRepository.findAll();
         }
@@ -55,10 +51,6 @@ public class PhoneServiceImpl implements PhoneService {
         return phones;
     }
 
-    @Override
-    public List<Phone> getAllPhonesFilteredByCategory(Category category) {
-        return phoneRepository.findByCategory(category);
-    }
 
     @Override
     public Phone getPhoneById(Long id) {
@@ -124,7 +116,6 @@ public class PhoneServiceImpl implements PhoneService {
             phoneForUpdating.setDescription(editedPhone.getDescription());
             phoneForUpdating.setBrand(editedPhone.getBrand());
             phoneForUpdating.setUsed(editedPhone.isUsed());
-            phoneForUpdating.setCategory(editedPhone.getCategory());
             phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
             phoneForUpdating.setStandardList(editedPhone.getStandardList());
             phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());

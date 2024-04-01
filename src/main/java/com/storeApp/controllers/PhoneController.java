@@ -2,14 +2,12 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.PhoneDto;
 import com.storeApp.models.Phone;
-import com.storeApp.service.CategoryService;
 import com.storeApp.service.PhoneService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +23,10 @@ import java.util.stream.Collectors;
 public class PhoneController {
 
     private final PhoneService productService;
-    private final CategoryService categoryService;
 
     @Autowired
-    public PhoneController(PhoneService productService, CategoryService categoryService) {
+    public PhoneController(PhoneService productService) {
         this.productService = productService;
-        this.categoryService = categoryService;
     }
 
     @PatchMapping("/{id}")
