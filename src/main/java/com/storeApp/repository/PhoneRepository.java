@@ -13,14 +13,6 @@ public interface PhoneRepository extends JpaRepository<Phone, Long> {
 
     Optional<Phone> findProductById(Long id);
 
-    Optional<Phone> findProductByModel(String model);
-
-    List<Phone> findByBrandAndModel(String brand, String model);
-
-    List<Phone> findByBrandOrModel(String brand, String model);
-
-    List<Phone> findByModelContainingIgnoreCase(String model);
-
     @Query("SELECT p FROM Phone p ORDER BY p.price")
     List<Phone> findAllProductsOrderedByPrice();
 
