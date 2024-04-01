@@ -1,11 +1,15 @@
 package com.storeApp.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
-@Table(name = "case")
+@Table(name = "case_entity")
 public class Case {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,22 +29,25 @@ public class Case {
     private String material;
     @Column(name = "producing_country")
     private String producingCountry;
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private Category category;
+
+    @ManyToMany
+    @JsonManagedReference
+    @JoinTable(name = "case_colors",
+    joinColumns = @JoinColumn(name = "case_id"),
+    inverseJoinColumns = @JoinColumn(name = "color_id"))
+    private Set<Color> colors = new HashSet<>();
+
 
     public Case(){};
 
     public Case(Long id, Brand brand, Double price, Long voteCount, Double rating, String description,
-                Category category, String material, String producingCountry) {
+                String material, String producingCountry) {
         this.id = id;
         this.brand = brand;
         this.price = price;
         this.voteCount = voteCount;
         this.rating = rating;
         this.description = description;
-        this.category = category;
         this.material = material;
         this.producingCountry = producingCountry;
     }
@@ -93,14 +100,6 @@ public class Case {
         this.description = description;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
     public String getMaterial() {
         return material;
     }
@@ -115,5 +114,13 @@ public class Case {
 
     public void setProducingCountry(String producingCountry) {
         this.producingCountry = producingCountry;
+    }
+
+    public Set<Color> getColors() {
+        return colors;
+    }
+
+    public void setColors(Set<Color> colors) {
+        this.colors = colors;
     }
 }
