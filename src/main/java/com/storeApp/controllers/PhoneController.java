@@ -29,18 +29,28 @@ public class PhoneController {
         this.productService = productService;
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody PhoneDto phoneDto) {
+    @PostMapping("/add")
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> addNewPhone(@Valid @RequestBody PhoneDto phoneDto, BindingResult result) {
 
-        productService.putTheMark(id, phoneDto.getRating());
+        if (result.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation error: ");
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append(";");
+            }
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+
+        } else {
+            productService.addNewPhone(convertToProduct(phoneDto));
+            return new ResponseEntity<>(phoneDto, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/list")
     public List<PhoneDto> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                         @RequestParam(name = "categoryid", required = false) Long categoryid,
-                                         @RequestParam(name = "searchTerm", required = false) String searchTerm) {
+                                       @RequestParam(name = "categoryid", required = false) Long categoryid,
+                                       @RequestParam(name = "searchTerm", required = false) String searchTerm) {
 
         List<Phone> filteredList = new ArrayList<>();
 
@@ -73,48 +83,21 @@ public class PhoneController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
-        Phone phone = productService.getPhoneById(id);
-
-        if (phone != null) {
-            return new ResponseEntity<>(phone, HttpStatus.OK);
-        } else {
-            String message = "Error: " + "Product with id - " + id + " not found!!!\n" +
-                    "Timestamp: " + LocalDateTime.now();
-            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(productService.getPhoneById(id), HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    //@PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> addNewPhone(@Valid @RequestBody PhoneDto phoneDto, BindingResult result) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody PhoneDto phoneDto) {
 
-        if (result.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Validation error: ");
+        productService.putTheMark(id, phoneDto.getRating());
 
-            for (FieldError fieldError : result.getFieldErrors()) {
-                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append(";");
-            }
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-
-        } else {
-            productService.addNewPhone(convertToProduct(phoneDto));
-            return new ResponseEntity<>(phoneDto, HttpStatus.CREATED);
-        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updatePhone(@RequestBody Phone editedPhone, @PathVariable Long id) {
-
-        Phone phone = productService.updatePhone(editedPhone, id);
-
-        if (phone != null) {
-            return new ResponseEntity<>(phone, HttpStatus.OK);
-        } else {
-            String message = "Error: " + "Product with id - " + id + " not found!!!\n" +
-                    "Timestamp: " + LocalDateTime.now();
-            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(productService.updatePhone(editedPhone, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")

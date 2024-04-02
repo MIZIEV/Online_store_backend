@@ -36,7 +36,7 @@ public class PhoneServiceImpl implements PhoneService {
         List<Phone> phones = null;
 
         if (categoryId != null) {
-           // phones = getAllPhonesFilteredByCategory(categoryRepository.findCategoryById(categoryId).get());
+            // phones = getAllPhonesFilteredByCategory(categoryRepository.findCategoryById(categoryId).get());
         } else {
             phones = phoneRepository.findAll();
         }
@@ -55,34 +55,39 @@ public class PhoneServiceImpl implements PhoneService {
     @Override
     public Phone getPhoneById(Long id) {
 
-        Phone phone = null;
-
         if (phoneRepository.findProductById(id).isPresent()) {
-            phone = phoneRepository.findProductById(id).get();
+            return phoneRepository.findProductById(id).get();
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
         }
-        return phone;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void putTheMark(Long id, Double mark) {
-        Phone phone = phoneRepository.findProductById(id).get();
-        Double currentRating = null;
-        Long voteCount = null;
 
-        if (phone.getVoteCount() == null) {
-            phone.setRating(0.0);
-            phone.setVoteCount(0L);
+        if (phoneRepository.findProductById(id).isPresent()) {
+
+            Phone phone = phoneRepository.findProductById(id).get();
+            Double currentRating = null;
+            Long voteCount = null;
+
+            if (phone.getVoteCount() == null) {
+                phone.setRating(0.0);
+                phone.setVoteCount(0L);
+            }
+
+            currentRating = phone.getRating() * phone.getVoteCount();
+            voteCount = phone.getVoteCount() + 1;
+
+
+            phone.setVoteCount(voteCount);
+            phone.setRating((currentRating + mark) / voteCount);
+
+            phoneRepository.save(phone);
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
         }
-
-        currentRating = phone.getRating() * phone.getVoteCount();
-        voteCount = phone.getVoteCount() + 1;
-
-
-        phone.setVoteCount(voteCount);
-        phone.setRating((currentRating + mark) / voteCount);
-
-        phoneRepository.save(phone);
     }
 
     @Override
@@ -123,7 +128,7 @@ public class PhoneServiceImpl implements PhoneService {
             phoneRepository.save(phoneForUpdating);
             return phoneForUpdating;
         } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND,"Phone with id - "+id+" not found!");
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
         }
     }
 
@@ -136,6 +141,8 @@ public class PhoneServiceImpl implements PhoneService {
         if (phoneRepository.findProductById(id).isPresent()) {
             phone = phoneRepository.findProductById(id).get();
             phoneRepository.delete(phone);
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
         }
     }
 }
