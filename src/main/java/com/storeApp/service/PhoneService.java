@@ -8,7 +8,7 @@ public interface PhoneService {
 
     void addNewPhone(Phone phone);
 
-    List<Phone> getAllPhones(String sort, Long categoryId);
+    List<Phone> getAllPhones(String sort);
 
 
     Phone getPhoneById(Long id);

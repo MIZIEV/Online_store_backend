@@ -29,61 +29,6 @@ public class PhoneController {
         this.productService = productService;
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody PhoneDto phoneDto) {
-
-        productService.putTheMark(id, phoneDto.getRating());
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("/list")
-    public List<PhoneDto> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                         @RequestParam(name = "categoryid", required = false) Long categoryid,
-                                         @RequestParam(name = "searchTerm", required = false) String searchTerm) {
-
-        List<Phone> filteredList = new ArrayList<>();
-
-        if (searchTerm != null && !searchTerm.isEmpty()) {
-            String[] searchTerms = searchTerm.split("\\s+");
-
-            List<Phone> phoneList = null;
-
-            phoneList = productService.getAllPhones(sort, categoryid);
-
-            for (Phone element : phoneList) {
-                StringBuffer stringBuffer = new StringBuffer();
-
-                stringBuffer.append(element.getBrand()).append(" ").append(element.getModel());
-
-                if (containsAllWord(stringBuffer.toString(), searchTerms)) {
-                    filteredList.add(element);
-                }
-            }
-
-            return convertListToDto(filteredList);
-        } else if (sort == null && categoryid == null && searchTerm == null) {
-
-            return convertListToDto(filteredList);
-        } else {
-            filteredList = productService.getAllPhones(sort, categoryid);
-        }
-        return convertListToDto(filteredList);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
-        Phone phone = productService.getPhoneById(id);
-
-        if (phone != null) {
-            return new ResponseEntity<>(phone, HttpStatus.OK);
-        } else {
-            String message = "Error: " + "Product with id - " + id + " not found!!!\n" +
-                    "Timestamp: " + LocalDateTime.now();
-            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-        }
-    }
-
     @PostMapping("/add")
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addNewPhone(@Valid @RequestBody PhoneDto phoneDto, BindingResult result) {
@@ -102,19 +47,55 @@ public class PhoneController {
         }
     }
 
+    @GetMapping("/list")
+    public List<Phone> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
+                                       @RequestParam(name = "searchTerm", required = false) String searchTerm) {
+
+        List<Phone> filteredList = new ArrayList<>();
+
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            String[] searchTerms = searchTerm.split("\\s+");
+
+            List<Phone> phoneList = null;
+
+            phoneList = productService.getAllPhones(sort);
+
+            for (Phone element : phoneList) {
+                StringBuffer stringBuffer = new StringBuffer();
+
+                stringBuffer.append(element.getBrand()).append(" ").append(element.getModel());
+
+                if (containsAllWord(stringBuffer.toString(), searchTerms)) {
+                    filteredList.add(element);
+                }
+            }
+
+            return filteredList;
+        } else if (sort == null && searchTerm == null) {
+            return filteredList;
+        } else {
+            filteredList = productService.getAllPhones(sort);
+        }
+        return filteredList;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
+        return new ResponseEntity<>(productService.getPhoneById(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody PhoneDto phoneDto) {
+
+        productService.putTheMark(id, phoneDto.getRating());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updatePhone(@RequestBody Phone editedPhone, @PathVariable Long id) {
-
-        Phone phone = productService.updatePhone(editedPhone, id);
-
-        if (phone != null) {
-            return new ResponseEntity<>(phone, HttpStatus.OK);
-        } else {
-            String message = "Error: " + "Product with id - " + id + " not found!!!\n" +
-                    "Timestamp: " + LocalDateTime.now();
-            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(productService.updatePhone(editedPhone, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")
@@ -129,25 +110,6 @@ public class PhoneController {
         ModelMapper modelMapper = new ModelMapper();
 
         return modelMapper.map(phoneDto, Phone.class);
-
-    }
-
-    private PhoneDto convertToDto(Phone phone) {
-
-        ModelMapper modelMapper = new ModelMapper();
-
-        return modelMapper.map(phone, PhoneDto.class);
-    }
-
-    private List<PhoneDto> convertListToDto(List<Phone> phoneList) {
-
-        List<PhoneDto> convertedList = new ArrayList<>();
-
-        for (Phone phone : phoneList) {
-            convertedList.add(convertToDto(phone));
-        }
-
-        return phoneList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     private static boolean containsAllWord(String text, String... words) {

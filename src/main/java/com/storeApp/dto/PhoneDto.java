@@ -1,16 +1,13 @@
 package com.storeApp.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.storeApp.models.*;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.validator.constraints.URL;
 
 import java.util.List;
+import java.util.Set;
 
 public class PhoneDto {
 
@@ -38,9 +35,10 @@ public class PhoneDto {
     private Brand brand;
     private boolean isUsed;
     private Long categoryId;
+    private Set<Color> colors;
     private List<PhonePictureURL> phonePictureURLS;
 
-    private List<MobileCommunicationStandard> standartList;
+    private List<MobileCommunicationStandard> standardList;
 
     private List<OtherFeatures> featuresList;
 
@@ -76,7 +74,7 @@ public class PhoneDto {
         this.isUsed = isUsed;
         this.categoryId = categoryId;
         this.phonePictureURLS = phonePictureURLS;
-        this.standartList = standartList;
+        this.standardList = standartList;
         this.featuresList = featuresList;
     }
 
@@ -272,12 +270,20 @@ public class PhoneDto {
         this.phonePictureURLS = phonePictureURLS;
     }
 
-    public List<MobileCommunicationStandard> getStandartList() {
-        return standartList;
+    public Set<Color> getColors() {
+        return colors;
     }
 
-    public void setStandartList(List<MobileCommunicationStandard> standartList) {
-        this.standartList = standartList;
+    public void setColors(Set<Color> colors) {
+        this.colors = colors;
+    }
+
+    public List<MobileCommunicationStandard> getStandardList() {
+        return standardList;
+    }
+
+    public void setStandardList(List<MobileCommunicationStandard> standardList) {
+        this.standardList = standardList;
     }
 
     public List<OtherFeatures> getFeaturesList() {
