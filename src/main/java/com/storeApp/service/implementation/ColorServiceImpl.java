@@ -32,7 +32,7 @@ public class ColorServiceImpl implements ColorService {
     }
 
     @Override
-    public Color getCaseById(Long id) {
+    public Color getColorById(Long id) {
 
         Optional<Color> optionalColor = colorRepository.findColorById(id);
         if (optionalColor.isPresent()) {

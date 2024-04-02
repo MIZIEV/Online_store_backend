@@ -10,7 +10,7 @@ public interface ColorService {
 
     List<Color> getAllColors();
 
-    Color getCaseById(Long id);
+    Color getColorById(Long id);
 
     Color updateColor(Color editedColor, Long id);
 
