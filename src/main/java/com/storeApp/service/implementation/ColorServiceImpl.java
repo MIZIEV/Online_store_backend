@@ -22,12 +22,12 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     @Transactional(readOnly = false)
-    public Color addNewCase(Color color) {
+    public Color addNewColor(Color color) {
         return colorRepository.save(color);
     }
 
     @Override
-    public List<Color> getAllCases() {
+    public List<Color> getAllColors() {
         return colorRepository.findAll();
     }
 
@@ -44,7 +44,7 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     @Transactional(readOnly = false)
-    public Color updateCase(Color editedColor, Long id) {
+    public Color updateColor(Color editedColor, Long id) {
 
         Color colorForUpdating = null;
         if (colorRepository.findColorById(id).isPresent()) {
@@ -60,7 +60,7 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteCase(Long id) {
+    public void deleteColor(Long id) {
         Optional<Color> optionalColor = colorRepository.findColorById(id);
         if (optionalColor.isPresent()) {
             colorRepository.delete(optionalColor.get());
