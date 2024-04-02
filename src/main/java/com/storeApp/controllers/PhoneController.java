@@ -48,8 +48,7 @@ public class PhoneController {
     }
 
     @GetMapping("/list")
-    public List<PhoneDto> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                       @RequestParam(name = "categoryid", required = false) Long categoryid,
+    public List<Phone> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
                                        @RequestParam(name = "searchTerm", required = false) String searchTerm) {
 
         List<Phone> filteredList = new ArrayList<>();
@@ -59,7 +58,7 @@ public class PhoneController {
 
             List<Phone> phoneList = null;
 
-            phoneList = productService.getAllPhones(sort, categoryid);
+            phoneList = productService.getAllPhones(sort);
 
             for (Phone element : phoneList) {
                 StringBuffer stringBuffer = new StringBuffer();
@@ -71,14 +70,13 @@ public class PhoneController {
                 }
             }
 
-            return convertListToDto(filteredList);
-        } else if (sort == null && categoryid == null && searchTerm == null) {
-
-            return convertListToDto(filteredList);
+            return filteredList;
+        } else if (sort == null && searchTerm == null) {
+            return filteredList;
         } else {
-            filteredList = productService.getAllPhones(sort, categoryid);
+            filteredList = productService.getAllPhones(sort);
         }
-        return convertListToDto(filteredList);
+        return filteredList;
     }
 
     @GetMapping("/{id}")

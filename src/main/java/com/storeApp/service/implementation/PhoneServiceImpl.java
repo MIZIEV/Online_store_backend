@@ -31,15 +31,10 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public List<Phone> getAllPhones(String sort, Long categoryId) {
+    public List<Phone> getAllPhones(String sort) {
 
-        List<Phone> phones = null;
+        List<Phone> phones = phoneRepository.findAll();
 
-        if (categoryId != null) {
-            // phones = getAllPhonesFilteredByCategory(categoryRepository.findCategoryById(categoryId).get());
-        } else {
-            phones = phoneRepository.findAll();
-        }
         if ("minPrice".equalsIgnoreCase(sort)) {
             phones.sort(Comparator.comparing(Phone::getPrice));
         } else if ("maxPrice".equalsIgnoreCase(sort)) {
