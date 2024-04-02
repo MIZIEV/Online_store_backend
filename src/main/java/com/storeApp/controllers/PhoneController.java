@@ -110,25 +110,6 @@ public class PhoneController {
         ModelMapper modelMapper = new ModelMapper();
 
         return modelMapper.map(phoneDto, Phone.class);
-
-    }
-
-    private PhoneDto convertToDto(Phone phone) {
-
-        ModelMapper modelMapper = new ModelMapper();
-
-        return modelMapper.map(phone, PhoneDto.class);
-    }
-
-    private List<PhoneDto> convertListToDto(List<Phone> phoneList) {
-
-        List<PhoneDto> convertedList = new ArrayList<>();
-
-        for (Phone phone : phoneList) {
-            convertedList.add(convertToDto(phone));
-        }
-
-        return phoneList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     private static boolean containsAllWord(String text, String... words) {
