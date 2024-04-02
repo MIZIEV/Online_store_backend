@@ -59,6 +59,7 @@ public class ColorServiceImpl implements ColorService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void deleteCase(Long id) {
         Optional<Color> optionalColor = colorRepository.findColorById(id);
         if (optionalColor.isPresent()) {
