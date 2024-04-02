@@ -1,49 +1,32 @@
-package com.storeApp.models;
+package com.storeApp.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import com.storeApp.models.Brand;
+import com.storeApp.models.MobileCommunicationStandard;
+import com.storeApp.models.OtherFeatures;
+import com.storeApp.models.PhonePictureURL;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-
-@Entity
-@Table(name = "case_entity")
-public class Case {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+public class CaseDto {
     private Long id;
-    @Column(name = "model")
     private String model;
-    @Column(name = "brand")
     private Brand brand;
-    @Column(name = "main_picture_url")
     private String mainPictureUrl;
-    @Column(name = "price")
     private Double price;
-    @Column(name = "vote_count")
     private Long voteCount;
-    @Column(name = "rating")
     private Double rating;
-    @Column(name = "description")
     private String description;
-    @Column(name = "material")
     private String material;
-    @Column(name = "producing_country")
     private String producingCountry;
 
-    @ManyToMany
-    @JsonManagedReference
-    @JoinTable(name = "case_colors",
-            joinColumns = @JoinColumn(name = "case_id"),
-            inverseJoinColumns = @JoinColumn(name = "color_id"))
-    private Set<Color> colors;
+    public CaseDto(){}
 
-    public Case(Long id, String model, Brand brand, String mainPictureUrl, Double price, Long voteCount,
-                Double rating, String description, String material,
-                String producingCountry, Set<Color> colors) {
+    public CaseDto(Long id, String model, Brand brand, String mainPictureUrl, Double price, Long voteCount,
+                   Double rating, String description, String material, String producingCountry) {
         this.id = id;
         this.model = model;
         this.brand = brand;
@@ -54,10 +37,6 @@ public class Case {
         this.description = description;
         this.material = material;
         this.producingCountry = producingCountry;
-        this.colors = colors;
-    }
-
-    public Case() {
     }
 
     public Long getId() {
@@ -138,13 +117,5 @@ public class Case {
 
     public void setProducingCountry(String producingCountry) {
         this.producingCountry = producingCountry;
-    }
-
-    public Set<Color> getColors() {
-        return colors;
-    }
-
-    public void setColors(Set<Color> colors) {
-        this.colors = colors;
     }
 }
