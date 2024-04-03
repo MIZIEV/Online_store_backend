@@ -2,12 +2,16 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.CaseDto;
 import com.storeApp.models.Case;
+import com.storeApp.models.Color;
 import com.storeApp.service.CaseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -41,6 +45,12 @@ public class CaseController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody CaseDto caseDto) {
         caseService.putTheMark(id, caseDto.getRating());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/color")
+    public ResponseEntity<?> putTheColors(@PathVariable("id") Long id, @RequestBody Set<Long> colorsId) {
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
