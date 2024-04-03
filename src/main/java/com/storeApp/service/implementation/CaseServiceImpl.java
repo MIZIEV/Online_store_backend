@@ -1,7 +1,9 @@
 package com.storeApp.service.implementation;
 
 import com.storeApp.models.Case;
+import com.storeApp.models.Color;
 import com.storeApp.repository.CaseRepository;
+import com.storeApp.repository.ColorRepository;
 import com.storeApp.service.CaseService;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
 public class CaseServiceImpl implements CaseService {
     private final CaseRepository caseRepository;
+    private final ColorRepository colorRepository;
 
     @Autowired
-    public CaseServiceImpl(CaseRepository caseRepository) {
+    public CaseServiceImpl(CaseRepository caseRepository, ColorRepository colorRepository) {
         this.caseRepository = caseRepository;
+        this.colorRepository = colorRepository;
     }
 
     @Override
@@ -102,5 +107,15 @@ public class CaseServiceImpl implements CaseService {
         caseEntity.setRating((currentRating + mark) / voteCount);
 
         caseRepository.save(caseEntity);
+    }
+
+    @Override
+    public void putTheColors(Long id, Set<Color> colors) {
+        if (caseRepository.findCaseById(id).isPresent()) {
+
+
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Case with id - " + id + " not found!");
+        }
     }
 }

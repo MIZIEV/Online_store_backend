@@ -2,12 +2,16 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.CaseDto;
 import com.storeApp.models.Case;
+import com.storeApp.models.Color;
 import com.storeApp.service.CaseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -28,8 +32,8 @@ public class CaseController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllCases(){
-        return new ResponseEntity<>(caseService.getAllCases(),HttpStatus.OK);
+    public ResponseEntity<?> getAllCases() {
+        return new ResponseEntity<>(caseService.getAllCases(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -37,12 +41,24 @@ public class CaseController {
         Case newCase = caseService.getCaseById(id);
         return new ResponseEntity<>(newCase, HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody CaseDto caseDto) {
+        caseService.putTheMark(id, caseDto.getRating());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/color")
+    public ResponseEntity<?> putTheColors(@PathVariable("id") Long id, @RequestBody Set<Long> colorsId) {
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCase(@RequestBody CaseDto editedCase, @PathVariable("id") Long id){
+    public ResponseEntity<?> updateCase(@RequestBody CaseDto editedCase, @PathVariable("id") Long id) {
         Case caseForUpdating = caseService.updateCase(converteToCase(editedCase), id);
         return new ResponseEntity<>(caseForUpdating, HttpStatus.OK);
     }
-
 
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<HttpStatus> deleteCase(@PathVariable("id") long id) {
@@ -50,7 +66,7 @@ public class CaseController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    private Case converteToCase(CaseDto caseDto){
+    private Case converteToCase(CaseDto caseDto) {
         ModelMapper modelMapper = new ModelMapper();
 
         return modelMapper.map(caseDto, Case.class);
