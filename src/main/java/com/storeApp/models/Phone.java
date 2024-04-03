@@ -1,11 +1,9 @@
 package com.storeApp.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -61,6 +59,7 @@ public class Phone {
     private boolean isUsed;
 
     @ManyToMany
+    @JsonManagedReference
     @JoinTable(name = "phone_color",
             joinColumns = @JoinColumn(name = "phone_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id"))

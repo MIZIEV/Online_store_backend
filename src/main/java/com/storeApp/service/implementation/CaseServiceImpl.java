@@ -110,10 +110,16 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public void putTheColors(Long id, Set<Color> colors) {
+    @Transactional(readOnly = false)
+    public void putTheColors(Long id, Set<Long> colorIds) {
         if (caseRepository.findCaseById(id).isPresent()) {
 
+            Case caseEntity = caseRepository.findCaseById(id).get();
 
+            Set<Color> colors = colorRepository.findByColorsIds(colorIds);
+            caseEntity.setColors(colors);
+
+            caseRepository.save(caseEntity);
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Case with id - " + id + " not found!");
         }

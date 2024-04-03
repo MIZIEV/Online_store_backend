@@ -19,5 +19,5 @@ public interface CaseService {
 
     void putTheMark(Long id, Double mark);
 
-    void putTheColors(Long id, Set<Color> colors);
+    void putTheColors(Long id, Set<Long> colorIds);
 }

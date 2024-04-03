@@ -1,6 +1,9 @@
 package com.storeApp.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -16,9 +19,13 @@ public class Color {
     private String colorName;
 
     @ManyToMany(mappedBy = "colors")
-    private List<Phone> phoneList;
+    //@JsonIgnore
+    @JsonBackReference
+    private List<Phone> phones;
     @ManyToMany(mappedBy = "colors")
-    private List<Case> caseList;
+    //@JsonIgnore
+    @JsonBackReference
+    private List<Case> cases;
 
     public Color(){}
 
@@ -43,19 +50,19 @@ public class Color {
         this.colorName = colorName;
     }
 
-    public List<Phone> getPhoneList() {
-        return phoneList;
+    public List<Phone> getPhones() {
+        return phones;
     }
 
-    public void setPhoneList(List<Phone> phoneList) {
-        this.phoneList = phoneList;
+    public void setPhones(List<Phone> phoneList) {
+        this.phones = phoneList;
     }
 
-    public List<Case> getCaseList() {
-        return caseList;
+    public List<Case> getCases() {
+        return cases;
     }
 
-    public void setCaseList(List<Case> caseList) {
-        this.caseList = caseList;
+    public void setCases(List<Case> caseList) {
+        this.cases = caseList;
     }
 }

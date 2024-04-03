@@ -1,5 +1,6 @@
 package com.storeApp.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -32,6 +33,7 @@ public class Case {
     private String producingCountry;
 
     @ManyToMany
+    @JsonManagedReference
     @JoinTable(name = "case_color",
             joinColumns = @JoinColumn(name = "case_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id"))
