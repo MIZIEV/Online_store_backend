@@ -1,12 +1,11 @@
 package com.storeApp.models;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "color")
@@ -25,7 +24,8 @@ public class Color {
     @JsonIgnore
     private List<Case> cases;
 
-    public Color(){}
+    public Color() {
+    }
 
     public Color(Long id, String colorName) {
         this.id = id;
@@ -62,5 +62,24 @@ public class Color {
 
     public void setCases(List<Case> caseList) {
         this.cases = caseList;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, colorName);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Color color = (Color) obj;
+        return Objects.equals(id, color.id) &&
+                Objects.equals(colorName, color.colorName);
+    }
+
+    @Override
+    public String toString() {
+        return id + ") " + colorName;
     }
 }
