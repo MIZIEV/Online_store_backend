@@ -1,8 +1,8 @@
 package com.storeApp.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -33,7 +33,6 @@ public class Case {
     private String producingCountry;
 
     @ManyToMany
-    @JsonManagedReference
     @JoinTable(name = "case_color",
             joinColumns = @JoinColumn(name = "case_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id"))
@@ -144,5 +143,34 @@ public class Case {
 
     public void setColors(Set<Color> colors) {
         this.colors = colors;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, model, brand, mainPictureUrl, price, voteCount, rating, description, material, producingCountry, colors);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Case aCase = (Case) obj;
+        return Objects.equals(id, aCase.id) &&
+                Objects.equals(model, aCase.model) &&
+                Objects.equals(brand, aCase.brand) &&
+                Objects.equals(mainPictureUrl, aCase.mainPictureUrl) &&
+                Objects.equals(price, aCase.price) &&
+                Objects.equals(voteCount, aCase.voteCount) &&
+                Objects.equals(rating, aCase.rating) &&
+                Objects.equals(description, aCase.description) &&
+                Objects.equals(material, aCase.material) &&
+                Objects.equals(producingCountry, aCase.producingCountry) &&
+                Objects.equals(colors, aCase.colors);
+    }
+
+    @Override
+    public String toString() {
+        return id + ") " + model + ", " + brand + ", " + price + ", rating " + rating + ", voteCount - " + voteCount
+                + ", " + description + ", " + material + ", " + producingCountry + " colors: " + colors;
     }
 }

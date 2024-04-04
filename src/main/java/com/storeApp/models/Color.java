@@ -19,12 +19,10 @@ public class Color {
     private String colorName;
 
     @ManyToMany(mappedBy = "colors")
-    //@JsonIgnore
-    @JsonBackReference
+    @JsonIgnore
     private List<Phone> phones;
     @ManyToMany(mappedBy = "colors")
-    //@JsonIgnore
-    @JsonBackReference
+    @JsonIgnore
     private List<Case> cases;
 
     public Color(){}

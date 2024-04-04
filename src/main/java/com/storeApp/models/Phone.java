@@ -59,7 +59,6 @@ public class Phone {
     private boolean isUsed;
 
     @ManyToMany
-    @JsonManagedReference
     @JoinTable(name = "phone_color",
             joinColumns = @JoinColumn(name = "phone_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id"))
