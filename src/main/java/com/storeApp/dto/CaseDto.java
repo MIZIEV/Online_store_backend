@@ -1,15 +1,8 @@
 package com.storeApp.dto;
 
-import com.storeApp.models.Brand;
-import com.storeApp.models.MobileCommunicationStandard;
-import com.storeApp.models.OtherFeatures;
-import com.storeApp.models.PhonePictureURL;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.storeApp.models.*;
 
-import java.util.List;
+import java.util.Objects;
 
 public class CaseDto {
     private Long id;
@@ -23,7 +16,8 @@ public class CaseDto {
     private String material;
     private String producingCountry;
 
-    public CaseDto(){}
+    public CaseDto() {
+    }
 
     public CaseDto(Long id, String model, Brand brand, String mainPictureUrl, Double price, Long voteCount,
                    Double rating, String description, String material, String producingCountry) {
@@ -117,5 +111,34 @@ public class CaseDto {
 
     public void setProducingCountry(String producingCountry) {
         this.producingCountry = producingCountry;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, model, brand, mainPictureUrl, price, voteCount, rating, description,
+                material, producingCountry);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CaseDto caseDto = (CaseDto) obj;
+        return Objects.equals(id, caseDto.id) &&
+                Objects.equals(model, caseDto.model) &&
+                Objects.equals(brand, caseDto.brand) &&
+                Objects.equals(mainPictureUrl, caseDto.mainPictureUrl) &&
+                Objects.equals(price, caseDto.price) &&
+                Objects.equals(voteCount, caseDto.voteCount) &&
+                Objects.equals(rating, caseDto.rating) &&
+                Objects.equals(description, caseDto.description) &&
+                Objects.equals(material, caseDto.material) &&
+                Objects.equals(producingCountry, caseDto.producingCountry);
+    }
+
+    @Override
+    public String toString() {
+        return id + ") " + model + ", " + brand + ", " + price + ", rating " + rating + ", voteCount - " + voteCount
+                + ", " + description + ", " + material + ", " + producingCountry;
     }
 }
