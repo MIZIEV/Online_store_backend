@@ -33,7 +33,6 @@ public class Case {
     private String producingCountry;
 
     @ManyToMany
-    @JsonManagedReference
     @JoinTable(name = "case_color",
             joinColumns = @JoinColumn(name = "case_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id"))
