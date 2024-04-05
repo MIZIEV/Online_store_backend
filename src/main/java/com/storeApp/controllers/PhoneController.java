@@ -12,21 +12,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/phone")
 @CrossOrigin("*")
 public class PhoneController {
 
-    private final PhoneService productService;
+    private final PhoneService phoneService;
 
     @Autowired
-    public PhoneController(PhoneService productService) {
-        this.productService = productService;
+    public PhoneController(PhoneService phoneService) {
+        this.phoneService = phoneService;
     }
 
     @PostMapping("/add")
@@ -42,14 +41,14 @@ public class PhoneController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 
         } else {
-            productService.addNewPhone(convertToProduct(phoneDto));
+            phoneService.addNewPhone(convertToProduct(phoneDto));
             return new ResponseEntity<>(phoneDto, HttpStatus.CREATED);
         }
     }
 
     @GetMapping("/list")
     public List<Phone> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                       @RequestParam(name = "searchTerm", required = false) String searchTerm) {
+                                    @RequestParam(name = "searchTerm", required = false) String searchTerm) {
 
         List<Phone> filteredList = new ArrayList<>();
 
@@ -58,7 +57,7 @@ public class PhoneController {
 
             List<Phone> phoneList = null;
 
-            phoneList = productService.getAllPhones(sort);
+            phoneList = phoneService.getAllPhones(sort);
 
             for (Phone element : phoneList) {
                 StringBuffer stringBuffer = new StringBuffer();
@@ -74,34 +73,39 @@ public class PhoneController {
         } else if (sort == null && searchTerm == null) {
             return filteredList;
         } else {
-            filteredList = productService.getAllPhones(sort);
+            filteredList = phoneService.getAllPhones(sort);
         }
         return filteredList;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
-        return new ResponseEntity<>(productService.getPhoneById(id), HttpStatus.OK);
+        return new ResponseEntity<>(phoneService.getPhoneById(id), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody PhoneDto phoneDto) {
 
-        productService.putTheMark(id, phoneDto.getRating());
+        phoneService.putTheMark(id, phoneDto.getRating());
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/color")
+    public ResponseEntity<?> putTheColor(@PathVariable("id") Long id, @RequestBody Set<Long> colorIds) {
+        return new ResponseEntity<>(phoneService.putTheColors(id, colorIds), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updatePhone(@RequestBody Phone editedPhone, @PathVariable Long id) {
-        return new ResponseEntity<>(productService.updatePhone(editedPhone, id), HttpStatus.OK);
+        return new ResponseEntity<>(phoneService.updatePhone(editedPhone, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")
     //PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deletePhone(@PathVariable("id") long id) {
-        productService.deletePhone(id);
+        phoneService.deletePhone(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
