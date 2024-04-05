@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface PhoneRepository extends JpaRepository<Phone, Long> {
 
-    Optional<Phone> findProductById(Long id);
+    Optional<Phone> findPhoneById(Long id);
 
     @Query("SELECT p FROM Phone p ORDER BY p.price")
     List<Phone> findAllProductsOrderedByPrice();

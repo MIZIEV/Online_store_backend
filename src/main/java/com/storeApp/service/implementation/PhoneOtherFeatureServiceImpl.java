@@ -36,7 +36,7 @@ public class PhoneOtherFeatureServiceImpl implements PhoneOtherFeaturesService {
     @Override
     @Transactional(readOnly = false)
     public OtherFeatures addNewCharacteristic(OtherFeatures characteristic, Long productId) {
-        Optional<Phone> product = phoneRepository.findProductById(productId);
+        Optional<Phone> product = phoneRepository.findPhoneById(productId);
 
         if (product.isPresent()) {
             characteristic.setPhone(product.get());

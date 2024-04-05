@@ -1,6 +1,9 @@
 package com.storeApp.service.implementation;
 
+import com.storeApp.models.Case;
+import com.storeApp.models.Color;
 import com.storeApp.models.Phone;
+import com.storeApp.repository.ColorRepository;
 import com.storeApp.repository.PhoneRepository;
 import com.storeApp.service.PhoneService;
 
@@ -12,16 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class PhoneServiceImpl implements PhoneService {
 
     private final PhoneRepository phoneRepository;
+    private final ColorRepository colorRepository;
 
     @Autowired
-    public PhoneServiceImpl(PhoneRepository phoneRepository) {
+    public PhoneServiceImpl(PhoneRepository phoneRepository, ColorRepository colorRepository) {
         this.phoneRepository = phoneRepository;
+        this.colorRepository = colorRepository;
     }
 
     @Override
@@ -50,8 +57,8 @@ public class PhoneServiceImpl implements PhoneService {
     @Override
     public Phone getPhoneById(Long id) {
 
-        if (phoneRepository.findProductById(id).isPresent()) {
-            return phoneRepository.findProductById(id).get();
+        if (phoneRepository.findPhoneById(id).isPresent()) {
+            return phoneRepository.findPhoneById(id).get();
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
         }
@@ -61,9 +68,9 @@ public class PhoneServiceImpl implements PhoneService {
     @Transactional(readOnly = false)
     public void putTheMark(Long id, Double mark) {
 
-        if (phoneRepository.findProductById(id).isPresent()) {
+        if (phoneRepository.findPhoneById(id).isPresent()) {
 
-            Phone phone = phoneRepository.findProductById(id).get();
+            Phone phone = phoneRepository.findPhoneById(id).get();
             Double currentRating = null;
             Long voteCount = null;
 
@@ -91,8 +98,8 @@ public class PhoneServiceImpl implements PhoneService {
 
         Phone phoneForUpdating = null;
 
-        if (phoneRepository.findProductById(id).isPresent()) {
-            phoneForUpdating = phoneRepository.findProductById(id).get();
+        if (phoneRepository.findPhoneById(id).isPresent()) {
+            phoneForUpdating = phoneRepository.findPhoneById(id).get();
 
             phoneForUpdating.setId(id);
             phoneForUpdating.setModel(editedPhone.getModel());
@@ -129,12 +136,43 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional(readOnly = false)
+    public String putTheColors(Long id, Set<Long> colorIds) {
+        if (phoneRepository.findPhoneById(id).isPresent()) {
+
+            Phone phone = phoneRepository.findPhoneById(id).get();
+            Set<Color> colors = colorRepository.findByColorsIds(colorIds);
+
+            Set<Long> existingColorIds = colors.stream().map(Color::getId).collect(Collectors.toSet());
+            Set<Long> nonExistingColorIds = colorIds.stream()
+                    .filter(colorId -> !existingColorIds.contains(colorId))
+                    .collect(Collectors.toSet());
+
+            if (colors.isEmpty()) {
+                throw new OnlineStoreApiException(HttpStatus.NOT_FOUND,
+                        "Colors with id - " + nonExistingColorIds + " not found!");
+            } else if (nonExistingColorIds.isEmpty()) {
+                phone.setColors(colors);
+                phoneRepository.save(phone);
+                return "colors with id" + existingColorIds + " is putted! ";
+            } else {
+                phone.setColors(colors);
+                phoneRepository.save(phone);
+                return "Color with id" + existingColorIds + " is putted!\n" +
+                        "Color with id" + nonExistingColorIds + " not found!";
+            }
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public void deletePhone(Long id) {
 
         Phone phone = null;
 
-        if (phoneRepository.findProductById(id).isPresent()) {
-            phone = phoneRepository.findProductById(id).get();
+        if (phoneRepository.findPhoneById(id).isPresent()) {
+            phone = phoneRepository.findPhoneById(id).get();
             phoneRepository.delete(phone);
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
