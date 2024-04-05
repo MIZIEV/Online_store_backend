@@ -1,19 +1,52 @@
 package com.storeApp.dto;
 
 import com.storeApp.models.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.URL;
 
 import java.util.Objects;
 
 public class CaseDto {
+
     private Long id;
+
+    @NotNull(message = "The field `model` mustn't be null!")
+    @Size(min = 5, message = "The field `model` must be longer than 5 characters!")
     private String model;
+
+    @NotNull(message = "The field `brand` mustn't be null!")
+    @Enumerated(EnumType.STRING)
     private Brand brand;
+
+    @NotNull(message = "The field `mainPictureURL` mustn't be null!")
+    @URL(message = "Invalid URL, check the correctness of your url! ")
     private String mainPictureUrl;
+
+    @NotNull(message = "The field `price` mustn't be null!")
+    @Positive(message = "The price mustn't be a negative value or equal to zero!")
     private Double price;
+
     private Long voteCount;
+
+    @Positive(message = "The rating mustn't be a negative value or equal to zero!")
+    @Max(value = 5,message = "The rating field mustn't be bigger than 5!")
     private Double rating;
+
+    @NotNull(message = "The field `description` mustn't be null!")
+    @Size(min = 5, message = "The field `description` must be longer than 5 characters!")
     private String description;
+
+    @NotNull(message = "The field `material` mustn't be null!")
+    @Size(min = 4, message = "The field `material` must be longer than 4 characters!")
     private String material;
+
+    @NotNull(message = "The field `producingCountry` mustn't be null!")
+    @Size(min = 4, message = "The field `producingCountry` must be longer than 4 characters!")
     private String producingCountry;
 
     public CaseDto() {
