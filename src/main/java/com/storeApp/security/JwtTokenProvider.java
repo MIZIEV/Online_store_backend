@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -47,7 +46,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key())
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
 
         String username = claims.getSubject();
