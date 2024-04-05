@@ -33,10 +33,10 @@ public class PhoneController {
     public ResponseEntity<?> addNewPhone(@Valid @RequestBody PhoneDto phoneDto, BindingResult result) {
 
         if (result.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder("Validation error: ");
+            StringBuilder errorMessage = new StringBuilder("Validation error:\n");
 
             for (FieldError fieldError : result.getFieldErrors()) {
-                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append(";");
+                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append(";\n");
             }
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 
