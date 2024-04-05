@@ -2,6 +2,8 @@ package com.storeApp.dto;
 
 import com.storeApp.models.Case;
 import com.storeApp.models.Phone;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +11,11 @@ import java.util.Objects;
 public class ColorDto {
 
     private Long id;
+
+    @NotNull(message = "The field `colorName` mustn't be null!")
+    @Size(min = 3, message = "The field `colorName` must be longer than 3 characters!")
     private String colorName;
+
     private List<Phone> phoneList;
     private List<Case> caseList;
 

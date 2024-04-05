@@ -1,10 +1,13 @@
 package com.storeApp.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import com.storeApp.models.*;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.URL;
 
 import java.util.List;
 import java.util.Set;
@@ -12,34 +15,96 @@ import java.util.Set;
 public class PhoneDto {
 
     private Long id;
+
+    @NotNull(message = "The field `model` mustn't be null!")
+    @Size(min = 5, message = "The field `model` must be longer than 5 characters!")
     private String model;
+
+    @NotNull(message = "The field `mainPictureURL` mustn't be null!")
+    @URL(message = "Invalid URL, check the correctness of your url! ")
     private String mainPictureURL;
+
+    @NotNull(message = "The field `os` mustn't be null!")
+    @Size(min = 5, message = "The field `os` must be longer than 5 characters!")
     private String os;
+
+    @NotNull(message = "The field `osVersion` mustn't be null!")
+    @Size(min = 1, message = "The field `osVersion` must be longer than 1 character!")
     private String osVersion;
+
+    @NotNull(message = "The field `screenSize` mustn't be null!")
+    @Positive(message = "The screenSize field mustn't be a negative value or equal to zero!")
+    @Max(value = 10,message = "The screenSize field mustn't be bigger than 10!")
     private Double screenSize;
+
+    @NotNull(message = "The field `resolution` mustn't be null!")
+    @Size(min = 7, message = "The field `resolution` must be longer than 7 characters!")
     private String resolution;
+
+    @NotNull(message = "The field `mainCamera` mustn't be null!")
+    @Size(min = 1, message = "The field `mainCamera` must be longer than 1 character!")
     private String mainCamera;
+
+    @NotNull(message = "The field `frontCamera` mustn't be null!")
+    @Positive(message = "The frontCamera field mustn't be a negative value or equal to zero!")
+    @Max(value = 100,message = "The frontCamera field mustn't be bigger than 100!")
     private Short frontCamera;
+
+    @NotNull(message = "The field `processor` mustn't be null!")
+    @Size(min = 5, message = "The field `processor` must be longer than 5 characters!")
     private String processor;
+
+    @NotNull(message = "The field `countOfCores` mustn't be null!")
+    @Positive(message = "The countOfCores field mustn't be a negative value or equal to zero!")
+    @Max(value = 64,message = "The countOfCores field mustn't be bigger than 64!")
     private Byte countOfCores;
+
+    @NotNull(message = "The field `ram` mustn't be null!")
+    @Positive(message = "The ram field mustn't be a negative value or equal to zero!")
+    @Max(value = 256,message = "The ram field mustn't be bigger than 256!")
     private Short ram;
+
+    @NotNull(message = "The field `rom` mustn't be null!")
+    @Positive(message = "The rom field mustn't be a negative value or equal to zero!")
     private Short rom;
+
+    @NotNull(message = "The field `weight` mustn't be null!")
+    @Positive(message = "The weight field mustn't be a negative value or equal to zero!")
     private Short weight;
+
+    @NotNull(message = "The field `batteryCapacity` mustn't be null!")
+    @Positive(message = "The batteryCapacity field mustn't be a negative value or equal to zero!")
     private Short batteryCapacity;
+
+    @NotNull(message = "The field `countOfSimCard` mustn't be null!")
+    @Positive(message = "The countOfSimCard field mustn't be a negative value or equal to zero!")
+    @Max(value = 4,message = "The countOfSimCard field mustn't be bigger than 4!")
     private Byte countOfSimCard;
+
+    @NotNull(message = "The field `price` mustn't be null!")
+    @Positive(message = "The price mustn't be a negative value or equal to zero!")
     private Double price;
+
+    @Positive(message = "The rating mustn't be a negative value or equal to zero!")
+    @Max(value = 5,message = "The rating field mustn't be bigger than 5!")
     private Double rating;
+
     private Long voteCount;
+
+    @NotNull(message = "The field `description` mustn't be null!")
+    @Size(min = 5, message = "The field `description` must be longer than 5 characters!")
     private String description;
+
+    @NotNull(message = "The field `brand` mustn't be null!")
     @Enumerated(EnumType.STRING)
     private Brand brand;
+
+    @NotNull(message = "The field `isUsed` mustn't be null!")
     private boolean isUsed;
-    private Long categoryId;
+
     private Set<Color> colors;
     private List<PhonePictureURL> phonePictureURLS;
-
     private List<MobileCommunicationStandard> standardList;
-
     private List<OtherFeatures> featuresList;
 
     public PhoneDto() {}
@@ -47,7 +112,7 @@ public class PhoneDto {
     public PhoneDto(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                     String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
                     Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                    Double rating, Long voteCount, String description, Brand brand, boolean isUsed, Long categoryId,
+                    Double rating, Long voteCount, String description, Brand brand, boolean isUsed,
                     List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standartList,
                     List<OtherFeatures> featuresList) {
         this.id = id;
@@ -72,7 +137,6 @@ public class PhoneDto {
         this.description = description;
         this.brand = brand;
         this.isUsed = isUsed;
-        this.categoryId = categoryId;
         this.phonePictureURLS = phonePictureURLS;
         this.standardList = standartList;
         this.featuresList = featuresList;
@@ -252,14 +316,6 @@ public class PhoneDto {
 
     public void setUsed(boolean used) {
         isUsed = used;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
     }
 
     public List<PhonePictureURL> getPhonePictureURLS() {

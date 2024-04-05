@@ -4,10 +4,13 @@ import com.storeApp.dto.CaseDto;
 import com.storeApp.models.Case;
 import com.storeApp.models.Color;
 import com.storeApp.service.CaseService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +30,19 @@ public class CaseController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewCase(@RequestBody CaseDto newCase) {
-        return new ResponseEntity<>(caseService.addNewCase(converteToCase(newCase)), HttpStatus.CREATED);
+    public ResponseEntity<?> addNewCase(@Valid @RequestBody CaseDto newCase, BindingResult result) {
+
+        if (result.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation error:\n");
+
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append(";\n");
+            }
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+
+        } else {
+            return new ResponseEntity<>(caseService.addNewCase(converteToCase(newCase)), HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/list")

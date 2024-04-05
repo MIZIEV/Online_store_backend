@@ -3,10 +3,13 @@ package com.storeApp.controllers;
 import com.storeApp.dto.ColorDto;
 import com.storeApp.models.Color;
 import com.storeApp.service.ColorService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +25,16 @@ public class ColorController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewColor(@RequestBody ColorDto colorDto) {
+    public ResponseEntity<?> addNewColor(@Valid @RequestBody ColorDto colorDto, BindingResult result) {
+
+        if (result.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+
+            for (FieldError error : result.getFieldErrors()) {
+                errors.append(error.getField()).append(": ").append(error.getDefaultMessage()).append("\n");
+            }
+            return new ResponseEntity<>(errors.toString(), HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(colorService.addNewColor(convertToColor(colorDto)), HttpStatus.CREATED);
     }
 
