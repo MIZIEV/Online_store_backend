@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -111,15 +112,30 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     @Transactional(readOnly = false)
-    public void putTheColors(Long id, Set<Long> colorIds) {
+    public String putTheColors(Long id, Set<Long> colorIds) {
         if (caseRepository.findCaseById(id).isPresent()) {
 
             Case caseEntity = caseRepository.findCaseById(id).get();
-
             Set<Color> colors = colorRepository.findByColorsIds(colorIds);
-            caseEntity.setColors(colors);
 
-            caseRepository.save(caseEntity);
+            Set<Long> existingColorIds = colors.stream().map(Color::getId).collect(Collectors.toSet());
+            Set<Long> nonExistingColorIds = colorIds.stream()
+                    .filter(colorId -> !existingColorIds.contains(colorId))
+                    .collect(Collectors.toSet());
+
+            if (colors.isEmpty()) {
+                throw new OnlineStoreApiException(HttpStatus.NOT_FOUND,
+                        "Colors with id - " + nonExistingColorIds + " not found!");
+            } else if (nonExistingColorIds.isEmpty()) {
+                caseEntity.setColors(colors);
+                caseRepository.save(caseEntity);
+                return "colors with id" + existingColorIds + " is putted! ";
+            } else {
+                caseEntity.setColors(colors);
+                caseRepository.save(caseEntity);
+                return "Color with id" + existingColorIds + " is putted!\n" +
+                        "Color with id" + nonExistingColorIds + " not found!";
+            }
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Case with id - " + id + " not found!");
         }
