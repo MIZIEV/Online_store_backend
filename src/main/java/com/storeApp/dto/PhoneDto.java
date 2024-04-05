@@ -33,7 +33,8 @@ public class PhoneDto {
     private String osVersion;
 
     @NotNull(message = "The field `screenSize` mustn't be null!")
-    @Size(min = 1, message = "The field `screenSize` must be longer than 1 character!")
+    @Positive(message = "The screenSize field mustn't be a negative value or equal to zero!")
+    @Max(value = 10,message = "The screenSize field mustn't be bigger than 10!")
     private Double screenSize;
 
     @NotNull(message = "The field `resolution` mustn't be null!")
@@ -45,7 +46,8 @@ public class PhoneDto {
     private String mainCamera;
 
     @NotNull(message = "The field `frontCamera` mustn't be null!")
-    @Size(min = 1, message = "The field `frontCamera` must be longer than 1 character!")
+    @Positive(message = "The frontCamera field mustn't be a negative value or equal to zero!")
+    @Max(value = 100,message = "The frontCamera field mustn't be bigger than 100!")
     private Short frontCamera;
 
     @NotNull(message = "The field `processor` mustn't be null!")
