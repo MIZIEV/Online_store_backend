@@ -50,9 +50,7 @@ public class CaseController {
 
     @PatchMapping("/{id}/color")
     public ResponseEntity<?> putTheColors(@PathVariable("id") Long id, @RequestBody Set<Long> colorsId) {
-
-        caseService.putTheColors(id, colorsId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(caseService.putTheColors(id, colorsId), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
