@@ -4,10 +4,12 @@ import com.storeApp.models.Blog;
 import com.storeApp.repository.BlogRepository;
 import com.storeApp.service.BlogService;
 import com.storeApp.util.exception.OnlineStoreApiException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,6 +18,7 @@ public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepository;
 
+    @Autowired
     public BlogServiceImpl(BlogRepository blogRepository) {
         this.blogRepository = blogRepository;
     }
@@ -23,6 +26,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     @Transactional(readOnly = false)
     public Blog saveNewBlog(Blog blog) {
+        blog.setCreatedAt(LocalDateTime.now());
         blogRepository.save(blog);
         return blog;
     }
@@ -34,7 +38,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @Transactional(readOnly = false)
-    public void updateBlog(Blog editedBlog, Long id) {
+    public Blog updateBlog(Blog editedBlog, Long id) {
 
         Blog blogForUpdating = null;
 
@@ -47,10 +51,10 @@ public class BlogServiceImpl implements BlogService {
             blogForUpdating.setText(editedBlog.getText());
 
             blogRepository.save(blogForUpdating);
+            return blogForUpdating;
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Blog with id - " + id + " not found");
         }
-
     }
 
     @Override
