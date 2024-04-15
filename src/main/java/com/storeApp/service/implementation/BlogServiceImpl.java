@@ -37,6 +37,19 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public Blog getOneBlog(Long id) {
+
+        Blog blog = null;
+
+        if (blogRepository.findById(id).isPresent()) {
+            blog = blogRepository.findById(id).get();
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Blog with id - " + id + " not found");
+        }
+        return blog;
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public Blog updateBlog(Blog editedBlog, Long id) {
 
