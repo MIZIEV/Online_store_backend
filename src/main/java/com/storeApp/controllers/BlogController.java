@@ -32,9 +32,14 @@ public class BlogController {
         return new ResponseEntity<>(blogService.getAllBlogs(), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOneBlog(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(blogService.getOneBlog(id), HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBlog(@RequestBody BlogDto editedBlogDto,@PathVariable("id") Long id) {
-        return new ResponseEntity<>(blogService.updateBlog(convertToBlog(editedBlogDto),id),HttpStatus.OK);
+    public ResponseEntity<?> updateBlog(@RequestBody BlogDto editedBlogDto, @PathVariable("id") Long id) {
+        return new ResponseEntity<>(blogService.updateBlog(convertToBlog(editedBlogDto), id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
