@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface DescriptionService {
 
-    Description addNewDescription(Description description);
+    Description addNewDescription(Long phoneId,Description description);
 
-    List<Description> getAllDescriptions();
+    List<Description> getAllDescriptions(Long phoneId);
 
     Description getDescriptionById(Long id);
 
