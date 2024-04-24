@@ -76,6 +76,10 @@ public class Phone {
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<OtherFeatures> featuresList;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "phone")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Description> descriptionList;
 
     public Phone() {}
 
@@ -318,5 +322,13 @@ public class Phone {
 
     public void setFeaturesList(List<OtherFeatures> featuresList) {
         this.featuresList = featuresList;
+    }
+
+    public List<Description> getDescriptionList() {
+        return descriptionList;
+    }
+
+    public void setDescriptionList(List<Description> descriptionList) {
+        this.descriptionList = descriptionList;
     }
 }
