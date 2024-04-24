@@ -79,7 +79,7 @@ public class PhoneController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
+    public ResponseEntity<?> getPhoneById(@PathVariable("id") long id) {
         return new ResponseEntity<>(phoneService.getPhoneById(id), HttpStatus.OK);
     }
 
