@@ -113,14 +113,12 @@ public class PhoneServiceImpl implements PhoneService {
             phoneForUpdating.setProcessor(editedPhone.getProcessor());
             phoneForUpdating.setCountOfCores(editedPhone.getCountOfCores());
             phoneForUpdating.setRam(editedPhone.getRam());
-            phoneForUpdating.setRom(editedPhone.getRom());
             phoneForUpdating.setWeight(editedPhone.getWeight());
             phoneForUpdating.setBatteryCapacity(editedPhone.getBatteryCapacity());
             phoneForUpdating.setCountOfSimCard(editedPhone.getCountOfSimCard());
             phoneForUpdating.setPrice(editedPhone.getPrice());
             phoneForUpdating.setRating(editedPhone.getRating());
             phoneForUpdating.setVoteCount(editedPhone.getVoteCount());
-            phoneForUpdating.setDescription(editedPhone.getDescription());
             phoneForUpdating.setBrand(editedPhone.getBrand());
             phoneForUpdating.setUsed(editedPhone.isUsed());
             phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
