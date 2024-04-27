@@ -37,8 +37,6 @@ public class Phone {
     private Byte countOfCores;
     @Column(name = "ram")
     private Short ram;
-    @Column(name = "rom")
-    private Short rom;
     @Column(name = "weight")
     private Short weight;
     @Column(name = "battary_capacity")
@@ -51,8 +49,6 @@ public class Phone {
     private Double rating;
     @Column(name = "vote_count")
     private Long voteCount;
-    @Column(name = "description")
-    private String description;
     @Enumerated(EnumType.STRING)
     private Brand brand;
     @Column(name = "is_used")
@@ -64,6 +60,10 @@ public class Phone {
             inverseJoinColumns = @JoinColumn(name = "color_id"))
     private Set<Color> colors;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "phone")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<PhoneRom> romList;
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -81,12 +81,13 @@ public class Phone {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Description> descriptionList;
 
-    public Phone() {}
+    public Phone() {
+    }
 
     public Phone(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                  String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
-                 Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                 Double rating, Long voteCount, String description, Brand brand, boolean isUsed,
+                 Short ram, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
+                 Double rating, Long voteCount, Brand brand, boolean isUsed,
                  List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standardList,
                  List<OtherFeatures> featuresList) {
         this.id = id;
@@ -101,14 +102,12 @@ public class Phone {
         this.processor = processor;
         this.countOfCores = countOfCores;
         this.ram = ram;
-        this.rom = rom;
         this.weight = weight;
         this.batteryCapacity = batteryCapacity;
         this.countOfSimCard = countOfSimCard;
         this.price = price;
         this.rating = rating;
         this.voteCount = voteCount;
-        this.description = description;
         this.brand = brand;
         this.isUsed = isUsed;
         this.phonePictureURLS = phonePictureURLS;
@@ -212,14 +211,6 @@ public class Phone {
         this.ram = ram;
     }
 
-    public Short getRom() {
-        return rom;
-    }
-
-    public void setRom(Short rom) {
-        this.rom = rom;
-    }
-
     public Short getWeight() {
         return weight;
     }
@@ -268,14 +259,6 @@ public class Phone {
         this.voteCount = voteCount;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Brand getBrand() {
         return brand;
     }
@@ -298,6 +281,14 @@ public class Phone {
 
     public void setColors(Set<Color> colors) {
         this.colors = colors;
+    }
+
+    public List<PhoneRom> getRomList() {
+        return romList;
+    }
+
+    public void setRomList(List<PhoneRom> romList) {
+        this.romList = romList;
     }
 
     public List<PhonePictureURL> getPhonePictureURLS() {
