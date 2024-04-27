@@ -34,7 +34,7 @@ public class PhoneDto {
 
     @NotNull(message = "The field `screenSize` mustn't be null!")
     @Positive(message = "The screenSize field mustn't be a negative value or equal to zero!")
-    @Max(value = 10,message = "The screenSize field mustn't be bigger than 10!")
+    @Max(value = 10, message = "The screenSize field mustn't be bigger than 10!")
     private Double screenSize;
 
     @NotNull(message = "The field `resolution` mustn't be null!")
@@ -47,7 +47,7 @@ public class PhoneDto {
 
     @NotNull(message = "The field `frontCamera` mustn't be null!")
     @Positive(message = "The frontCamera field mustn't be a negative value or equal to zero!")
-    @Max(value = 100,message = "The frontCamera field mustn't be bigger than 100!")
+    @Max(value = 100, message = "The frontCamera field mustn't be bigger than 100!")
     private Short frontCamera;
 
     @NotNull(message = "The field `processor` mustn't be null!")
@@ -56,12 +56,12 @@ public class PhoneDto {
 
     @NotNull(message = "The field `countOfCores` mustn't be null!")
     @Positive(message = "The countOfCores field mustn't be a negative value or equal to zero!")
-    @Max(value = 64,message = "The countOfCores field mustn't be bigger than 64!")
+    @Max(value = 64, message = "The countOfCores field mustn't be bigger than 64!")
     private Byte countOfCores;
 
     @NotNull(message = "The field `ram` mustn't be null!")
     @Positive(message = "The ram field mustn't be a negative value or equal to zero!")
-    @Max(value = 256,message = "The ram field mustn't be bigger than 256!")
+    @Max(value = 256, message = "The ram field mustn't be bigger than 256!")
     private Short ram;
 
     @NotNull(message = "The field `rom` mustn't be null!")
@@ -78,7 +78,7 @@ public class PhoneDto {
 
     @NotNull(message = "The field `countOfSimCard` mustn't be null!")
     @Positive(message = "The countOfSimCard field mustn't be a negative value or equal to zero!")
-    @Max(value = 4,message = "The countOfSimCard field mustn't be bigger than 4!")
+    @Max(value = 4, message = "The countOfSimCard field mustn't be bigger than 4!")
     private Byte countOfSimCard;
 
     @NotNull(message = "The field `price` mustn't be null!")
@@ -86,14 +86,10 @@ public class PhoneDto {
     private Double price;
 
     @Positive(message = "The rating mustn't be a negative value or equal to zero!")
-    @Max(value = 5,message = "The rating field mustn't be bigger than 5!")
+    @Max(value = 5, message = "The rating field mustn't be bigger than 5!")
     private Double rating;
 
     private Long voteCount;
-
-    @NotNull(message = "The field `description` mustn't be null!")
-    @Size(min = 5, message = "The field `description` must be longer than 5 characters!")
-    private String description;
 
     @NotNull(message = "The field `brand` mustn't be null!")
     @Enumerated(EnumType.STRING)
@@ -103,16 +99,18 @@ public class PhoneDto {
     private boolean isUsed;
 
     private Set<Color> colors;
+    private List<PhoneRom> ramsList;
     private List<PhonePictureURL> phonePictureURLS;
     private List<MobileCommunicationStandard> standardList;
     private List<OtherFeatures> featuresList;
 
-    public PhoneDto() {}
+    public PhoneDto() {
+    }
 
     public PhoneDto(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                     String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
                     Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                    Double rating, Long voteCount, String description, Brand brand, boolean isUsed,
+                    Double rating, Long voteCount, Brand brand, boolean isUsed,
                     List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standartList,
                     List<OtherFeatures> featuresList) {
         this.id = id;
@@ -134,7 +132,6 @@ public class PhoneDto {
         this.price = price;
         this.rating = rating;
         this.voteCount = voteCount;
-        this.description = description;
         this.brand = brand;
         this.isUsed = isUsed;
         this.phonePictureURLS = phonePictureURLS;
@@ -294,14 +291,6 @@ public class PhoneDto {
         this.voteCount = voteCount;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Brand getBrand() {
         return brand;
     }
@@ -324,6 +313,14 @@ public class PhoneDto {
 
     public void setPhonePictureURLS(List<PhonePictureURL> phonePictureURLS) {
         this.phonePictureURLS = phonePictureURLS;
+    }
+
+    public List<PhoneRom> getRamsList() {
+        return ramsList;
+    }
+
+    public void setRamsList(List<PhoneRom> ramsList) {
+        this.ramsList = ramsList;
     }
 
     public Set<Color> getColors() {

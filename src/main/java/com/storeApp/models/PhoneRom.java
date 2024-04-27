@@ -13,7 +13,7 @@ public class PhoneRom {
     private Long id;
 
     @Column(name = "rom_size")
-    private String romSize;
+    private Short romSize;
 
     @ManyToOne
     @JsonBackReference
@@ -22,7 +22,7 @@ public class PhoneRom {
 
     public PhoneRom(){}
 
-    public PhoneRom(Long id, String romSize, Phone phone) {
+    public PhoneRom(Long id, Short romSize, Phone phone) {
         this.id = id;
         this.romSize = romSize;
         this.phone = phone;
@@ -36,11 +36,11 @@ public class PhoneRom {
         this.id = id;
     }
 
-    public String getRomSize() {
+    public Short getRomSize() {
         return romSize;
     }
 
-    public void setRomSize(String romSize) {
+    public void setRomSize(Short romSize) {
         this.romSize = romSize;
     }
 
