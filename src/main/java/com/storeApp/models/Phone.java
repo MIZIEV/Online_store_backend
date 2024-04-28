@@ -67,7 +67,7 @@ public class Phone {
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<PhonePictureURL> phonePictureURLS;
+    private List<PhonePictureUrl> phonePictureUrls;
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -88,7 +88,7 @@ public class Phone {
                  String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
                  Short ram, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
                  Double rating, Long voteCount, Brand brand, boolean isUsed,
-                 List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standardList,
+                 List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> standardList,
                  List<OtherFeatures> featuresList) {
         this.id = id;
         this.model = model;
@@ -110,7 +110,7 @@ public class Phone {
         this.voteCount = voteCount;
         this.brand = brand;
         this.isUsed = isUsed;
-        this.phonePictureURLS = phonePictureURLS;
+        this.phonePictureUrls = phonePictureUrls;
         this.standardList = standardList;
         this.featuresList = featuresList;
     }
@@ -291,12 +291,12 @@ public class Phone {
         this.romList = romList;
     }
 
-    public List<PhonePictureURL> getPhonePictureURLS() {
-        return phonePictureURLS;
+    public List<PhonePictureUrl> getPhonePictureURLS() {
+        return phonePictureUrls;
     }
 
-    public void setPhonePictureURLS(List<PhonePictureURL> phonePictureURLS) {
-        this.phonePictureURLS = phonePictureURLS;
+    public void setPhonePictureURLS(List<PhonePictureUrl> phonePictureUrls) {
+        this.phonePictureUrls = phonePictureUrls;
     }
 
     public List<MobileCommunicationStandard> getStandardList() {
