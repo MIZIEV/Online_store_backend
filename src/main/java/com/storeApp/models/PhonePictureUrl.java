@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "picture_url")
-public class PhonePictureURL {
+public class PhonePictureUrl {
 
     @Id
     @Column(name = "id")
@@ -19,9 +19,9 @@ public class PhonePictureURL {
     @JoinColumn(name = "phone_id", referencedColumnName = "id")
     private Phone phone;
 
-    public PhonePictureURL(){}
+    public PhonePictureUrl(){}
 
-    public PhonePictureURL(Long id, String url, Phone phone) {
+    public PhonePictureUrl(Long id, String url, Phone phone) {
         this.id = id;
         this.url = url;
         this.phone = phone;

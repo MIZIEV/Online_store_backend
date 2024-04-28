@@ -100,7 +100,7 @@ public class PhoneDto {
 
     private Set<Color> colors;
     private List<PhoneRom> ramsList;
-    private List<PhonePictureURL> phonePictureURLS;
+    private List<PhonePictureUrl> phonePictureUrls;
     private List<MobileCommunicationStandard> standardList;
     private List<OtherFeatures> featuresList;
 
@@ -111,7 +111,7 @@ public class PhoneDto {
                     String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
                     Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
                     Double rating, Long voteCount, Brand brand, boolean isUsed,
-                    List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standartList,
+                    List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> standartList,
                     List<OtherFeatures> featuresList) {
         this.id = id;
         this.model = model;
@@ -134,7 +134,7 @@ public class PhoneDto {
         this.voteCount = voteCount;
         this.brand = brand;
         this.isUsed = isUsed;
-        this.phonePictureURLS = phonePictureURLS;
+        this.phonePictureUrls = phonePictureUrls;
         this.standardList = standartList;
         this.featuresList = featuresList;
     }
@@ -307,12 +307,12 @@ public class PhoneDto {
         isUsed = used;
     }
 
-    public List<PhonePictureURL> getPhonePictureURLS() {
-        return phonePictureURLS;
+    public List<PhonePictureUrl> getPhonePictureURLS() {
+        return phonePictureUrls;
     }
 
-    public void setPhonePictureURLS(List<PhonePictureURL> phonePictureURLS) {
-        this.phonePictureURLS = phonePictureURLS;
+    public void setPhonePictureURLS(List<PhonePictureUrl> phonePictureUrls) {
+        this.phonePictureUrls = phonePictureUrls;
     }
 
     public List<PhoneRom> getRamsList() {
