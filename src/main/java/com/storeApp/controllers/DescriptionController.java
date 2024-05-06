@@ -35,6 +35,11 @@ public class DescriptionController {
         return new ResponseEntity<>(descriptionService.getAllDescriptions(phoneId), HttpStatus.OK);
     }
 
+    @DeleteMapping("/remove/{descriptionId}")
+    public ResponseEntity<?> deleteDescription(@PathVariable("descriptionId") Long descriptionId){
+        descriptionService.deleteDescription(descriptionId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     private Description convertToDescription(DescriptionDto descriptionDto) {
         ModelMapper modelMapper = new ModelMapper();
