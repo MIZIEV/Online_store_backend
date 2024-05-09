@@ -322,4 +322,12 @@ public class Phone {
     public void setDescriptionList(List<Description> descriptionList) {
         this.descriptionList = descriptionList;
     }
+
+    public List<PhonePictureUrl> getPhonePictureUrls() {
+        return phonePictureUrls;
+    }
+
+    public void setPhonePictureUrls(List<PhonePictureUrl> phonePictureUrls) {
+        this.phonePictureUrls = phonePictureUrls;
+    }
 }

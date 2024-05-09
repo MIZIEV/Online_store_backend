@@ -3,8 +3,10 @@ package com.storeApp.service.implementation;
 import com.storeApp.models.Case;
 import com.storeApp.models.Color;
 import com.storeApp.models.Phone;
+import com.storeApp.models.PhoneRom;
 import com.storeApp.repository.ColorRepository;
 import com.storeApp.repository.PhoneRepository;
+import com.storeApp.repository.PhoneRomRepository;
 import com.storeApp.service.PhoneService;
 
 import com.storeApp.util.exception.OnlineStoreApiException;
@@ -24,16 +26,24 @@ public class PhoneServiceImpl implements PhoneService {
 
     private final PhoneRepository phoneRepository;
     private final ColorRepository colorRepository;
+    private final PhoneRomRepository phoneRomRepository;
 
     @Autowired
-    public PhoneServiceImpl(PhoneRepository phoneRepository, ColorRepository colorRepository) {
+    public PhoneServiceImpl(PhoneRepository phoneRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository) {
         this.phoneRepository = phoneRepository;
         this.colorRepository = colorRepository;
+        this.phoneRomRepository = phoneRomRepository;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void addNewPhone(Phone phone) {
+//todo why simple saving phone entity with romList doesn't save ref. between them
+        phone.setRomList(phone.getRomList());
+        for (PhoneRom element : phone.getRomList()) {
+            element.setPhone(phone);
+            phoneRomRepository.save(element);
+        }
         phoneRepository.save(phone);
     }
 
@@ -124,8 +134,13 @@ public class PhoneServiceImpl implements PhoneService {
             phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
             phoneForUpdating.setStandardList(editedPhone.getStandardList());
             phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());
-
             phoneRepository.save(phoneForUpdating);
+
+            for (PhoneRom element : editedPhone.getRomList()) {
+                element.setPhone(phoneForUpdating);
+                phoneRomRepository.save(element);
+            }
+
             return phoneForUpdating;
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");

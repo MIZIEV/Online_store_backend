@@ -68,7 +68,7 @@ public class PhonePictureUrlServiceImpl implements PhonePictureUrlService {
     @Transactional(readOnly = false)
     public void deletePhonePictureUrl(Long id) {
         if (phonePictureURLRepository.findById(id).isPresent()) {
-            phonePictureURLRepository.findById(id).get();
+            phonePictureURLRepository.delete(phonePictureURLRepository.findById(id).get());
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone picture URL with id " + id + " not found");
         }
