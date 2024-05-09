@@ -1,10 +1,13 @@
 package com.storeApp.service.implementation;
 
-import com.storeApp.models.Case;
 import com.storeApp.models.Color;
+import com.storeApp.models.MobileCommunicationStandard;
 import com.storeApp.models.Phone;
+import com.storeApp.models.PhoneRom;
 import com.storeApp.repository.ColorRepository;
+import com.storeApp.repository.MobileCommunicationStandardRepository;
 import com.storeApp.repository.PhoneRepository;
+import com.storeApp.repository.PhoneRomRepository;
 import com.storeApp.service.PhoneService;
 
 import com.storeApp.util.exception.OnlineStoreApiException;
@@ -24,16 +27,35 @@ public class PhoneServiceImpl implements PhoneService {
 
     private final PhoneRepository phoneRepository;
     private final ColorRepository colorRepository;
+    private final PhoneRomRepository phoneRomRepository;
+    private final MobileCommunicationStandardRepository mobileCommunicationStandardRepository;
 
     @Autowired
-    public PhoneServiceImpl(PhoneRepository phoneRepository, ColorRepository colorRepository) {
+    public PhoneServiceImpl(PhoneRepository phoneRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository, MobileCommunicationStandardRepository mobileCommunicationStandardRepository) {
         this.phoneRepository = phoneRepository;
         this.colorRepository = colorRepository;
+        this.phoneRomRepository = phoneRomRepository;
+        this.mobileCommunicationStandardRepository = mobileCommunicationStandardRepository;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void addNewPhone(Phone phone) {
+        //todo why simple saving phone entity with romList doesn't save ref. between them
+        phone.setRomList(phone.getRomList());
+        phone.setCommunicationStandardList(phone.getCommunicationStandardList());
+
+        if (phone.getRomList() != null) {
+            for (PhoneRom element : phone.getRomList()) {
+                element.setPhone(phone);
+                phoneRomRepository.save(element);
+            }
+        }
+
+        for (MobileCommunicationStandard element : phone.getCommunicationStandardList()) {
+            element.setPhone(phone);
+            mobileCommunicationStandardRepository.save(element);
+        }
         phoneRepository.save(phone);
     }
 
@@ -122,10 +144,24 @@ public class PhoneServiceImpl implements PhoneService {
             phoneForUpdating.setBrand(editedPhone.getBrand());
             phoneForUpdating.setUsed(editedPhone.isUsed());
             phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
-            phoneForUpdating.setStandardList(editedPhone.getStandardList());
+            phoneForUpdating.setCommunicationStandardList(editedPhone.getCommunicationStandardList());
             phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());
-
             phoneRepository.save(phoneForUpdating);
+
+            if (editedPhone.getRomList() != null) {
+                for (PhoneRom element : editedPhone.getRomList()) {
+                    element.setPhone(phoneForUpdating);
+                    phoneRomRepository.save(element);
+                }
+            }
+
+            if (editedPhone.getCommunicationStandardList() != null) {
+                for (MobileCommunicationStandard element : editedPhone.getCommunicationStandardList()) {
+                    element.setPhone(phoneForUpdating);
+                    mobileCommunicationStandardRepository.save(element);
+                }
+            }
+
             return phoneForUpdating;
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");

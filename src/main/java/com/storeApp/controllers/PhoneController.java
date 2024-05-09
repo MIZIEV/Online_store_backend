@@ -5,6 +5,7 @@ import com.storeApp.models.Phone;
 import com.storeApp.service.PhoneService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,8 @@ public class PhoneController {
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
 
         } else {
-            phoneService.addNewPhone(convertToProduct(phoneDto));
+            Phone phone = convertToProduct(phoneDto);
+            phoneService.addNewPhone(phone);
             return new ResponseEntity<>(phoneDto, HttpStatus.CREATED);
         }
     }

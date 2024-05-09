@@ -64,10 +64,6 @@ public class PhoneDto {
     @Max(value = 256, message = "The ram field mustn't be bigger than 256!")
     private Short ram;
 
-    @NotNull(message = "The field `rom` mustn't be null!")
-    @Positive(message = "The rom field mustn't be a negative value or equal to zero!")
-    private Short rom;
-
     @NotNull(message = "The field `weight` mustn't be null!")
     @Positive(message = "The weight field mustn't be a negative value or equal to zero!")
     private Short weight;
@@ -85,7 +81,7 @@ public class PhoneDto {
     @Positive(message = "The price mustn't be a negative value or equal to zero!")
     private Double price;
 
-    @Positive(message = "The rating mustn't be a negative value or equal to zero!")
+    //@Positive(message = "The rating mustn't be a negative value or equal to zero!")
     @Max(value = 5, message = "The rating field mustn't be bigger than 5!")
     private Double rating;
 
@@ -99,9 +95,9 @@ public class PhoneDto {
     private boolean isUsed;
 
     private Set<Color> colors;
-    private List<PhoneRom> ramsList;
+    private List<PhoneRom> romList;
     private List<PhonePictureUrl> phonePictureUrls;
-    private List<MobileCommunicationStandard> standardList;
+    private List<MobileCommunicationStandard> communicationStandardList;
     private List<OtherFeatures> featuresList;
 
     public PhoneDto() {
@@ -109,7 +105,7 @@ public class PhoneDto {
 
     public PhoneDto(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                     String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
-                    Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
+                    Short ram, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
                     Double rating, Long voteCount, Brand brand, boolean isUsed,
                     List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> standartList,
                     List<OtherFeatures> featuresList) {
@@ -125,7 +121,6 @@ public class PhoneDto {
         this.processor = processor;
         this.countOfCores = countOfCores;
         this.ram = ram;
-        this.rom = rom;
         this.weight = weight;
         this.batteryCapacity = batteryCapacity;
         this.countOfSimCard = countOfSimCard;
@@ -135,7 +130,7 @@ public class PhoneDto {
         this.brand = brand;
         this.isUsed = isUsed;
         this.phonePictureUrls = phonePictureUrls;
-        this.standardList = standartList;
+        this.communicationStandardList = standartList;
         this.featuresList = featuresList;
     }
 
@@ -235,14 +230,6 @@ public class PhoneDto {
         this.ram = ram;
     }
 
-    public Short getRom() {
-        return rom;
-    }
-
-    public void setRom(Short rom) {
-        this.rom = rom;
-    }
-
     public Short getWeight() {
         return weight;
     }
@@ -307,20 +294,12 @@ public class PhoneDto {
         isUsed = used;
     }
 
-    public List<PhonePictureUrl> getPhonePictureURLS() {
-        return phonePictureUrls;
+    public List<PhoneRom> getRomList() {
+        return romList;
     }
 
-    public void setPhonePictureURLS(List<PhonePictureUrl> phonePictureUrls) {
-        this.phonePictureUrls = phonePictureUrls;
-    }
-
-    public List<PhoneRom> getRamsList() {
-        return ramsList;
-    }
-
-    public void setRamsList(List<PhoneRom> ramsList) {
-        this.ramsList = ramsList;
+    public void setRomList(List<PhoneRom> romList) {
+        this.romList = romList;
     }
 
     public Set<Color> getColors() {
@@ -331,12 +310,12 @@ public class PhoneDto {
         this.colors = colors;
     }
 
-    public List<MobileCommunicationStandard> getStandardList() {
-        return standardList;
+    public List<MobileCommunicationStandard> getCommunicationStandardList() {
+        return communicationStandardList;
     }
 
-    public void setStandardList(List<MobileCommunicationStandard> standardList) {
-        this.standardList = standardList;
+    public void setCommunicationStandardList(List<MobileCommunicationStandard> communicationStandardList) {
+        this.communicationStandardList = communicationStandardList;
     }
 
     public List<OtherFeatures> getFeaturesList() {
@@ -345,5 +324,13 @@ public class PhoneDto {
 
     public void setFeaturesList(List<OtherFeatures> featuresList) {
         this.featuresList = featuresList;
+    }
+
+    public List<PhonePictureUrl> getPhonePictureUrls() {
+        return phonePictureUrls;
+    }
+
+    public void setPhonePictureUrls(List<PhonePictureUrl> phonePictureUrls) {
+        this.phonePictureUrls = phonePictureUrls;
     }
 }
