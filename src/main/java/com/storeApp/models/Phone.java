@@ -71,7 +71,7 @@ public class Phone {
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<MobileCommunicationStandard> standardList;
+    private List<MobileCommunicationStandard> communicationStandardList;
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -88,7 +88,7 @@ public class Phone {
                  String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
                  Short ram, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
                  Double rating, Long voteCount, Brand brand, boolean isUsed,
-                 List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> standardList,
+                 List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> communicationStandardList,
                  List<OtherFeatures> featuresList) {
         this.id = id;
         this.model = model;
@@ -111,7 +111,7 @@ public class Phone {
         this.brand = brand;
         this.isUsed = isUsed;
         this.phonePictureUrls = phonePictureUrls;
-        this.standardList = standardList;
+        this.communicationStandardList = communicationStandardList;
         this.featuresList = featuresList;
     }
 
@@ -299,12 +299,12 @@ public class Phone {
         this.phonePictureUrls = phonePictureUrls;
     }
 
-    public List<MobileCommunicationStandard> getStandardList() {
-        return standardList;
+    public List<MobileCommunicationStandard> getCommunicationStandardList() {
+        return communicationStandardList;
     }
 
-    public void setStandardList(List<MobileCommunicationStandard> standartList) {
-        this.standardList = standartList;
+    public void setCommunicationStandardList(List<MobileCommunicationStandard> standartList) {
+        this.communicationStandardList = standartList;
     }
 
     public List<OtherFeatures> getFeaturesList() {

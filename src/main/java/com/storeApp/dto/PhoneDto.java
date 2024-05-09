@@ -97,7 +97,7 @@ public class PhoneDto {
     private Set<Color> colors;
     private List<PhoneRom> romList;
     private List<PhonePictureUrl> phonePictureUrls;
-    private List<MobileCommunicationStandard> standardList;
+    private List<MobileCommunicationStandard> communicationStandardList;
     private List<OtherFeatures> featuresList;
 
     public PhoneDto() {
@@ -130,7 +130,7 @@ public class PhoneDto {
         this.brand = brand;
         this.isUsed = isUsed;
         this.phonePictureUrls = phonePictureUrls;
-        this.standardList = standartList;
+        this.communicationStandardList = standartList;
         this.featuresList = featuresList;
     }
 
@@ -310,12 +310,12 @@ public class PhoneDto {
         this.colors = colors;
     }
 
-    public List<MobileCommunicationStandard> getStandardList() {
-        return standardList;
+    public List<MobileCommunicationStandard> getCommunicationStandardList() {
+        return communicationStandardList;
     }
 
-    public void setStandardList(List<MobileCommunicationStandard> standardList) {
-        this.standardList = standardList;
+    public void setCommunicationStandardList(List<MobileCommunicationStandard> communicationStandardList) {
+        this.communicationStandardList = communicationStandardList;
     }
 
     public List<OtherFeatures> getFeaturesList() {
