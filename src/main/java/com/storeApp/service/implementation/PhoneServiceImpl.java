@@ -1,13 +1,7 @@
 package com.storeApp.service.implementation;
 
-import com.storeApp.models.Color;
-import com.storeApp.models.MobileCommunicationStandard;
-import com.storeApp.models.Phone;
-import com.storeApp.models.PhoneRom;
-import com.storeApp.repository.ColorRepository;
-import com.storeApp.repository.MobileCommunicationStandardRepository;
-import com.storeApp.repository.PhoneRepository;
-import com.storeApp.repository.PhoneRomRepository;
+import com.storeApp.models.*;
+import com.storeApp.repository.*;
 import com.storeApp.service.PhoneService;
 
 import com.storeApp.util.exception.OnlineStoreApiException;
@@ -26,13 +20,15 @@ import java.util.stream.Collectors;
 public class PhoneServiceImpl implements PhoneService {
 
     private final PhoneRepository phoneRepository;
+    private final PhoneRatingRepository phoneRatingRepository;
     private final ColorRepository colorRepository;
     private final PhoneRomRepository phoneRomRepository;
     private final MobileCommunicationStandardRepository mobileCommunicationStandardRepository;
 
     @Autowired
-    public PhoneServiceImpl(PhoneRepository phoneRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository, MobileCommunicationStandardRepository mobileCommunicationStandardRepository) {
+    public PhoneServiceImpl(PhoneRepository phoneRepository, PhoneRatingRepository phoneRatingRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository, MobileCommunicationStandardRepository mobileCommunicationStandardRepository) {
         this.phoneRepository = phoneRepository;
+        this.phoneRatingRepository = phoneRatingRepository;
         this.colorRepository = colorRepository;
         this.phoneRomRepository = phoneRomRepository;
         this.mobileCommunicationStandardRepository = mobileCommunicationStandardRepository;
@@ -69,7 +65,7 @@ public class PhoneServiceImpl implements PhoneService {
         } else if ("maxPrice".equalsIgnoreCase(sort)) {
             phones.sort(Comparator.comparing(Phone::getPrice).reversed());
         } else if ("maxRating".equalsIgnoreCase(sort)) {
-            phones.sort(Comparator.comparing(Phone::getRating).reversed());
+           //todo  change logic phones.sort(Comparator.comparing(Phone::getRating).reversed());
         }
 
         return phones;
@@ -88,29 +84,38 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional(readOnly = false)
-    public void putTheMark(Long id, Double mark) {
+    public String putTheMark(User user, Phone phone, Double mark) {
 
-        if (phoneRepository.findPhoneById(id).isPresent()) {
+        if (phone.getRatings().stream().anyMatch(r -> r.getUser().equals(user))) {
+            return "User already putted the mark to this phone!";
+        }
 
-            Phone phone = phoneRepository.findPhoneById(id).get();
-            Double currentRating = null;
-            Long voteCount = null;
+        PhoneRating rating = new PhoneRating();
+        rating.setPhone(phone);
+        rating.setUser(user);
+        rating.setRating(mark);
 
-            if (phone.getVoteCount() == null) {
-                phone.setRating(0.0);
-                phone.setVoteCount(0L);
+        if(phone.getVoteCount()==null){
+            phone.setVoteCount(0L);
+        }
+        phone.setVoteCount(phone.getVoteCount() + 1);
+
+        phoneRepository.save(phone);
+        phoneRatingRepository.save(rating);
+
+        return "Mark - " + mark + " was putted to phone with id - " + phone.getId();
+    }
+    public void calculateAverageRating(Phone phone) {
+        List<PhoneRating> ratings = phone.getRatings();
+        if (ratings != null && !ratings.isEmpty()) {
+            double totalRating = 0;
+            for (PhoneRating rating : ratings) {
+                totalRating += rating.getRating();
             }
-
-            currentRating = phone.getRating() * phone.getVoteCount();
-            voteCount = phone.getVoteCount() + 1;
-
-
-            phone.setVoteCount(voteCount);
-            phone.setRating((currentRating + mark) / voteCount);
-
-            phoneRepository.save(phone);
+            double averageRating = totalRating / ratings.size();
+            phone.setRating(averageRating);
         } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
+            phone.setRating(0.0); // Or any default value you prefer
         }
     }
 
@@ -139,7 +144,7 @@ public class PhoneServiceImpl implements PhoneService {
             phoneForUpdating.setBatteryCapacity(editedPhone.getBatteryCapacity());
             phoneForUpdating.setCountOfSimCard(editedPhone.getCountOfSimCard());
             phoneForUpdating.setPrice(editedPhone.getPrice());
-            phoneForUpdating.setRating(editedPhone.getRating());
+            //phoneForUpdating.setRating(editedPhone.getRating());
             phoneForUpdating.setVoteCount(editedPhone.getVoteCount());
             phoneForUpdating.setBrand(editedPhone.getBrand());
             phoneForUpdating.setUsed(editedPhone.isUsed());

@@ -1,14 +1,24 @@
 package com.storeApp.controllers;
 
 import com.storeApp.dto.PhoneDto;
+import com.storeApp.dto.PhoneRatingDto;
 import com.storeApp.models.Phone;
+import com.storeApp.models.PhoneRating;
+import com.storeApp.models.User;
+import com.storeApp.repository.UserRepository;
+import com.storeApp.security.CustomUserDetailService;
 import com.storeApp.service.PhoneService;
+import com.storeApp.util.exception.OnlineStoreApiException;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +33,14 @@ import java.util.Set;
 public class PhoneController {
 
     private final PhoneService phoneService;
+    private final CustomUserDetailService customUserDetailService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PhoneController(PhoneService phoneService) {
+    public PhoneController(PhoneService phoneService, CustomUserDetailService customUserDetailService, UserRepository userRepository) {
         this.phoneService = phoneService;
+        this.customUserDetailService = customUserDetailService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/add")
@@ -82,15 +96,23 @@ public class PhoneController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPhoneById(@PathVariable("id") long id) {
-        return new ResponseEntity<>(phoneService.getPhoneById(id), HttpStatus.OK);
+        Phone phone=phoneService.getPhoneById(id);
+
+        phoneService.calculateAverageRating(phone);
+        return new ResponseEntity<>(phone, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id, @RequestBody PhoneDto phoneDto) {
+    public ResponseEntity<?> putTheMark(@PathVariable("id") Long id,
+                                        @RequestBody PhoneRatingDto ratingDto) {
 
-        phoneService.putTheMark(id, phoneDto.getRating());
+        String usernameOrEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Phone phone = phoneService.getPhoneById(id);
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).
+                orElseThrow(() -> new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "User not found"));
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(phoneService.putTheMark(user, phone, convertToPhoneRating(ratingDto).getRating()),
+                HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/color")
@@ -109,6 +131,11 @@ public class PhoneController {
     public ResponseEntity<HttpStatus> deletePhone(@PathVariable("id") long id) {
         phoneService.deletePhone(id);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private PhoneRating convertToPhoneRating(PhoneRatingDto phoneRatingDto) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(phoneRatingDto, PhoneRating.class);
     }
 
     private Phone convertToProduct(PhoneDto phoneDto) {
