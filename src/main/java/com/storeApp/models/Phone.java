@@ -45,8 +45,6 @@ public class Phone {
     private Byte countOfSimCard;
     @Column(name = "price")
     private Double price;
-    @Column(name = "rating")
-    private Double rating;
     @Column(name = "vote_count")
     private Long voteCount;
     @Enumerated(EnumType.STRING)
@@ -60,6 +58,10 @@ public class Phone {
             inverseJoinColumns = @JoinColumn(name = "color_id"))
     private Set<Color> colors;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "phone")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<PhoneRating> ratings;
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -87,7 +89,7 @@ public class Phone {
     public Phone(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                  String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
                  Short ram, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                 Double rating, Long voteCount, Brand brand, boolean isUsed,
+                 Long voteCount, Brand brand, boolean isUsed,
                  List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> communicationStandardList,
                  List<OtherFeatures> featuresList) {
         this.id = id;
@@ -106,7 +108,6 @@ public class Phone {
         this.batteryCapacity = batteryCapacity;
         this.countOfSimCard = countOfSimCard;
         this.price = price;
-        this.rating = rating;
         this.voteCount = voteCount;
         this.brand = brand;
         this.isUsed = isUsed;
@@ -243,14 +244,6 @@ public class Phone {
         this.price = price;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
     public Long getVoteCount() {
         return voteCount;
     }
@@ -329,5 +322,13 @@ public class Phone {
 
     public void setPhonePictureUrls(List<PhonePictureUrl> phonePictureUrls) {
         this.phonePictureUrls = phonePictureUrls;
+    }
+
+    public List<PhoneRating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<PhoneRating> ratings) {
+        this.ratings = ratings;
     }
 }

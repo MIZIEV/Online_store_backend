@@ -1,6 +1,7 @@
 package com.storeApp.service;
 
 import com.storeApp.models.Phone;
+import com.storeApp.models.User;
 
 import java.util.List;
 import java.util.Set;
@@ -17,7 +18,7 @@ public interface PhoneService {
 
     Phone updatePhone(Phone editedPhone, Long id);
 
-    void putTheMark(Long id, Double mark);
+    String putTheMark(User user, Phone phone, Double mark);
 
     String putTheColors(Long id, Set<Long> colorIds);
 }
