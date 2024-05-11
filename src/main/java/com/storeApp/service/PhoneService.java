@@ -20,5 +20,7 @@ public interface PhoneService {
 
     String putTheMark(User user, Phone phone, Double mark);
 
+    void calculateAverageRating(Phone phone);
+
     String putTheColors(Long id, Set<Long> colorIds);
 }

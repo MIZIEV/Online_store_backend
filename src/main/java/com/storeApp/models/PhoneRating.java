@@ -1,6 +1,7 @@
 package com.storeApp.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -20,6 +21,7 @@ public class PhoneRating {
     @JoinColumn(name = "phone_id")
     private Phone phone;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

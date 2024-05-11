@@ -105,6 +105,19 @@ public class PhoneServiceImpl implements PhoneService {
 
         return "Mark - " + mark + " was putted to phone with id - " + phone.getId();
     }
+    public void calculateAverageRating(Phone phone) {
+        List<PhoneRating> ratings = phone.getRatings();
+        if (ratings != null && !ratings.isEmpty()) {
+            double totalRating = 0;
+            for (PhoneRating rating : ratings) {
+                totalRating += rating.getRating();
+            }
+            double averageRating = totalRating / ratings.size();
+            phone.setRating(averageRating);
+        } else {
+            phone.setRating(0.0); // Or any default value you prefer
+        }
+    }
 
     @Override
     @Transactional(readOnly = false)

@@ -96,7 +96,10 @@ public class PhoneController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPhoneById(@PathVariable("id") long id) {
-        return new ResponseEntity<>(phoneService.getPhoneById(id), HttpStatus.OK);
+        Phone phone=phoneService.getPhoneById(id);
+
+        phoneService.calculateAverageRating(phone);
+        return new ResponseEntity<>(phone, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")

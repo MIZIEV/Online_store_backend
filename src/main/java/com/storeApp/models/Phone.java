@@ -52,6 +52,9 @@ public class Phone {
     @Column(name = "is_used")
     private boolean isUsed;
 
+    @Transient
+    private Double rating;
+
     @ManyToMany
     @JoinTable(name = "phone_color",
             joinColumns = @JoinColumn(name = "phone_id"),
@@ -330,5 +333,13 @@ public class Phone {
 
     public void setRatings(List<PhoneRating> ratings) {
         this.ratings = ratings;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 }

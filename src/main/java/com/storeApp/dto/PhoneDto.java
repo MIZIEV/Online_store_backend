@@ -81,10 +81,6 @@ public class PhoneDto {
     @Positive(message = "The price mustn't be a negative value or equal to zero!")
     private Double price;
 
-    //@Positive(message = "The rating mustn't be a negative value or equal to zero!")
-    @Max(value = 5, message = "The rating field mustn't be bigger than 5!")
-    private Double rating;
-
     private Long voteCount;
 
     @NotNull(message = "The field `brand` mustn't be null!")
@@ -99,6 +95,7 @@ public class PhoneDto {
     private List<PhonePictureUrl> phonePictureUrls;
     private List<MobileCommunicationStandard> communicationStandardList;
     private List<OtherFeatures> featuresList;
+    private List<PhoneRating> ratings;
 
     public PhoneDto() {
     }
@@ -106,7 +103,7 @@ public class PhoneDto {
     public PhoneDto(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                     String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
                     Short ram, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                    Double rating, Long voteCount, Brand brand, boolean isUsed,
+                    Long voteCount, Brand brand, boolean isUsed,
                     List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> standartList,
                     List<OtherFeatures> featuresList) {
         this.id = id;
@@ -125,7 +122,6 @@ public class PhoneDto {
         this.batteryCapacity = batteryCapacity;
         this.countOfSimCard = countOfSimCard;
         this.price = price;
-        this.rating = rating;
         this.voteCount = voteCount;
         this.brand = brand;
         this.isUsed = isUsed;
@@ -262,14 +258,6 @@ public class PhoneDto {
         this.price = price;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
     public Long getVoteCount() {
         return voteCount;
     }
@@ -332,5 +320,13 @@ public class PhoneDto {
 
     public void setPhonePictureUrls(List<PhonePictureUrl> phonePictureUrls) {
         this.phonePictureUrls = phonePictureUrls;
+    }
+
+    public List<PhoneRating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<PhoneRating> ratings) {
+        this.ratings = ratings;
     }
 }
