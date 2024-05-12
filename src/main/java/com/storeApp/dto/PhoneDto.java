@@ -91,6 +91,7 @@ public class PhoneDto {
     private boolean isUsed;
 
     private Set<Color> colors;
+    private List<Comment> comments;
     private List<PhoneRom> romList;
     private List<PhonePictureUrl> phonePictureUrls;
     private List<MobileCommunicationStandard> communicationStandardList;
@@ -328,5 +329,13 @@ public class PhoneDto {
 
     public void setRatings(List<PhoneRating> ratings) {
         this.ratings = ratings;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
