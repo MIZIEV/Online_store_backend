@@ -1,7 +1,10 @@
 package com.storeApp.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comment")
@@ -15,8 +18,14 @@ public class Comment {
     @Column(name = "comment_text")
     private String commentText;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Transient
+    private String authorName;
+
     @ManyToOne
-    @JsonBackReference
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User author;
 
@@ -41,6 +50,22 @@ public class Comment {
 
     public void setCommentText(String commentText) {
         this.commentText = commentText;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
     public User getAuthor() {

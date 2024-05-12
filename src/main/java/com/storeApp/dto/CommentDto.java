@@ -3,11 +3,15 @@ package com.storeApp.dto;
 import com.storeApp.models.Phone;
 import com.storeApp.models.User;
 
+import java.time.LocalDateTime;
+
 public class CommentDto {
 
     private Long id;
 
     private String commentText;
+
+    private LocalDateTime createdAt;
 
     private User author;
 
@@ -30,6 +34,14 @@ public class CommentDto {
 
     public void setCommentText(String commentText) {
         this.commentText = commentText;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public User getAuthor() {
