@@ -65,29 +65,38 @@ public class Phone {
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<PhoneRating> ratings;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "phone")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Comment> comments;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<PhoneRom> romList;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<PhonePictureUrl> phonePictureUrls;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<MobileCommunicationStandard> communicationStandardList;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<OtherFeatures> featuresList;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Description> descriptionList;
 
-    public Phone() {
-    }
+    public Phone() {}
 
     public Phone(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                  String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
@@ -341,5 +350,13 @@ public class Phone {
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
