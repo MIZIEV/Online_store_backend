@@ -21,7 +21,7 @@ public class Comment {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Transient
+    @Column(name = "author_name")
     private String authorName;
 
     @ManyToOne
