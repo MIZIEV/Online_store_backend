@@ -4,26 +4,27 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "picture_url")
-public class PhonePictureURL {
+@Table(name = "phone_rom")
+public class PhoneRom {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "picture_url")
-    private String url;
+
+    @Column(name = "rom_size")
+    private Short romSize;
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "phone_id", referencedColumnName = "id")
+    @JoinColumn(name = "phone_id",referencedColumnName = "id")
     private Phone phone;
 
-    public PhonePictureURL(){}
+    public PhoneRom(){}
 
-    public PhonePictureURL(Long id, String url, Phone phone) {
+    public PhoneRom(Long id, Short romSize, Phone phone) {
         this.id = id;
-        this.url = url;
+        this.romSize = romSize;
         this.phone = phone;
     }
 
@@ -35,12 +36,12 @@ public class PhonePictureURL {
         this.id = id;
     }
 
-    public String getUrl() {
-        return url;
+    public Short getRomSize() {
+        return romSize;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setRomSize(Short romSize) {
+        this.romSize = romSize;
     }
 
     public Phone getPhone() {

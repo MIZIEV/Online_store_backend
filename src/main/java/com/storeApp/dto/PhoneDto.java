@@ -34,7 +34,7 @@ public class PhoneDto {
 
     @NotNull(message = "The field `screenSize` mustn't be null!")
     @Positive(message = "The screenSize field mustn't be a negative value or equal to zero!")
-    @Max(value = 10,message = "The screenSize field mustn't be bigger than 10!")
+    @Max(value = 10, message = "The screenSize field mustn't be bigger than 10!")
     private Double screenSize;
 
     @NotNull(message = "The field `resolution` mustn't be null!")
@@ -47,7 +47,7 @@ public class PhoneDto {
 
     @NotNull(message = "The field `frontCamera` mustn't be null!")
     @Positive(message = "The frontCamera field mustn't be a negative value or equal to zero!")
-    @Max(value = 100,message = "The frontCamera field mustn't be bigger than 100!")
+    @Max(value = 100, message = "The frontCamera field mustn't be bigger than 100!")
     private Short frontCamera;
 
     @NotNull(message = "The field `processor` mustn't be null!")
@@ -56,17 +56,13 @@ public class PhoneDto {
 
     @NotNull(message = "The field `countOfCores` mustn't be null!")
     @Positive(message = "The countOfCores field mustn't be a negative value or equal to zero!")
-    @Max(value = 64,message = "The countOfCores field mustn't be bigger than 64!")
+    @Max(value = 64, message = "The countOfCores field mustn't be bigger than 64!")
     private Byte countOfCores;
 
     @NotNull(message = "The field `ram` mustn't be null!")
     @Positive(message = "The ram field mustn't be a negative value or equal to zero!")
-    @Max(value = 256,message = "The ram field mustn't be bigger than 256!")
+    @Max(value = 256, message = "The ram field mustn't be bigger than 256!")
     private Short ram;
-
-    @NotNull(message = "The field `rom` mustn't be null!")
-    @Positive(message = "The rom field mustn't be a negative value or equal to zero!")
-    private Short rom;
 
     @NotNull(message = "The field `weight` mustn't be null!")
     @Positive(message = "The weight field mustn't be a negative value or equal to zero!")
@@ -78,22 +74,14 @@ public class PhoneDto {
 
     @NotNull(message = "The field `countOfSimCard` mustn't be null!")
     @Positive(message = "The countOfSimCard field mustn't be a negative value or equal to zero!")
-    @Max(value = 4,message = "The countOfSimCard field mustn't be bigger than 4!")
+    @Max(value = 4, message = "The countOfSimCard field mustn't be bigger than 4!")
     private Byte countOfSimCard;
 
     @NotNull(message = "The field `price` mustn't be null!")
     @Positive(message = "The price mustn't be a negative value or equal to zero!")
     private Double price;
 
-    @Positive(message = "The rating mustn't be a negative value or equal to zero!")
-    @Max(value = 5,message = "The rating field mustn't be bigger than 5!")
-    private Double rating;
-
     private Long voteCount;
-
-    @NotNull(message = "The field `description` mustn't be null!")
-    @Size(min = 5, message = "The field `description` must be longer than 5 characters!")
-    private String description;
 
     @NotNull(message = "The field `brand` mustn't be null!")
     @Enumerated(EnumType.STRING)
@@ -103,17 +91,21 @@ public class PhoneDto {
     private boolean isUsed;
 
     private Set<Color> colors;
-    private List<PhonePictureURL> phonePictureURLS;
-    private List<MobileCommunicationStandard> standardList;
+    private List<Comment> comments;
+    private List<PhoneRom> romList;
+    private List<PhonePictureUrl> phonePictureUrls;
+    private List<MobileCommunicationStandard> communicationStandardList;
     private List<OtherFeatures> featuresList;
+    private List<PhoneRating> ratings;
 
-    public PhoneDto() {}
+    public PhoneDto() {
+    }
 
     public PhoneDto(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                     String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
-                    Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                    Double rating, Long voteCount, String description, Brand brand, boolean isUsed,
-                    List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standartList,
+                    Short ram, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
+                    Long voteCount, Brand brand, boolean isUsed,
+                    List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> standartList,
                     List<OtherFeatures> featuresList) {
         this.id = id;
         this.model = model;
@@ -127,18 +119,15 @@ public class PhoneDto {
         this.processor = processor;
         this.countOfCores = countOfCores;
         this.ram = ram;
-        this.rom = rom;
         this.weight = weight;
         this.batteryCapacity = batteryCapacity;
         this.countOfSimCard = countOfSimCard;
         this.price = price;
-        this.rating = rating;
         this.voteCount = voteCount;
-        this.description = description;
         this.brand = brand;
         this.isUsed = isUsed;
-        this.phonePictureURLS = phonePictureURLS;
-        this.standardList = standartList;
+        this.phonePictureUrls = phonePictureUrls;
+        this.communicationStandardList = standartList;
         this.featuresList = featuresList;
     }
 
@@ -238,14 +227,6 @@ public class PhoneDto {
         this.ram = ram;
     }
 
-    public Short getRom() {
-        return rom;
-    }
-
-    public void setRom(Short rom) {
-        this.rom = rom;
-    }
-
     public Short getWeight() {
         return weight;
     }
@@ -278,28 +259,12 @@ public class PhoneDto {
         this.price = price;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
     public Long getVoteCount() {
         return voteCount;
     }
 
     public void setVoteCount(Long voteCount) {
         this.voteCount = voteCount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Brand getBrand() {
@@ -318,12 +283,12 @@ public class PhoneDto {
         isUsed = used;
     }
 
-    public List<PhonePictureURL> getPhonePictureURLS() {
-        return phonePictureURLS;
+    public List<PhoneRom> getRomList() {
+        return romList;
     }
 
-    public void setPhonePictureURLS(List<PhonePictureURL> phonePictureURLS) {
-        this.phonePictureURLS = phonePictureURLS;
+    public void setRomList(List<PhoneRom> romList) {
+        this.romList = romList;
     }
 
     public Set<Color> getColors() {
@@ -334,12 +299,12 @@ public class PhoneDto {
         this.colors = colors;
     }
 
-    public List<MobileCommunicationStandard> getStandardList() {
-        return standardList;
+    public List<MobileCommunicationStandard> getCommunicationStandardList() {
+        return communicationStandardList;
     }
 
-    public void setStandardList(List<MobileCommunicationStandard> standardList) {
-        this.standardList = standardList;
+    public void setCommunicationStandardList(List<MobileCommunicationStandard> communicationStandardList) {
+        this.communicationStandardList = communicationStandardList;
     }
 
     public List<OtherFeatures> getFeaturesList() {
@@ -348,5 +313,29 @@ public class PhoneDto {
 
     public void setFeaturesList(List<OtherFeatures> featuresList) {
         this.featuresList = featuresList;
+    }
+
+    public List<PhonePictureUrl> getPhonePictureUrls() {
+        return phonePictureUrls;
+    }
+
+    public void setPhonePictureUrls(List<PhonePictureUrl> phonePictureUrls) {
+        this.phonePictureUrls = phonePictureUrls;
+    }
+
+    public List<PhoneRating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<PhoneRating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

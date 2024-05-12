@@ -1,10 +1,7 @@
 package com.storeApp.service.implementation;
 
-import com.storeApp.models.Case;
-import com.storeApp.models.Color;
-import com.storeApp.models.Phone;
-import com.storeApp.repository.ColorRepository;
-import com.storeApp.repository.PhoneRepository;
+import com.storeApp.models.*;
+import com.storeApp.repository.*;
 import com.storeApp.service.PhoneService;
 
 import com.storeApp.util.exception.OnlineStoreApiException;
@@ -23,17 +20,38 @@ import java.util.stream.Collectors;
 public class PhoneServiceImpl implements PhoneService {
 
     private final PhoneRepository phoneRepository;
+    private final PhoneRatingRepository phoneRatingRepository;
     private final ColorRepository colorRepository;
+    private final PhoneRomRepository phoneRomRepository;
+    private final MobileCommunicationStandardRepository mobileCommunicationStandardRepository;
 
     @Autowired
-    public PhoneServiceImpl(PhoneRepository phoneRepository, ColorRepository colorRepository) {
+    public PhoneServiceImpl(PhoneRepository phoneRepository, PhoneRatingRepository phoneRatingRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository, MobileCommunicationStandardRepository mobileCommunicationStandardRepository) {
         this.phoneRepository = phoneRepository;
+        this.phoneRatingRepository = phoneRatingRepository;
         this.colorRepository = colorRepository;
+        this.phoneRomRepository = phoneRomRepository;
+        this.mobileCommunicationStandardRepository = mobileCommunicationStandardRepository;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void addNewPhone(Phone phone) {
+        //todo why simple saving phone entity with romList doesn't save ref. between them
+        phone.setRomList(phone.getRomList());
+        phone.setCommunicationStandardList(phone.getCommunicationStandardList());
+
+        if (phone.getRomList() != null) {
+            for (PhoneRom element : phone.getRomList()) {
+                element.setPhone(phone);
+                phoneRomRepository.save(element);
+            }
+        }
+
+        for (MobileCommunicationStandard element : phone.getCommunicationStandardList()) {
+            element.setPhone(phone);
+            mobileCommunicationStandardRepository.save(element);
+        }
         phoneRepository.save(phone);
     }
 
@@ -47,7 +65,7 @@ public class PhoneServiceImpl implements PhoneService {
         } else if ("maxPrice".equalsIgnoreCase(sort)) {
             phones.sort(Comparator.comparing(Phone::getPrice).reversed());
         } else if ("maxRating".equalsIgnoreCase(sort)) {
-            phones.sort(Comparator.comparing(Phone::getRating).reversed());
+           //todo  change logic phones.sort(Comparator.comparing(Phone::getRating).reversed());
         }
 
         return phones;
@@ -66,29 +84,38 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional(readOnly = false)
-    public void putTheMark(Long id, Double mark) {
+    public String putTheMark(User user, Phone phone, Double mark) {
 
-        if (phoneRepository.findPhoneById(id).isPresent()) {
+        if (phone.getRatings().stream().anyMatch(r -> r.getUser().equals(user))) {
+            return "User already putted the mark to this phone!";
+        }
 
-            Phone phone = phoneRepository.findPhoneById(id).get();
-            Double currentRating = null;
-            Long voteCount = null;
+        PhoneRating rating = new PhoneRating();
+        rating.setPhone(phone);
+        rating.setUser(user);
+        rating.setRating(mark);
 
-            if (phone.getVoteCount() == null) {
-                phone.setRating(0.0);
-                phone.setVoteCount(0L);
+        if(phone.getVoteCount()==null){
+            phone.setVoteCount(0L);
+        }
+        phone.setVoteCount(phone.getVoteCount() + 1);
+
+        phoneRepository.save(phone);
+        phoneRatingRepository.save(rating);
+
+        return "Mark - " + mark + " was putted to phone with id - " + phone.getId();
+    }
+    public void calculateAverageRating(Phone phone) {
+        List<PhoneRating> ratings = phone.getRatings();
+        if (ratings != null && !ratings.isEmpty()) {
+            double totalRating = 0;
+            for (PhoneRating rating : ratings) {
+                totalRating += rating.getRating();
             }
-
-            currentRating = phone.getRating() * phone.getVoteCount();
-            voteCount = phone.getVoteCount() + 1;
-
-
-            phone.setVoteCount(voteCount);
-            phone.setRating((currentRating + mark) / voteCount);
-
-            phoneRepository.save(phone);
+            double averageRating = totalRating / ratings.size();
+            phone.setRating(averageRating);
         } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
+            phone.setRating(0.0); // Or any default value you prefer
         }
     }
 
@@ -113,21 +140,33 @@ public class PhoneServiceImpl implements PhoneService {
             phoneForUpdating.setProcessor(editedPhone.getProcessor());
             phoneForUpdating.setCountOfCores(editedPhone.getCountOfCores());
             phoneForUpdating.setRam(editedPhone.getRam());
-            phoneForUpdating.setRom(editedPhone.getRom());
             phoneForUpdating.setWeight(editedPhone.getWeight());
             phoneForUpdating.setBatteryCapacity(editedPhone.getBatteryCapacity());
             phoneForUpdating.setCountOfSimCard(editedPhone.getCountOfSimCard());
             phoneForUpdating.setPrice(editedPhone.getPrice());
-            phoneForUpdating.setRating(editedPhone.getRating());
+            //phoneForUpdating.setRating(editedPhone.getRating());
             phoneForUpdating.setVoteCount(editedPhone.getVoteCount());
-            phoneForUpdating.setDescription(editedPhone.getDescription());
             phoneForUpdating.setBrand(editedPhone.getBrand());
             phoneForUpdating.setUsed(editedPhone.isUsed());
             phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
-            phoneForUpdating.setStandardList(editedPhone.getStandardList());
+            phoneForUpdating.setCommunicationStandardList(editedPhone.getCommunicationStandardList());
             phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());
-
             phoneRepository.save(phoneForUpdating);
+
+            if (editedPhone.getRomList() != null) {
+                for (PhoneRom element : editedPhone.getRomList()) {
+                    element.setPhone(phoneForUpdating);
+                    phoneRomRepository.save(element);
+                }
+            }
+
+            if (editedPhone.getCommunicationStandardList() != null) {
+                for (MobileCommunicationStandard element : editedPhone.getCommunicationStandardList()) {
+                    element.setPhone(phoneForUpdating);
+                    mobileCommunicationStandardRepository.save(element);
+                }
+            }
+
             return phoneForUpdating;
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
