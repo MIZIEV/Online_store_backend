@@ -58,9 +58,11 @@ public class PhoneController {
 
     @GetMapping("/list")
     public List<Phone> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                    @RequestParam(name = "searchTerm", required = false) String searchTerm) {
+                                    @RequestParam(name = "searchTerm", required = false) String searchTerm,
+                                    @RequestParam(name = "brand", required = false) String brand,
+                                    @RequestParam(name = "screenSize", required = false) String screenSize) {
 
-        List<Phone> filteredList = new ArrayList<>();
+        /*List<Phone> filteredList = new ArrayList<>();
 
         if (searchTerm != null && !searchTerm.isEmpty()) {
             String[] searchTerms = searchTerm.split("\\s+");
@@ -85,7 +87,8 @@ public class PhoneController {
         } else {
             filteredList = phoneService.getAllPhones(sort);
         }
-        return filteredList;
+        return filteredList;*/
+        return phoneService.getAllPhones(sort, brand, screenSize);
     }
 
     @GetMapping("/{id}")

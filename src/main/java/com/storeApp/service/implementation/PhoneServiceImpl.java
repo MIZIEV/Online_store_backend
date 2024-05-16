@@ -55,7 +55,7 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public List<Phone> getAllPhones(String sort) {
+    public List<Phone> getAllPhones(String sort,String brand,String screenSize) {
 
         List<Phone> phones = phoneRepository.findAll();
 
@@ -66,6 +66,28 @@ public class PhoneServiceImpl implements PhoneService {
         } else if ("maxRating".equalsIgnoreCase(sort)) {
             //todo  change logic phones.sort(Comparator.comparing(Phone::getRating).reversed());
         }
+
+        if (brand != null && !brand.isEmpty()) {
+            phones = phones.stream().filter(phone -> Arrays.stream(brand.split(",")).anyMatch(selectedBrand -> selectedBrand.trim().equalsIgnoreCase(phone.getBrand().toString()))).collect(Collectors.toList());
+        }
+
+        phones = phones.stream()
+                .filter(phone -> {
+                    if (screenSize == null || screenSize.isEmpty()) {
+                        return true;
+                    }
+                    String[] screenSizes = screenSize.split(",");
+                    return Arrays.stream(screenSizes)
+                            .anyMatch(size -> {
+                                try {
+                                    double screenSizeValue = Double.parseDouble(size.trim());
+                                    return screenSizeValue == phone.getScreenSize();
+                                } catch (NumberFormatException e) {
+                                    return false;
+                                }
+                            });
+                })
+                .collect(Collectors.toList());
 
         return phones;
     }
