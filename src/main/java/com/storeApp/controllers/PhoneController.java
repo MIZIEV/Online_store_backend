@@ -127,6 +127,11 @@ public class PhoneController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping("/distinct-characteristics")
+    public ResponseEntity<?> getDistinctValues(){
+        return new ResponseEntity<>(phoneService.getDistinctValues(), HttpStatus.OK);
+    }
+
     private PhoneRating convertToPhoneRating(PhoneRatingDto phoneRatingDto) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(phoneRatingDto, PhoneRating.class);
