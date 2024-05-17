@@ -61,7 +61,8 @@ public class PhoneController {
                                     @RequestParam(name = "searchTerm", required = false) String searchTerm,
                                     @RequestParam(name = "brand", required = false) String brand,
                                     @RequestParam(name = "screenSize", required = false) String screenSize,
-                                    @RequestParam(name = "isUsed", required = false) Boolean isUsed) {
+                                    @RequestParam(name = "isUsed", required = false) Boolean isUsed,
+                                    @RequestParam(name = "resolution", required = false) String resolution) {
 
         /*List<Phone> filteredList = new ArrayList<>();
 
@@ -89,7 +90,7 @@ public class PhoneController {
             filteredList = phoneService.getAllPhones(sort);
         }
         return filteredList;*/
-        return phoneService.getAllPhones(sort, brand, screenSize,isUsed);
+        return phoneService.getAllPhones(sort, brand, screenSize, isUsed, resolution);
     }
 
     @GetMapping("/{id}")

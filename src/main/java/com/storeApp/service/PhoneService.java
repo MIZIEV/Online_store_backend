@@ -12,7 +12,7 @@ public interface PhoneService {
 
     void addNewPhone(Phone phone);
 
-    List<Phone> getAllPhones(String sort, String brand, String screenSize, Boolean isUsed);
+    List<Phone> getAllPhones(String sort, String brand, String screenSize, Boolean isUsed, String resolution);
 
     Phone getPhoneById(Long id);
 
