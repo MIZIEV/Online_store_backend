@@ -60,7 +60,8 @@ public class PhoneController {
     public List<Phone> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
                                     @RequestParam(name = "searchTerm", required = false) String searchTerm,
                                     @RequestParam(name = "brand", required = false) String brand,
-                                    @RequestParam(name = "screenSize", required = false) String screenSize) {
+                                    @RequestParam(name = "screenSize", required = false) String screenSize,
+                                    @RequestParam(name = "isUsed", required = false) Boolean isUsed) {
 
         /*List<Phone> filteredList = new ArrayList<>();
 
@@ -88,12 +89,12 @@ public class PhoneController {
             filteredList = phoneService.getAllPhones(sort);
         }
         return filteredList;*/
-        return phoneService.getAllPhones(sort, brand, screenSize);
+        return phoneService.getAllPhones(sort, brand, screenSize,isUsed);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPhoneById(@PathVariable("id") long id) {
-        Phone phone=phoneService.getPhoneById(id);
+        Phone phone = phoneService.getPhoneById(id);
 
         phoneService.calculateAverageRating(phone);
         return new ResponseEntity<>(phone, HttpStatus.OK);
@@ -131,7 +132,7 @@ public class PhoneController {
     }
 
     @GetMapping("/distinct-characteristics")
-    public ResponseEntity<?> getDistinctValues(){
+    public ResponseEntity<?> getDistinctValues() {
         return new ResponseEntity<>(phoneService.getDistinctValues(), HttpStatus.OK);
     }
 

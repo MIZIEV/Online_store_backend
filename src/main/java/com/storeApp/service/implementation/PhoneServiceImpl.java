@@ -55,7 +55,7 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public List<Phone> getAllPhones(String sort,String brand,String screenSize) {
+    public List<Phone> getAllPhones(String sort, String brand, String screenSize, Boolean isUsed) {
 
         List<Phone> phones = phoneRepository.findAll();
 
@@ -71,13 +71,10 @@ public class PhoneServiceImpl implements PhoneService {
             phones = phones.stream().filter(phone -> Arrays.stream(brand.split(",")).anyMatch(selectedBrand -> selectedBrand.trim().equalsIgnoreCase(phone.getBrand().toString()))).collect(Collectors.toList());
         }
 
-        phones = phones.stream()
-                .filter(phone -> {
-                    if (screenSize == null || screenSize.isEmpty()) {
-                        return true;
-                    }
-                    String[] screenSizes = screenSize.split(",");
-                    return Arrays.stream(screenSizes)
+        if (screenSize != null && !screenSize.isEmpty()) {
+            String[] screenSizes = screenSize.split(",");
+            phones = phones.stream()
+                    .filter(phone -> Arrays.stream(screenSizes)
                             .anyMatch(size -> {
                                 try {
                                     double screenSizeValue = Double.parseDouble(size.trim());
@@ -85,9 +82,15 @@ public class PhoneServiceImpl implements PhoneService {
                                 } catch (NumberFormatException e) {
                                     return false;
                                 }
-                            });
-                })
-                .collect(Collectors.toList());
+                            }))
+                    .collect(Collectors.toList());
+        }
+
+        if (isUsed != null) {
+            phones = phones.stream()
+                    .filter(phone -> phone.isUsed() == isUsed)
+                    .collect(Collectors.toList());
+        }
 
         return phones;
     }
@@ -241,7 +244,7 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public Map<String, Set<? extends Serializable>> getDistinctValues(){
+    public Map<String, Set<? extends Serializable>> getDistinctValues() {
         Map<String, Set<? extends Serializable>> distinctValuesMap = new LinkedHashMap<>();
 
         distinctValuesMap.put("screenSize", phoneRepository.findDistinctScreenSize());
