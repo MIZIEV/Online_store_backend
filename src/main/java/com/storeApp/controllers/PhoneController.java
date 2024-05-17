@@ -58,9 +58,13 @@ public class PhoneController {
 
     @GetMapping("/list")
     public List<Phone> getAllPhones(@RequestParam(name = "sort", defaultValue = "asc") String sort,
-                                    @RequestParam(name = "searchTerm", required = false) String searchTerm) {
+                                    @RequestParam(name = "searchTerm", required = false) String searchTerm,
+                                    @RequestParam(name = "brand", required = false) String brand,
+                                    @RequestParam(name = "screenSize", required = false) String screenSize,
+                                    @RequestParam(name = "isUsed", required = false) Boolean isUsed,
+                                    @RequestParam(name = "resolution", required = false) String resolution) {
 
-        List<Phone> filteredList = new ArrayList<>();
+        /*List<Phone> filteredList = new ArrayList<>();
 
         if (searchTerm != null && !searchTerm.isEmpty()) {
             String[] searchTerms = searchTerm.split("\\s+");
@@ -85,12 +89,13 @@ public class PhoneController {
         } else {
             filteredList = phoneService.getAllPhones(sort);
         }
-        return filteredList;
+        return filteredList;*/
+        return phoneService.getAllPhones(sort, brand, screenSize, isUsed, resolution);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPhoneById(@PathVariable("id") long id) {
-        Phone phone=phoneService.getPhoneById(id);
+        Phone phone = phoneService.getPhoneById(id);
 
         phoneService.calculateAverageRating(phone);
         return new ResponseEntity<>(phone, HttpStatus.OK);
@@ -125,6 +130,11 @@ public class PhoneController {
     public ResponseEntity<HttpStatus> deletePhone(@PathVariable("id") long id) {
         phoneService.deletePhone(id);
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/distinct-characteristics")
+    public ResponseEntity<?> getDistinctValues() {
+        return new ResponseEntity<>(phoneService.getDistinctValues(), HttpStatus.OK);
     }
 
     private PhoneRating convertToPhoneRating(PhoneRatingDto phoneRatingDto) {

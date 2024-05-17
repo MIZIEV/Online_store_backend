@@ -10,9 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +55,7 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public List<Phone> getAllPhones(String sort) {
+    public List<Phone> getAllPhones(String sort, String brand, String screenSize, Boolean isUsed, String resolution) {
 
         List<Phone> phones = phoneRepository.findAll();
 
@@ -65,7 +64,43 @@ public class PhoneServiceImpl implements PhoneService {
         } else if ("maxPrice".equalsIgnoreCase(sort)) {
             phones.sort(Comparator.comparing(Phone::getPrice).reversed());
         } else if ("maxRating".equalsIgnoreCase(sort)) {
-           //todo  change logic phones.sort(Comparator.comparing(Phone::getRating).reversed());
+            //todo  change logic phones.sort(Comparator.comparing(Phone::getRating).reversed());
+        }
+
+        if (brand != null && !brand.isEmpty()) {
+            phones = phones.stream().
+                    filter(phone -> Arrays.stream(brand.split(",")).
+                            anyMatch(selectedBrand -> selectedBrand.trim().
+                                    equalsIgnoreCase(phone.getBrand().toString()))).
+                    collect(Collectors.toList());
+        }
+
+        if (screenSize != null && !screenSize.isEmpty()) {
+            String[] screenSizes = screenSize.split(",");
+            phones = phones.stream()
+                    .filter(phone -> Arrays.stream(screenSizes)
+                            .anyMatch(size -> {
+                                try {
+                                    double screenSizeValue = Double.parseDouble(size.trim());
+                                    return screenSizeValue == phone.getScreenSize();
+                                } catch (NumberFormatException e) {
+                                    return false;
+                                }
+                            }))
+                    .collect(Collectors.toList());
+        }
+
+        if (isUsed != null) {
+            phones = phones.stream()
+                    .filter(phone -> phone.isUsed() == isUsed)
+                    .collect(Collectors.toList());
+        }
+        if (resolution != null && !resolution.isEmpty()) {
+            phones = phones.stream().
+                    filter(phone -> Arrays.stream(resolution.split(",")).
+                            anyMatch(selectedBrand -> selectedBrand.trim().
+                                    equalsIgnoreCase(phone.getResolution().toString()))).
+                    collect(Collectors.toList());
         }
 
         return phones;
@@ -95,7 +130,7 @@ public class PhoneServiceImpl implements PhoneService {
         rating.setUser(user);
         rating.setRating(mark);
 
-        if(phone.getVoteCount()==null){
+        if (phone.getVoteCount() == null) {
             phone.setVoteCount(0L);
         }
         phone.setVoteCount(phone.getVoteCount() + 1);
@@ -105,6 +140,7 @@ public class PhoneServiceImpl implements PhoneService {
 
         return "Mark - " + mark + " was putted to phone with id - " + phone.getId();
     }
+
     public void calculateAverageRating(Phone phone) {
         List<PhoneRating> ratings = phone.getRatings();
         if (ratings != null && !ratings.isEmpty()) {
@@ -115,7 +151,7 @@ public class PhoneServiceImpl implements PhoneService {
             double averageRating = totalRating / ratings.size();
             phone.setRating(averageRating);
         } else {
-            phone.setRating(0.0); // Or any default value you prefer
+            phone.setRating(0.0);
         }
     }
 
@@ -216,5 +252,20 @@ public class PhoneServiceImpl implements PhoneService {
         } else {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
         }
+    }
+
+    @Override
+    public Map<String, Set<? extends Serializable>> getDistinctValues() {
+        Map<String, Set<? extends Serializable>> distinctValuesMap = new LinkedHashMap<>();
+
+        distinctValuesMap.put("screenSize", phoneRepository.findDistinctScreenSize());
+        distinctValuesMap.put("resolution", phoneRepository.findDistinctResolution());
+        distinctValuesMap.put("processor", phoneRepository.findDistinctProcessor());
+        distinctValuesMap.put("countOfCores", phoneRepository.findDistinctCountOfCores());
+        distinctValuesMap.put("ram", phoneRepository.findDistinctRam());
+        distinctValuesMap.put("batteryCapacity", phoneRepository.findDistinctBatteryCapacity());
+        distinctValuesMap.put("countOfSimCard", phoneRepository.findDistinctCountOfSimCard());
+
+        return distinctValuesMap;
     }
 }
