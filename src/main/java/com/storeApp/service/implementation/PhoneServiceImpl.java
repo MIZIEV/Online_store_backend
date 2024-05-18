@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -116,63 +117,16 @@ public class PhoneServiceImpl implements PhoneService {
                     collect(Collectors.toList());
         }
 
-        if (ram != null && !ram.isEmpty()) {
-            String[] rams = ram.split(",");
-            phones = phones.stream()
-                    .filter(phone -> Arrays.stream(rams)
-                            .anyMatch(ramValue -> {
-                                try {
-                                    short ramShortValue = Short.parseShort(ramValue.trim());
-                                    return ramShortValue == phone.getRam();
-                                } catch (NumberFormatException e) {
-                                    return false;
-                                }
-                            }))
-                    .collect(Collectors.toList());
-        }
-
-        if (countOfCores != null && !countOfCores.isEmpty()) {
-            String[] countOfCoresArray = countOfCores.split(",");
-            phones = phones.stream()
-                    .filter(phone -> Arrays.stream(countOfCoresArray)
-                            .anyMatch(ramValue -> {
-                                try {
-                                    byte countOfCoresValue = Byte.parseByte(ramValue.trim());
-                                    return countOfCoresValue == phone.getCountOfCores();
-                                } catch (NumberFormatException e) {
-                                    return false;
-                                }
-                            }))
-                    .collect(Collectors.toList());
-        }
-
-        if (countOfSimCard != null && !countOfSimCard.isEmpty()) {
-            String[] countOfSimCardArray = countOfSimCard.split(",");
-            phones = phones.stream()
-                    .filter(phone -> Arrays.stream(countOfSimCardArray)
-                            .anyMatch(ramValue -> {
-                                try {
-                                    byte countOfSimCardValue = Byte.parseByte(ramValue.trim());
-                                    return countOfSimCardValue == phone.getCountOfSimCard();
-                                } catch (NumberFormatException e) {
-                                    return false;
-                                }
-                            }))
-                    .collect(Collectors.toList());
-        }
+        phones = applyNumericFilter(phones, ram, Phone::getRam, Short::parseShort);
+        phones = applyNumericFilter(phones, countOfCores, Phone::getCountOfCores, Byte::parseByte);
+        phones = applyNumericFilter(phones, countOfSimCard, Phone::getCountOfSimCard, Byte::parseByte);
 
         return phones;
     }
 
-
     @Override
     public Phone getPhoneById(Long id) {
-
-        if (phoneRepository.findPhoneById(id).isPresent()) {
-            return phoneRepository.findPhoneById(id).get();
-        } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
-        }
+        return findPhoneByIdOrThrow(id);
     }
 
     @Override
@@ -217,99 +171,80 @@ public class PhoneServiceImpl implements PhoneService {
     @Transactional(readOnly = false)
     public Phone updatePhone(Phone editedPhone, Long id) {
 
-        Phone phoneForUpdating = null;
+        Phone phoneForUpdating = findPhoneByIdOrThrow(id);
 
-        if (phoneRepository.findPhoneById(id).isPresent()) {
-            phoneForUpdating = phoneRepository.findPhoneById(id).get();
+        phoneForUpdating.setId(id);
+        phoneForUpdating.setModel(editedPhone.getModel());
+        phoneForUpdating.setMainPictureURL(editedPhone.getMainPictureURL());
+        phoneForUpdating.setOs(editedPhone.getOs());
+        phoneForUpdating.setOsVersion(editedPhone.getOsVersion());
+        phoneForUpdating.setScreenSize(editedPhone.getScreenSize());
+        phoneForUpdating.setResolution(editedPhone.getResolution());
+        phoneForUpdating.setMainCamera(editedPhone.getMainCamera());
+        phoneForUpdating.setFrontCamera(editedPhone.getFrontCamera());
+        phoneForUpdating.setProcessor(editedPhone.getProcessor());
+        phoneForUpdating.setCountOfCores(editedPhone.getCountOfCores());
+        phoneForUpdating.setRam(editedPhone.getRam());
+        phoneForUpdating.setWeight(editedPhone.getWeight());
+        phoneForUpdating.setBatteryCapacity(editedPhone.getBatteryCapacity());
+        phoneForUpdating.setCountOfSimCard(editedPhone.getCountOfSimCard());
+        phoneForUpdating.setPrice(editedPhone.getPrice());
+        phoneForUpdating.setVoteCount(editedPhone.getVoteCount());
+        phoneForUpdating.setBrand(editedPhone.getBrand());
+        phoneForUpdating.setUsed(editedPhone.isUsed());
+        phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
+        phoneForUpdating.setCommunicationStandardList(editedPhone.getCommunicationStandardList());
+        phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());
+        phoneRepository.save(phoneForUpdating);
 
-            phoneForUpdating.setId(id);
-            phoneForUpdating.setModel(editedPhone.getModel());
-            phoneForUpdating.setMainPictureURL(editedPhone.getMainPictureURL());
-            phoneForUpdating.setOs(editedPhone.getOs());
-            phoneForUpdating.setOsVersion(editedPhone.getOsVersion());
-            phoneForUpdating.setScreenSize(editedPhone.getScreenSize());
-            phoneForUpdating.setResolution(editedPhone.getResolution());
-            phoneForUpdating.setMainCamera(editedPhone.getMainCamera());
-            phoneForUpdating.setFrontCamera(editedPhone.getFrontCamera());
-            phoneForUpdating.setProcessor(editedPhone.getProcessor());
-            phoneForUpdating.setCountOfCores(editedPhone.getCountOfCores());
-            phoneForUpdating.setRam(editedPhone.getRam());
-            phoneForUpdating.setWeight(editedPhone.getWeight());
-            phoneForUpdating.setBatteryCapacity(editedPhone.getBatteryCapacity());
-            phoneForUpdating.setCountOfSimCard(editedPhone.getCountOfSimCard());
-            phoneForUpdating.setPrice(editedPhone.getPrice());
-            //phoneForUpdating.setRating(editedPhone.getRating());
-            phoneForUpdating.setVoteCount(editedPhone.getVoteCount());
-            phoneForUpdating.setBrand(editedPhone.getBrand());
-            phoneForUpdating.setUsed(editedPhone.isUsed());
-            phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
-            phoneForUpdating.setCommunicationStandardList(editedPhone.getCommunicationStandardList());
-            phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());
-            phoneRepository.save(phoneForUpdating);
-
-            if (editedPhone.getRomList() != null) {
-                for (PhoneRom element : editedPhone.getRomList()) {
-                    element.setPhone(phoneForUpdating);
-                    phoneRomRepository.save(element);
-                }
+        if (editedPhone.getRomList() != null) {
+            for (PhoneRom element : editedPhone.getRomList()) {
+                element.setPhone(phoneForUpdating);
+                phoneRomRepository.save(element);
             }
-
-            if (editedPhone.getCommunicationStandardList() != null) {
-                for (MobileCommunicationStandard element : editedPhone.getCommunicationStandardList()) {
-                    element.setPhone(phoneForUpdating);
-                    mobileCommunicationStandardRepository.save(element);
-                }
-            }
-
-            return phoneForUpdating;
-        } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
         }
+
+        if (editedPhone.getCommunicationStandardList() != null) {
+            for (MobileCommunicationStandard element : editedPhone.getCommunicationStandardList()) {
+                element.setPhone(phoneForUpdating);
+                mobileCommunicationStandardRepository.save(element);
+            }
+        }
+        return phoneForUpdating;
     }
 
     @Override
     @Transactional(readOnly = false)
     public String putTheColors(Long id, Set<Long> colorIds) {
-        if (phoneRepository.findPhoneById(id).isPresent()) {
 
-            Phone phone = phoneRepository.findPhoneById(id).get();
-            Set<Color> colors = colorRepository.findByColorsIds(colorIds);
+        Phone phone = findPhoneByIdOrThrow(id);
+        Set<Color> colors = colorRepository.findByColorsIds(colorIds);
 
-            Set<Long> existingColorIds = colors.stream().map(Color::getId).collect(Collectors.toSet());
-            Set<Long> nonExistingColorIds = colorIds.stream()
-                    .filter(colorId -> !existingColorIds.contains(colorId))
-                    .collect(Collectors.toSet());
+        Set<Long> existingColorIds = colors.stream().map(Color::getId).collect(Collectors.toSet());
+        Set<Long> nonExistingColorIds = colorIds.stream()
+                .filter(colorId -> !existingColorIds.contains(colorId))
+                .collect(Collectors.toSet());
 
-            if (colors.isEmpty()) {
-                throw new OnlineStoreApiException(HttpStatus.NOT_FOUND,
-                        "Colors with id - " + nonExistingColorIds + " not found!");
-            } else if (nonExistingColorIds.isEmpty()) {
-                phone.setColors(colors);
-                phoneRepository.save(phone);
-                return "colors with id" + existingColorIds + " is putted! ";
-            } else {
-                phone.setColors(colors);
-                phoneRepository.save(phone);
-                return "Color with id" + existingColorIds + " is putted!\n" +
-                        "Color with id" + nonExistingColorIds + " not found!";
-            }
+        if (colors.isEmpty()) {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND,
+                    "Colors with id - " + nonExistingColorIds + " not found!");
+        } else if (nonExistingColorIds.isEmpty()) {
+            phone.setColors(colors);
+            phoneRepository.save(phone);
+            return "colors with id" + existingColorIds + " is putted! ";
         } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
+            phone.setColors(colors);
+            phoneRepository.save(phone);
+            return "Color with id" + existingColorIds + " is putted!\n" +
+                    "Color with id" + nonExistingColorIds + " not found!";
         }
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deletePhone(Long id) {
-
-        Phone phone = null;
-
-        if (phoneRepository.findPhoneById(id).isPresent()) {
-            phone = phoneRepository.findPhoneById(id).get();
-            phoneRepository.delete(phone);
-        } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found!");
-        }
+        Phone phone = findPhoneByIdOrThrow(id);
+        phoneRepository.delete(phone);
     }
 
     @Override
@@ -325,5 +260,30 @@ public class PhoneServiceImpl implements PhoneService {
         distinctValuesMap.put("countOfSimCard", phoneRepository.findDistinctCountOfSimCard());
 
         return distinctValuesMap;
+    }
+
+    private <T extends Number> List<Phone> applyNumericFilter(List<Phone> phones, String filter,
+                                                              Function<Phone, T> getter, Function<String, T> parser) {
+        if (filter == null || filter.isEmpty()) {
+            return phones;
+        }
+        String[] filterValue = filter.split(",");
+
+        return phones.stream()
+                .filter(phone -> Arrays.stream(filterValue)
+                        .anyMatch(value -> {
+                            try {
+                                T parsedValue = parser.apply(value.trim());
+                                return parsedValue.equals(getter.apply(phone));
+                            } catch (NumberFormatException e) {
+                                return false;
+                            }
+                        }))
+                .collect(Collectors.toList());
+    }
+
+    private Phone findPhoneByIdOrThrow(Long id) {
+        return phoneRepository.findPhoneById(id).
+                orElseThrow(() -> new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found"));
     }
 }
