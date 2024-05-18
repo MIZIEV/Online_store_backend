@@ -55,7 +55,9 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public List<Phone> getAllPhones(String sort, String brand, String screenSize, Boolean isUsed, String resolution) {
+    public List<Phone> getAllPhones(String sort, String brand, String screenSize,
+                                    Boolean isUsed, String resolution, String ram,
+                                    String countOfCores, String countOfSimCard) {
 
         List<Phone> phones = phoneRepository.findAll();
 
@@ -79,12 +81,23 @@ public class PhoneServiceImpl implements PhoneService {
             String[] screenSizes = screenSize.split(",");
             phones = phones.stream()
                     .filter(phone -> Arrays.stream(screenSizes)
-                            .anyMatch(size -> {
-                                try {
-                                    double screenSizeValue = Double.parseDouble(size.trim());
-                                    return screenSizeValue == phone.getScreenSize();
-                                } catch (NumberFormatException e) {
-                                    return false;
+                            .anyMatch(sizeRange -> {
+                                String[] range = sizeRange.trim().split("-");
+                                if (range.length == 2) {
+                                    try {
+                                        double minSize = Double.parseDouble(range[0]);
+                                        double maxSize = Double.parseDouble(range[1]);
+                                        return phone.getScreenSize() >= minSize && phone.getScreenSize() <= maxSize;
+                                    } catch (NumberFormatException e) {
+                                        return false;
+                                    }
+                                } else {
+                                    try {
+                                        double screenSizeValue = Double.parseDouble(sizeRange.trim());
+                                        return screenSizeValue == phone.getScreenSize();
+                                    } catch (NumberFormatException e) {
+                                        return false;
+                                    }
                                 }
                             }))
                     .collect(Collectors.toList());
@@ -101,6 +114,51 @@ public class PhoneServiceImpl implements PhoneService {
                             anyMatch(selectedBrand -> selectedBrand.trim().
                                     equalsIgnoreCase(phone.getResolution().toString()))).
                     collect(Collectors.toList());
+        }
+
+        if (ram != null && !ram.isEmpty()) {
+            String[] rams = ram.split(",");
+            phones = phones.stream()
+                    .filter(phone -> Arrays.stream(rams)
+                            .anyMatch(ramValue -> {
+                                try {
+                                    short ramShortValue = Short.parseShort(ramValue.trim());
+                                    return ramShortValue == phone.getRam();
+                                } catch (NumberFormatException e) {
+                                    return false;
+                                }
+                            }))
+                    .collect(Collectors.toList());
+        }
+
+        if (countOfCores != null && !countOfCores.isEmpty()) {
+            String[] countOfCoresArray = countOfCores.split(",");
+            phones = phones.stream()
+                    .filter(phone -> Arrays.stream(countOfCoresArray)
+                            .anyMatch(ramValue -> {
+                                try {
+                                    byte countOfCoresValue = Byte.parseByte(ramValue.trim());
+                                    return countOfCoresValue == phone.getCountOfCores();
+                                } catch (NumberFormatException e) {
+                                    return false;
+                                }
+                            }))
+                    .collect(Collectors.toList());
+        }
+
+        if (countOfSimCard != null && !countOfSimCard.isEmpty()) {
+            String[] countOfSimCardArray = countOfSimCard.split(",");
+            phones = phones.stream()
+                    .filter(phone -> Arrays.stream(countOfSimCardArray)
+                            .anyMatch(ramValue -> {
+                                try {
+                                    byte countOfSimCardValue = Byte.parseByte(ramValue.trim());
+                                    return countOfSimCardValue == phone.getCountOfSimCard();
+                                } catch (NumberFormatException e) {
+                                    return false;
+                                }
+                            }))
+                    .collect(Collectors.toList());
         }
 
         return phones;
