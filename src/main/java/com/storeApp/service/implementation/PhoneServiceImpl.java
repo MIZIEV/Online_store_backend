@@ -81,12 +81,23 @@ public class PhoneServiceImpl implements PhoneService {
             String[] screenSizes = screenSize.split(",");
             phones = phones.stream()
                     .filter(phone -> Arrays.stream(screenSizes)
-                            .anyMatch(size -> {
-                                try {
-                                    double screenSizeValue = Double.parseDouble(size.trim());
-                                    return screenSizeValue == phone.getScreenSize();
-                                } catch (NumberFormatException e) {
-                                    return false;
+                            .anyMatch(sizeRange -> {
+                                String[] range = sizeRange.trim().split("-");
+                                if (range.length == 2) {
+                                    try {
+                                        double minSize = Double.parseDouble(range[0]);
+                                        double maxSize = Double.parseDouble(range[1]);
+                                        return phone.getScreenSize() >= minSize && phone.getScreenSize() <= maxSize;
+                                    } catch (NumberFormatException e) {
+                                        return false;
+                                    }
+                                } else {
+                                    try {
+                                        double screenSizeValue = Double.parseDouble(sizeRange.trim());
+                                        return screenSizeValue == phone.getScreenSize();
+                                    } catch (NumberFormatException e) {
+                                        return false;
+                                    }
                                 }
                             }))
                     .collect(Collectors.toList());
