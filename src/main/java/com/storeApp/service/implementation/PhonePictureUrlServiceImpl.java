@@ -1,8 +1,6 @@
 package com.storeApp.service.implementation;
 
-import com.storeApp.models.Phone;
 import com.storeApp.models.PhonePictureUrl;
-import com.storeApp.models.PhoneRom;
 import com.storeApp.repository.PhonePictureURLRepository;
 import com.storeApp.repository.PhoneRepository;
 import com.storeApp.service.PhonePictureUrlService;
@@ -42,35 +40,26 @@ public class PhonePictureUrlServiceImpl implements PhonePictureUrlService {
 
     @Override
     public PhonePictureUrl getPhonePictureUrlById(Long id) {
-        if (phonePictureURLRepository.findById(id).isPresent()) {
-            return phonePictureURLRepository.findById(id).get();
-        } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone picture URL with id " + id + " not found");
-        }
+        return findPictureUrlByIdOrElseThrow(id);
     }
 
     @Override
     @Transactional(readOnly = false)
     public PhonePictureUrl updatePhonePictureUrl(PhonePictureUrl editedPhonePictureUrl, Long id) {
-        PhonePictureUrl phonePictureUrl = null;
-        if (phonePictureURLRepository.findById(id).isPresent()) {
-            phonePictureUrl = phonePictureURLRepository.findById(id).get();
-            phonePictureUrl.setUrl(editedPhonePictureUrl.getUrl());
-
-            phonePictureURLRepository.save(phonePictureUrl);
-            return phonePictureUrl;
-        } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone picture URL with id " + id + " not found");
-        }
+        PhonePictureUrl phonePictureUrl = findPictureUrlByIdOrElseThrow(id);
+        phonePictureUrl.setUrl(editedPhonePictureUrl.getUrl());
+        phonePictureURLRepository.save(phonePictureUrl);
+        return phonePictureUrl;
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deletePhonePictureUrl(Long id) {
-        if (phonePictureURLRepository.findById(id).isPresent()) {
-            phonePictureURLRepository.delete(phonePictureURLRepository.findById(id).get());
-        } else {
-            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone picture URL with id " + id + " not found");
-        }
+        phonePictureURLRepository.delete(findPictureUrlByIdOrElseThrow(id));
+    }
+
+    private PhonePictureUrl findPictureUrlByIdOrElseThrow(Long pictureId) {
+        return phonePictureURLRepository.findById(pictureId).
+                orElseThrow(() -> new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone picture URL with id " + pictureId + " not found"));
     }
 }
