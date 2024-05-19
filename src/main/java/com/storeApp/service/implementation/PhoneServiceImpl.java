@@ -58,7 +58,7 @@ public class PhoneServiceImpl implements PhoneService {
     @Override
     public List<Phone> getAllPhones(String sort, String brand, String screenSize,
                                     Boolean isUsed, String resolution, String ram,
-                                    String countOfCores, String countOfSimCard) {
+                                    String countOfCores, String countOfSimCard,String price) {
 
         List<Phone> phones = phoneRepository.findAll();
 
@@ -115,6 +115,32 @@ public class PhoneServiceImpl implements PhoneService {
                             anyMatch(selectedBrand -> selectedBrand.trim().
                                     equalsIgnoreCase(phone.getResolution().toString()))).
                     collect(Collectors.toList());
+        }
+
+        if (price != null && !price.isEmpty()) {
+            String[] prices = price.split(",");
+            phones = phones.stream()
+                    .filter(phone -> Arrays.stream(prices)
+                            .anyMatch(priceRange -> {
+                                String[] range = priceRange.trim().split("-");
+                                if (range.length == 2) {
+                                    try {
+                                        double minPrice = Double.parseDouble(range[0]);
+                                        double maxPrice = Double.parseDouble(range[1]);
+                                        return phone.getPrice() >= minPrice && phone.getPrice() <= maxPrice;
+                                    } catch (NumberFormatException e) {
+                                        return false;
+                                    }
+                                } else {
+                                    try {
+                                        double priceValue = Double.parseDouble(priceRange.trim());
+                                        return priceValue == phone.getPrice();
+                                    } catch (NumberFormatException e) {
+                                        return false;
+                                    }
+                                }
+                            }))
+                    .collect(Collectors.toList());
         }
 
         phones = applyNumericFilter(phones, ram, Phone::getRam, Short::parseShort);
