@@ -64,9 +64,10 @@ public class PhoneController {
                                     @RequestParam(name = "isUsed", required = false) Boolean isUsed,
                                     @RequestParam(name = "resolution", required = false) String resolution,
                                     @RequestParam(name = "ram", required = false) String ram,
+                                    @RequestParam(name = "rom", required = false) String rom,
                                     @RequestParam(name = "countOfCores", required = false) String countOfCores,
                                     @RequestParam(name = "countOfSimCard", required = false) String countOfSimCard,
-                                    @RequestParam(name = "price",required = false) String price) {
+                                    @RequestParam(name = "price", required = false) String price) {
 
         /*List<Phone> filteredList = new ArrayList<>();
 
@@ -95,7 +96,7 @@ public class PhoneController {
         }
         return filteredList;*/
         return phoneService.getAllPhones(sort, brand, screenSize, isUsed,
-                resolution, ram, countOfCores, countOfSimCard,price);
+                resolution, ram, rom, countOfCores, countOfSimCard, price);
     }
 
     @GetMapping("/{id}")
