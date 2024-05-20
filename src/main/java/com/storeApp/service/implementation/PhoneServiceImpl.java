@@ -57,7 +57,7 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     public List<Phone> getAllPhones(String sort, String brand, String screenSize,
-                                    Boolean isUsed, String resolution, String ram,
+                                    Boolean isUsed, String resolution, String ram, String rom,
                                     String countOfCores, String countOfSimCard,String price) {
 
         List<Phone> phones = phoneRepository.findAll();
@@ -140,6 +140,17 @@ public class PhoneServiceImpl implements PhoneService {
                                     }
                                 }
                             }))
+                    .collect(Collectors.toList());
+        }
+
+        if (rom != null && !rom.isEmpty()) {
+            Set<Short> romSizes = Arrays.stream(rom.split(","))
+                    .map(String::trim)
+                    .map(Short::parseShort)
+                    .collect(Collectors.toSet());
+            phones = phones.stream()
+                    .filter(phone -> phone.getRomList().stream()
+                            .anyMatch(phoneRom -> romSizes.contains(phoneRom.getRomSize())))
                     .collect(Collectors.toList());
         }
 
@@ -284,6 +295,7 @@ public class PhoneServiceImpl implements PhoneService {
         distinctValuesMap.put("ram", phoneRepository.findDistinctRam());
         distinctValuesMap.put("batteryCapacity", phoneRepository.findDistinctBatteryCapacity());
         distinctValuesMap.put("countOfSimCard", phoneRepository.findDistinctCountOfSimCard());
+        distinctValuesMap.put("rom",phoneRomRepository.findDistinctPhoneRom());
 
         return distinctValuesMap;
     }
