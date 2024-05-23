@@ -28,7 +28,7 @@ public class OrderDto {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private User orderOwner;
+    private String username;
 
     private List<Phone> phoneList;
 
@@ -81,12 +81,12 @@ public class OrderDto {
         this.paymentMethod = paymentMethod;
     }
 
-    public User getOrderOwner() {
-        return orderOwner;
+    public String getUsername() {
+        return username;
     }
 
-    public void setOrderOwner(User orderOwner) {
-        this.orderOwner = orderOwner;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public List<Phone> getPhoneList() {

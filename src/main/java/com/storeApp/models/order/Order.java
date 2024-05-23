@@ -2,12 +2,9 @@ package com.storeApp.models.order;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.storeApp.models.Phone;
 import com.storeApp.models.User;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
 import java.util.List;

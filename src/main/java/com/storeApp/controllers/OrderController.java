@@ -2,8 +2,8 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.OrderDto;
 import com.storeApp.service.OrderService;
+import com.storeApp.service.UserService;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +21,12 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
+    private final UserService userService;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @GetMapping("/list")
@@ -98,11 +100,13 @@ public class OrderController {
         Order order = new Order();
 
         order.setStatus(orderDto.getStatus());
+        order.setTotalAmount(orderDto.getTotalAmount());
+        order.setCreatedAt(LocalDateTime.now());
         order.setDeliveryMethod(orderDto.getDeliveryMethod());
         order.setPaymentMethod(orderDto.getPaymentMethod());
         order.setCreatedAt(orderDto.getCreatedAt());
         order.setPhoneList(orderDto.getPhoneList());
-        order.setOrderOwner(orderDto.getOrderOwner());
+        order.setOrderOwner(userService.getUserByUsername(orderDto.getUsername()));
 
         return order;
     }
