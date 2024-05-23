@@ -1,6 +1,7 @@
 package com.storeApp.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.storeApp.models.order.Order;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 

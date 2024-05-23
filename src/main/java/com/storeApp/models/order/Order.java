@@ -1,9 +1,16 @@
-package com.storeApp.models;
+package com.storeApp.models.order;
+
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.storeApp.models.Phone;
+import com.storeApp.models.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,16 +21,32 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "total_amount")
     private Double totalAmount;
+
     @Column(name = "status")
     private Boolean status;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    private DeliveryMethod deliveryMethod;
+
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonBackReference
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User orderOwner;
+
+    @ManyToMany
+    @JoinTable(name = "order_phone",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "phone_id"))
+    private List<Phone> phoneList;
 
     public Order() {}
 
@@ -72,6 +95,30 @@ public class Order {
 
     public void setOrderOwner(User user) {
         this.orderOwner = user;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public DeliveryMethod getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+
+    public List<Phone> getPhoneList() {
+        return phoneList;
+    }
+
+    public void setPhoneList(List<Phone> phoneList) {
+        this.phoneList = phoneList;
     }
 
     @Override

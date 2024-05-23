@@ -1,6 +1,6 @@
 package com.storeApp.service;
 
-import com.storeApp.models.Order;
+import com.storeApp.models.order.Order;
 
 import java.util.List;
 import java.util.Optional;

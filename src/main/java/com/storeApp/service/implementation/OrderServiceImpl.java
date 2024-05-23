@@ -1,6 +1,6 @@
 package com.storeApp.service.implementation;
 
-import com.storeApp.models.Order;
+import com.storeApp.models.order.Order;
 import com.storeApp.repository.OrderRepository;
 import com.storeApp.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

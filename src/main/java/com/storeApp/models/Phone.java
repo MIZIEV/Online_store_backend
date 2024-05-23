@@ -1,6 +1,8 @@
 package com.storeApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.storeApp.models.order.Order;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
@@ -54,6 +56,10 @@ public class Phone {
 
     @Transient
     private Double rating;
+
+    @ManyToMany(mappedBy = "phoneList")
+    @JsonIgnore
+    private List<Order> orders;
 
     @ManyToMany
     @JoinTable(name = "phone_color",
@@ -358,5 +364,13 @@ public class Phone {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }
