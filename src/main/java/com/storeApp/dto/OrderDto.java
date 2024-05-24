@@ -4,6 +4,7 @@ import com.storeApp.models.Phone;
 import com.storeApp.models.User;
 import com.storeApp.models.order.DeliveryMethod;
 import com.storeApp.models.order.PaymentMethod;
+import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
@@ -27,6 +28,12 @@ public class OrderDto {
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
+    private String city;
+
+    private String fullName;
+
+    private String phoneNumber;
 
     private String username;
 
@@ -95,6 +102,30 @@ public class OrderDto {
 
     public void setPhoneList(List<Phone> phoneList) {
         this.phoneList = phoneList;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

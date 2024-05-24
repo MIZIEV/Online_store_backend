@@ -99,9 +99,11 @@ public class OrderController {
     private Order convertToOrder(OrderDto orderDto) {
         Order order = new Order();
 
+        order.setCity(orderDto.getCity());
+        order.setFullName(orderDto.getFullName());
+        order.setPhoneNumber(orderDto.getPhoneNumber());
         order.setStatus(orderDto.getStatus());
         order.setTotalAmount(orderDto.getTotalAmount());
-        order.setCreatedAt(LocalDateTime.now());
         order.setDeliveryMethod(orderDto.getDeliveryMethod());
         order.setPaymentMethod(orderDto.getPaymentMethod());
         order.setCreatedAt(orderDto.getCreatedAt());
