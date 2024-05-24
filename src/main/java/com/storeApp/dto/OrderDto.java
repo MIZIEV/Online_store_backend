@@ -1,26 +1,50 @@
 package com.storeApp.dto;
 
+import com.storeApp.models.Phone;
+import com.storeApp.models.User;
+import com.storeApp.models.order.DeliveryMethod;
+import com.storeApp.models.order.PaymentMethod;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class OrderDto {
+
     @Positive(message = "The total amount mustn't be a negative value or equal to zero!!!")
     @NotNull(message = "The field `totalAmount` mustn't be null!!!")
     private Double totalAmount;
     @NotNull(message = "The field `status` mustn't be null!!!")
     private Boolean status;
-    private Long ownerId;
     private LocalDateTime createdAt;
 
-    public OrderDto() {}
+    @Enumerated(EnumType.STRING)
+    private DeliveryMethod deliveryMethod;
 
-    public OrderDto(Double totalAmount, Boolean status, Long ownerId, LocalDateTime createdAt) {
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    private String city;
+
+    private String fullName;
+
+    private String phoneNumber;
+
+    private String username;
+
+    private List<Phone> phoneList;
+
+    public OrderDto() {
+    }
+
+    public OrderDto(Double totalAmount, Boolean status, LocalDateTime createdAt) {
         this.totalAmount = totalAmount;
         this.status = status;
-        this.ownerId = ownerId;
         this.createdAt = createdAt;
     }
 
@@ -40,14 +64,6 @@ public class OrderDto {
         this.status = status;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -56,9 +72,65 @@ public class OrderDto {
         this.createdAt = createdAt;
     }
 
+    public DeliveryMethod getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<Phone> getPhoneList() {
+        return phoneList;
+    }
+
+    public void setPhoneList(List<Phone> phoneList) {
+        this.phoneList = phoneList;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(totalAmount, status, ownerId);
+        return Objects.hash(totalAmount, status);
     }
 
     @Override
@@ -69,12 +141,6 @@ public class OrderDto {
         OrderDto orderDto = (OrderDto) obj;
 
         return Objects.equals(totalAmount, orderDto.totalAmount) &&
-                Objects.equals(ownerId, orderDto.ownerId) &&
                 Objects.equals(status, orderDto.status);
-    }
-
-    @Override
-    public String toString() {
-        return "Total amount - " + totalAmount + ", owner id - " + ownerId + ", order status - " + status;
     }
 }

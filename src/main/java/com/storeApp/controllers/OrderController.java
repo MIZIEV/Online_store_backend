@@ -2,6 +2,7 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.OrderDto;
 import com.storeApp.service.OrderService;
+import com.storeApp.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import com.storeApp.models.Order;
+import com.storeApp.models.order.Order;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
+    private final UserService userService;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @GetMapping("/list")
@@ -96,10 +99,16 @@ public class OrderController {
     private Order convertToOrder(OrderDto orderDto) {
         Order order = new Order();
 
-        order.setTotalAmount(orderDto.getTotalAmount());
+        order.setCity(orderDto.getCity());
+        order.setFullName(orderDto.getFullName());
+        order.setPhoneNumber(orderDto.getPhoneNumber());
         order.setStatus(orderDto.getStatus());
-        order.setCreatedAt(LocalDateTime.now());
-        order.setOrderOwner(null);
+        order.setTotalAmount(orderDto.getTotalAmount());
+        order.setDeliveryMethod(orderDto.getDeliveryMethod());
+        order.setPaymentMethod(orderDto.getPaymentMethod());
+        order.setCreatedAt(orderDto.getCreatedAt());
+        order.setPhoneList(orderDto.getPhoneList());
+        order.setOrderOwner(userService.getUserByUsername(orderDto.getUsername()));
 
         return order;
     }
