@@ -1,6 +1,7 @@
 package com.storeApp.controllers;
 
 import com.storeApp.dto.OrderDto;
+import com.storeApp.models.User;
 import com.storeApp.service.OrderService;
 import com.storeApp.service.UserService;
 import jakarta.validation.Valid;
@@ -34,6 +35,11 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getOrderList(), HttpStatus.OK);
     }
 
+    @GetMapping("/list/{username}")
+    public ResponseEntity<?> getAllOrdersForUser(@PathVariable("username") String username) {
+        return new ResponseEntity<>(orderService.getOrderListForUser(username), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrder(@PathVariable long id) {
 
@@ -61,7 +67,7 @@ public class OrderController {
         } else {
 
             Order order = convertToOrder(orderDto);
-            orderService.addNewOrder(order);
+            orderService.addNewOrder(order,orderDto.getUsername());
 
             return new ResponseEntity<>(order, HttpStatus.CREATED);
         }
