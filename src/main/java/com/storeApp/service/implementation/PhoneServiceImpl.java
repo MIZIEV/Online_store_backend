@@ -24,14 +24,16 @@ public class PhoneServiceImpl implements PhoneService {
     private final ColorRepository colorRepository;
     private final PhoneRomRepository phoneRomRepository;
     private final MobileCommunicationStandardRepository mobileCommunicationStandardRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PhoneServiceImpl(PhoneRepository phoneRepository, PhoneRatingRepository phoneRatingRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository, MobileCommunicationStandardRepository mobileCommunicationStandardRepository) {
+    public PhoneServiceImpl(PhoneRepository phoneRepository, PhoneRatingRepository phoneRatingRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository, MobileCommunicationStandardRepository mobileCommunicationStandardRepository, UserRepository userRepository) {
         this.phoneRepository = phoneRepository;
         this.phoneRatingRepository = phoneRatingRepository;
         this.colorRepository = colorRepository;
         this.phoneRomRepository = phoneRomRepository;
         this.mobileCommunicationStandardRepository = mobileCommunicationStandardRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class PhoneServiceImpl implements PhoneService {
     @Override
     public List<Phone> getAllPhones(String sort, String brand, String screenSize,
                                     Boolean isUsed, String resolution, String ram, String rom,
-                                    String countOfCores, String countOfSimCard,String price) {
+                                    String countOfCores, String countOfSimCard, String price) {
 
         List<Phone> phones = phoneRepository.findAll();
 
@@ -279,6 +281,42 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional(readOnly = false)
+    public String deletePhoneFromWishList(Long phoneId, String username) {
+        Phone phone = null;
+        User user = null;
+
+        if (userRepository.findByUsername(username).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
+            user = userRepository.findByUsername(username).get();
+            phone = phoneRepository.findPhoneById(phoneId).get();
+
+            if (user.getWishList().contains(phone)) {
+                user.getWishList().remove(phone);
+                userRepository.save(user);
+            } else {
+                throw new IllegalArgumentException("User or Phone not found");
+            }
+        }
+        return "Phone with id - " + phoneId + " was deleted from wishList to user with username - " + username;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public String addPhoneToWishList(Long phoneId, String username) {
+        Phone phone = null;
+        User user = null;
+
+        if (userRepository.findByUsername(username).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
+            user = userRepository.findByUsername(username).get();
+            phone = phoneRepository.findPhoneById(phoneId).get();
+
+            user.getWishList().add(phone);
+            userRepository.save(user);
+        }
+        return "Phone with id - " + phoneId + " was added to wishList to user with username - " + username;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public void deletePhone(Long id) {
         Phone phone = findPhoneByIdOrThrow(id);
         phoneRepository.delete(phone);
@@ -295,7 +333,7 @@ public class PhoneServiceImpl implements PhoneService {
         distinctValuesMap.put("ram", phoneRepository.findDistinctRam());
         distinctValuesMap.put("batteryCapacity", phoneRepository.findDistinctBatteryCapacity());
         distinctValuesMap.put("countOfSimCard", phoneRepository.findDistinctCountOfSimCard());
-        distinctValuesMap.put("rom",phoneRomRepository.findDistinctPhoneRom());
+        distinctValuesMap.put("rom", phoneRomRepository.findDistinctPhoneRom());
 
         return distinctValuesMap;
     }

@@ -29,10 +29,10 @@ public class User {
     private String email;
 
     @Column(name = "role")
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",
-    joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> role;
 
     private String password;
@@ -44,14 +44,21 @@ public class User {
     @JsonManagedReference
     private List<Order> orderList;
 
+
+    @ManyToMany
+    @JoinTable(name = "user_wish_list",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "phone_id"))
+    private Set<Phone> wishList;
+
     public User() {}
 
-    public User(Long id, String firstName, String lastName,String username,
+    public User(Long id, String firstName, String lastName, String username,
                 String email, Set<Role> role, LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username=username;
+        this.username = username;
         this.email = email;
         this.role = role;
         this.createdAt = createdAt;
@@ -121,13 +128,25 @@ public class User {
         this.password = password;
     }
 
-    public List<Order> getOrderList() { return orderList; }
+    public List<Order> getOrderList() {
+        return orderList;
+    }
 
-    public void setOrderList(List<Order> orderList) { this.orderList = orderList; }
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
+    }
+
+    public Set<Phone> getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(Set<Phone> wishList) {
+        this.wishList = wishList;
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName,username, email, role, createdAt);
+        return Objects.hash(id, firstName, lastName, username, email, role, createdAt);
     }
 
     @Override

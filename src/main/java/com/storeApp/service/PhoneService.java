@@ -13,7 +13,7 @@ public interface PhoneService {
     void addNewPhone(Phone phone);
 
     List<Phone> getAllPhones(String sort, String brand, String screenSize,
-                             Boolean isUsed, String resolution, String ram,String rom,
+                             Boolean isUsed, String resolution, String ram, String rom,
                              String countOfCores, String countOfSimCard, String price);
 
     Phone getPhoneById(Long id);
@@ -23,6 +23,10 @@ public interface PhoneService {
     Phone updatePhone(Phone editedPhone, Long id);
 
     String putTheMark(User user, Phone phone, Double mark);
+
+    String addPhoneToWishList(Long phoneId, String username);
+
+    String deletePhoneFromWishList(Long phoneId, String username);
 
     void calculateAverageRating(Phone phone);
 
