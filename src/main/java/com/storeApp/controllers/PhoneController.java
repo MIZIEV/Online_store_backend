@@ -10,6 +10,7 @@ import com.storeApp.security.CustomUserDetailService;
 import com.storeApp.service.PhoneService;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -141,6 +142,20 @@ public class PhoneController {
     @GetMapping("/distinct-characteristics")
     public ResponseEntity<?> getDistinctValues() {
         return new ResponseEntity<>(phoneService.getDistinctValues(), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/wishList/{username}/add")
+    public ResponseEntity<?> addPhoneToWishList(@PathVariable("id") Long id,
+                                                @PathVariable("username") String username) {
+
+        return new ResponseEntity<>(phoneService.addPhoneToWishList(id, username), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/wishList/{username}/remove")
+    public ResponseEntity<?> deletePhoneFromWishList(@PathVariable("id") Long id,
+                                                     @PathVariable("username") String username) {
+
+        return new ResponseEntity<>(phoneService.deletePhoneFromWishList(id, username), HttpStatus.OK);
     }
 
     private PhoneRating convertToPhoneRating(PhoneRatingDto phoneRatingDto) {

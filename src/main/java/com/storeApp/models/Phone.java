@@ -102,6 +102,10 @@ public class Phone {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Description> descriptionList;
 
+    @ManyToMany(mappedBy = "wishList")
+    @JsonIgnore
+    private Set<User> userWithWishList;
+
     public Phone() {}
 
     public Phone(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
@@ -372,5 +376,13 @@ public class Phone {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public Set<User> getUserWithWishList() {
+        return userWithWishList;
+    }
+
+    public void setUserWithWishList(Set<User> userWithWishList) {
+        this.userWithWishList = userWithWishList;
     }
 }
