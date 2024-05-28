@@ -31,8 +31,8 @@ public class OrderServiceImpl implements OrderService {
     public void addNewOrder(Order order, String username) {
         User orderOwner = null;
 
-        if (userRepository.findByUsername(username).isPresent()) {
-            orderOwner = userRepository.findByUsername(username).get();
+        if (userRepository.findByPhoneNumber(username).isPresent()) {
+            orderOwner = userRepository.findByPhoneNumber(username).get();
             order.setOrderOwner(orderOwner);
         }
 
@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrderListForUser(String username) {
-        return userRepository.findByUsername(username).get().getOrderList();
+        return userRepository.findByPhoneNumber(username).get().getOrderList();
     }
 
     @Override

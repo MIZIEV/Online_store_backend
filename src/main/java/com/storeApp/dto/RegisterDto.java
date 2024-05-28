@@ -5,16 +5,16 @@ public class RegisterDto {
     private String lastName;
 
     private String username;
-    private String email;
+    private String phoneNumber;
     private String password;
 
     public RegisterDto(){}
 
-    public RegisterDto(String firstName, String lastName, String username, String email, String password) {
+    public RegisterDto(String firstName, String lastName, String username, String phoneNumber, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
-        this.email = email;
+        this.phoneNumber = phoneNumber;
         this.password = password;
     }
 
@@ -34,12 +34,12 @@ public class RegisterDto {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getUsername() {

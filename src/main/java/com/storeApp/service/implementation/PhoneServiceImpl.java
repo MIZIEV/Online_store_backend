@@ -285,8 +285,8 @@ public class PhoneServiceImpl implements PhoneService {
         Phone phone = null;
         User user = null;
 
-        if (userRepository.findByUsername(username).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
-            user = userRepository.findByUsername(username).get();
+        if (userRepository.findByPhoneNumber(username).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
+            user = userRepository.findByPhoneNumber(username).get();
             phone = phoneRepository.findPhoneById(phoneId).get();
 
             if (user.getWishList().contains(phone)) {
@@ -305,8 +305,8 @@ public class PhoneServiceImpl implements PhoneService {
         Phone phone = null;
         User user = null;
 
-        if (userRepository.findByUsername(username).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
-            user = userRepository.findByUsername(username).get();
+        if (userRepository.findByPhoneNumber(username).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
+            user = userRepository.findByPhoneNumber(username).get();
             phone = phoneRepository.findPhoneById(phoneId).get();
 
             user.getWishList().add(phone);

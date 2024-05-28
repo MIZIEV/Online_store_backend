@@ -10,7 +10,6 @@ import com.storeApp.security.CustomUserDetailService;
 import com.storeApp.service.PhoneService;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -114,7 +112,7 @@ public class PhoneController {
 
         String usernameOrEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Phone phone = phoneService.getPhoneById(id);
-        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).
+        User user = userRepository.findByPhoneNumberOrEmail(usernameOrEmail, usernameOrEmail).
                 orElseThrow(() -> new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "User not found"));
 
         return new ResponseEntity<>(phoneService.putTheMark(user, phone, convertToPhoneRating(ratingDto).getRating()),

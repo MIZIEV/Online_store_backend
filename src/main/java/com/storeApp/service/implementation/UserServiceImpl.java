@@ -22,10 +22,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUsername(String username) {
+    public User getUserByPhoneNumber(String phoneNumber) {
 
-        if (userRepository.findByUsername(username).isPresent()) {
-            return userRepository.findByUsername(username).get();
+        if (userRepository.findByPhoneNumber(phoneNumber).isPresent()) {
+            return userRepository.findByPhoneNumber(phoneNumber).get();
         } else {
             return null;
         }
@@ -33,6 +33,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<Phone> getWishListForUser(String username) {
-        return userRepository.findByUsername(username).get().getWishList();
+        return userRepository.findByPhoneNumber(username).get().getWishList();
     }
 }

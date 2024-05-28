@@ -6,7 +6,7 @@ import com.storeApp.models.User;
 import java.util.Set;
 
 public interface UserService {
-    User getUserByUsername(String username);
+    User getUserByPhoneNumber(String phoneNumber);
 
     Set<Phone> getWishListForUser(String username);
 }
