@@ -142,18 +142,18 @@ public class PhoneController {
         return new ResponseEntity<>(phoneService.getDistinctValues(), HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}/wishList/{username}/add")
+    @PatchMapping("/{id}/wishList/{email}/add")
     public ResponseEntity<?> addPhoneToWishList(@PathVariable("id") Long id,
-                                                @PathVariable("username") String username) {
+                                                @PathVariable("email") String email) {
 
-        return new ResponseEntity<>(phoneService.addPhoneToWishList(id, username), HttpStatus.OK);
+        return new ResponseEntity<>(phoneService.addPhoneToWishList(id, email), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/wishList/{username}/remove")
+    @DeleteMapping("/{id}/wishList/{email}/remove")
     public ResponseEntity<?> deletePhoneFromWishList(@PathVariable("id") Long id,
-                                                     @PathVariable("username") String username) {
+                                                     @PathVariable("email") String email) {
 
-        return new ResponseEntity<>(phoneService.deletePhoneFromWishList(id, username), HttpStatus.OK);
+        return new ResponseEntity<>(phoneService.deletePhoneFromWishList(id, email), HttpStatus.OK);
     }
 
     private PhoneRating convertToPhoneRating(PhoneRatingDto phoneRatingDto) {

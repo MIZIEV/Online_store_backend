@@ -24,9 +24,9 @@ public interface PhoneService {
 
     String putTheMark(User user, Phone phone, Double mark);
 
-    String addPhoneToWishList(Long phoneId, String username);
+    String addPhoneToWishList(Long phoneId, String email);
 
-    String deletePhoneFromWishList(Long phoneId, String username);
+    String deletePhoneFromWishList(Long phoneId, String email);
 
     void calculateAverageRating(Phone phone);
 

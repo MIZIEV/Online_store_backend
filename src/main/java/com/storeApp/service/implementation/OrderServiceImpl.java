@@ -52,8 +52,8 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<Order> getOrderListForUser(String username) {
-        return userRepository.findByPhoneNumber(username).get().getOrderList();
+    public List<Order> getOrderListForUser(String email) {
+        return userRepository.findByEmail(email).get().getOrderList();
     }
 
     @Override

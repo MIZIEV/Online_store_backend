@@ -281,12 +281,12 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional(readOnly = false)
-    public String deletePhoneFromWishList(Long phoneId, String username) {
+    public String deletePhoneFromWishList(Long phoneId, String email) {
         Phone phone = null;
         User user = null;
 
-        if (userRepository.findByPhoneNumber(username).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
-            user = userRepository.findByPhoneNumber(username).get();
+        if (userRepository.findByEmail(email).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
+            user = userRepository.findByEmail(email).get();
             phone = phoneRepository.findPhoneById(phoneId).get();
 
             if (user.getWishList().contains(phone)) {
@@ -296,23 +296,23 @@ public class PhoneServiceImpl implements PhoneService {
                 throw new IllegalArgumentException("User or Phone not found");
             }
         }
-        return "Phone with id - " + phoneId + " was deleted from wishList to user with username - " + username;
+        return "Phone with id - " + phoneId + " was deleted from wishList to user with username - " + email;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public String addPhoneToWishList(Long phoneId, String username) {
+    public String addPhoneToWishList(Long phoneId, String email) {
         Phone phone = null;
         User user = null;
 
-        if (userRepository.findByPhoneNumber(username).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
-            user = userRepository.findByPhoneNumber(username).get();
+        if (userRepository.findByEmail(email).isPresent() && phoneRepository.findPhoneById(phoneId).isPresent()) {
+            user = userRepository.findByEmail(email).get();
             phone = phoneRepository.findPhoneById(phoneId).get();
 
             user.getWishList().add(phone);
             userRepository.save(user);
         }
-        return "Phone with id - " + phoneId + " was added to wishList to user with username - " + username;
+        return "Phone with id - " + phoneId + " was added to wishList to user with username - " + email;
     }
 
     @Override

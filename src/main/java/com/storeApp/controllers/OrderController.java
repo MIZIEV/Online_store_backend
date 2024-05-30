@@ -34,9 +34,9 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getOrderList(), HttpStatus.OK);
     }
 
-    @GetMapping("/list/{username}")
-    public ResponseEntity<?> getAllOrdersForUser(@PathVariable("username") String username) {
-        return new ResponseEntity<>(orderService.getOrderListForUser(username), HttpStatus.OK);
+    @GetMapping("/list/{email}")
+    public ResponseEntity<?> getAllOrdersForUser(@PathVariable("email") String email) {
+        return new ResponseEntity<>(orderService.getOrderListForUser(email), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
