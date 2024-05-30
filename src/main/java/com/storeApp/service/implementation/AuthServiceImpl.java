@@ -50,11 +50,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String register(RegisterDto registerDto) {
 
-        if (userRepository.existsByUsername(registerDto.getUsername())) {
+        if (userRepository.existsByPhoneNumber(registerDto.getUsername())) {
             throw new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "Username already exists!!!");
         }
 
-        if (userRepository.existsByEmail(registerDto.getEmail())) {
+        if (userRepository.existsByEmail(registerDto.getPhoneNumber())) {
             throw new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "Email already exists!!!");
         }
 
@@ -62,8 +62,8 @@ public class AuthServiceImpl implements AuthService {
 
         user.setFirstName(registerDto.getFirstName());
         user.setLastName(registerDto.getLastName());
-        user.setUsername(registerDto.getUsername());
-        user.setEmail(registerDto.getEmail());
+        user.setPhoneNumber(registerDto.getUsername());
+        user.setEmail(registerDto.getPhoneNumber());
         user.setCreatedAt(LocalDateTime.now());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
@@ -80,7 +80,7 @@ public class AuthServiceImpl implements AuthService {
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginDto.getUsernameOrEmail(),
+                    loginDto.getEmail(),
                     loginDto.getPassword()
             ));
 
@@ -88,8 +88,8 @@ public class AuthServiceImpl implements AuthService {
 
             String token = jwtTokenProvider.generateToken(authentication);
 
-            Optional<User> userOptional = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(),
-                    loginDto.getUsernameOrEmail());
+            Optional<User> userOptional = userRepository.findByPhoneNumberOrEmail(loginDto.getEmail(),
+                    loginDto.getEmail());
 
             String role = null;
 
@@ -102,13 +102,16 @@ public class AuthServiceImpl implements AuthService {
                 }
             }
 
-            User user = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(),
-                    loginDto.getUsernameOrEmail()).get();
+            User user = userRepository.findByPhoneNumberOrEmail(loginDto.getEmail(),
+                    loginDto.getEmail()).get();
 
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setRole(role);
             jwtAuthResponse.setAccessToken(token);
-            jwtAuthResponse.setUsername(user.getUsername());
+            jwtAuthResponse.setFirstName(user.getFirstName());
+            jwtAuthResponse.setLastName(user.getLastName());
+            jwtAuthResponse.setPhoneNumber(user.getPhoneNumber());
+            jwtAuthResponse.setEmail(user.getEmail());
 
             return jwtAuthResponse;
 

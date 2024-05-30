@@ -1,7 +1,6 @@
 package com.storeApp.controllers;
 
 import com.storeApp.dto.OrderDto;
-import com.storeApp.models.User;
 import com.storeApp.service.OrderService;
 import com.storeApp.service.UserService;
 import jakarta.validation.Valid;
@@ -35,9 +34,9 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getOrderList(), HttpStatus.OK);
     }
 
-    @GetMapping("/list/{username}")
-    public ResponseEntity<?> getAllOrdersForUser(@PathVariable("username") String username) {
-        return new ResponseEntity<>(orderService.getOrderListForUser(username), HttpStatus.OK);
+    @GetMapping("/list/{email}")
+    public ResponseEntity<?> getAllOrdersForUser(@PathVariable("email") String email) {
+        return new ResponseEntity<>(orderService.getOrderListForUser(email), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -114,7 +113,7 @@ public class OrderController {
         order.setPaymentMethod(orderDto.getPaymentMethod());
         order.setCreatedAt(orderDto.getCreatedAt());
         order.setPhoneList(orderDto.getPhoneList());
-        order.setOrderOwner(userService.getUserByUsername(orderDto.getUsername()));
+        order.setOrderOwner(userService.getUserByPhoneNumber(orderDto.getUsername()));
 
         return order;
     }

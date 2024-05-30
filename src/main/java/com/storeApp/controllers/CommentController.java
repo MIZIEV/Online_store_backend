@@ -31,7 +31,7 @@ public class CommentController {
                                            @RequestBody Comment comment) {
 
         String usernameOrEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).
+        User user = userRepository.findByPhoneNumberOrEmail(usernameOrEmail, usernameOrEmail).
                 orElseThrow(() -> new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "User not found"));
 
         return new ResponseEntity<>(commentService.addComment(user, phoneId, comment), HttpStatus.CREATED);

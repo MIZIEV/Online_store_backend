@@ -1,21 +1,20 @@
 package com.storeApp.dto;
 
-public class RegisterDto {
+
+public class UserDto {
+
     private String firstName;
     private String lastName;
-
-    private String username;
     private String phoneNumber;
-    private String password;
+    private String email;
 
-    public RegisterDto(){}
+    public UserDto(){}
 
-    public RegisterDto(String firstName, String lastName, String username, String phoneNumber, String password) {
+    public UserDto(String firstName, String lastName, String phoneNumber, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = username;
         this.phoneNumber = phoneNumber;
-        this.password = password;
+        this.email = email;
     }
 
     public String getFirstName() {
@@ -42,19 +41,11 @@ public class RegisterDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

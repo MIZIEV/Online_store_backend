@@ -23,8 +23,8 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "phone_number")
+    private String phoneNumber;
     @Column(name = "email")
     private String email;
 
@@ -53,12 +53,12 @@ public class User {
 
     public User() {}
 
-    public User(Long id, String firstName, String lastName, String username,
+    public User(Long id, String firstName, String lastName, String phoneNumber,
                 String email, Set<Role> role, LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = username;
+        this.phoneNumber = phoneNumber;
         this.email = email;
         this.role = role;
         this.createdAt = createdAt;
@@ -88,12 +88,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setPhoneNumber(String username) {
+        this.phoneNumber = username;
     }
 
     public String getEmail() {
@@ -146,7 +146,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, username, email, role, createdAt);
+        return Objects.hash(id, firstName, lastName, phoneNumber, email, role, createdAt);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class User {
         return Objects.equals(id, user.id) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
-                Objects.equals(username, user.username) &&
+                Objects.equals(phoneNumber, user.phoneNumber) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(role, user.role) &&
                 Objects.equals(createdAt, user.createdAt);

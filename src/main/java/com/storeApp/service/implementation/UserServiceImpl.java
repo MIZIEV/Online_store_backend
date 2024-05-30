@@ -4,7 +4,9 @@ import com.storeApp.models.Phone;
 import com.storeApp.models.User;
 import com.storeApp.repository.UserRepository;
 import com.storeApp.service.UserService;
+import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,18 +23,39 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    @Override
-    public User getUserByUsername(String username) {
 
-        if (userRepository.findByUsername(username).isPresent()) {
-            return userRepository.findByUsername(username).get();
+    @Override
+    public User updateUserData(String email, User updatedUser) {
+        User currentUser = null;
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            currentUser = userRepository.findByEmail(email).get();
+
+            currentUser.setFirstName(updatedUser.getFirstName());
+            currentUser.setLastName(updatedUser.getLastName());
+            currentUser.setEmail(updatedUser.getEmail());
+            currentUser.setPhoneNumber(updatedUser.getPhoneNumber());
+
+            userRepository.save(currentUser);
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        return currentUser;
+    }
+
+    @Override
+    public User getUserByPhoneNumber(String phoneNumber) {
+
+        if (userRepository.findByPhoneNumber(phoneNumber).isPresent()) {
+            return userRepository.findByPhoneNumber(phoneNumber).get();
         } else {
             return null;
         }
     }
 
     @Override
-    public Set<Phone> getWishListForUser(String username) {
-        return userRepository.findByUsername(username).get().getWishList();
+    public Set<Phone> getWishListForUser(String email) {
+        return userRepository.findByEmail(email).get().getWishList();
     }
 }
