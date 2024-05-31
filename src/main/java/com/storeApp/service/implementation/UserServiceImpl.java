@@ -7,6 +7,8 @@ import com.storeApp.service.UserService;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,8 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -57,5 +61,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<Phone> getWishListForUser(String email) {
         return userRepository.findByEmail(email).get().getWishList();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public String changeUserPassword(String email, String password) {
+
+        User user = null;
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            user = userRepository.findByEmail(email).get();
+
+            String encodedPassword = passwordEncoder.encode(password);
+
+            user.setPassword(encodedPassword);
+            userRepository.save(user);
+        } else {
+            throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        return "Password changed successfully";
     }
 }

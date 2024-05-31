@@ -12,4 +12,6 @@ public interface UserService {
     User getUserByPhoneNumber(String phoneNumber);
 
     Set<Phone> getWishListForUser(String username);
+
+    String changeUserPassword(String email, String password);
 }
