@@ -192,6 +192,14 @@ public class PhoneServiceImpl implements PhoneService {
         return "Mark - " + mark + " was putted to phone with id - " + phone.getId();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasUserRatedPhone(User user, Long phoneId) {
+        Phone phone = phoneRepository.findById(phoneId)
+                .orElseThrow(() -> new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone not found"));
+        return phone.getRatings().stream().anyMatch(r -> r.getUser().equals(user));
+    }
+
     public void calculateAverageRating(Phone phone) {
         List<PhoneRating> ratings = phone.getRatings();
         if (ratings != null && !ratings.isEmpty()) {

@@ -1,5 +1,6 @@
 package com.storeApp.controllers;
 
+import com.storeApp.dto.LoginDto;
 import com.storeApp.dto.UserDto;
 import com.storeApp.models.User;
 import com.storeApp.service.UserService;
@@ -25,12 +26,17 @@ public class UserController {
     @PutMapping("/data")
     @Transactional(readOnly = false)
     public ResponseEntity<?> updateUserData(@PathVariable("email") String email, @RequestBody UserDto updatedUser) {
-        return new ResponseEntity<>(userService.updateUserData(email,convertToUser(updatedUser)),HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateUserData(email, convertToUser(updatedUser)), HttpStatus.OK);
     }
 
     @GetMapping("/wishList")
     public ResponseEntity<?> getWishListForUser(@PathVariable("email") String email) {
         return new ResponseEntity<>(userService.getWishListForUser(email), HttpStatus.OK);
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<?> changeUserPassword(@PathVariable("email") String email, @RequestBody LoginDto loginDto) {
+        return new ResponseEntity<>(userService.changeUserPassword(email, loginDto.getPassword()), HttpStatus.OK);
     }
 
     private User convertToUser(UserDto userDto) {

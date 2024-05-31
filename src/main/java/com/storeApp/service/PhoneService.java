@@ -24,6 +24,8 @@ public interface PhoneService {
 
     String putTheMark(User user, Phone phone, Double mark);
 
+    boolean hasUserRatedPhone(User user,Long phoneId);
+
     String addPhoneToWishList(Long phoneId, String email);
 
     String deletePhoneFromWishList(Long phoneId, String email);
