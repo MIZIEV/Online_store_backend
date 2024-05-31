@@ -34,7 +34,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getWishListForUser(email), HttpStatus.OK);
     }
 
-    @PutMapping("/passwords")
+    @PatchMapping("/password")
     public ResponseEntity<?> changeUserPassword(@PathVariable("email") String email, @RequestBody LoginDto loginDto) {
         return new ResponseEntity<>(userService.changeUserPassword(email, loginDto.getPassword()), HttpStatus.OK);
     }
