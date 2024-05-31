@@ -119,6 +119,13 @@ public class PhoneController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/{email}/hasRated")
+    public ResponseEntity<Boolean> hasUserRatedPhone(@PathVariable("id") Long id,@PathVariable("email") String email) {
+        User user = userRepository.findByEmail(email).get();
+        boolean hasRated = phoneService.hasUserRatedPhone(user, id);
+        return new ResponseEntity<>(hasRated, HttpStatus.OK);
+    }
+
     @PatchMapping("/{id}/color")
     public ResponseEntity<?> putTheColor(@PathVariable("id") Long id, @RequestBody Set<Long> colorIds) {
         return new ResponseEntity<>(phoneService.putTheColors(id, colorIds), HttpStatus.OK);
