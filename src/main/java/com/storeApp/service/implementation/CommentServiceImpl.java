@@ -29,6 +29,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment addComment(User author, Long phoneId, Comment comment) {
 
         Comment newComment = comment;
+        newComment.setAuthorEmail(author.getEmail());
         comment.setAuthor(author);
         comment.setPhone(phoneRepository.findPhoneById(phoneId).get());
         newComment.setCreatedAt(LocalDateTime.now());
