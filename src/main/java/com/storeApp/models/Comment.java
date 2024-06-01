@@ -24,6 +24,9 @@ public class Comment {
     @Column(name = "author_name")
     private String authorName;
 
+    @Column(name = "author_email")
+    private String authorEmail;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "user_id")
@@ -82,5 +85,13 @@ public class Comment {
 
     public void setPhone(Phone phone) {
         this.phone = phone;
+    }
+
+    public String getAuthorEmail() {
+        return authorEmail;
+    }
+
+    public void setAuthorEmail(String authorEmail) {
+        this.authorEmail = authorEmail;
     }
 }
