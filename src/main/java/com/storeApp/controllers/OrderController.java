@@ -66,7 +66,7 @@ public class OrderController {
         } else {
 
             Order order = convertToOrder(orderDto);
-            orderService.addNewOrder(order,orderDto.getUsername());
+            orderService.addNewOrder(order, orderDto.getEmail());
 
             return new ResponseEntity<>(order, HttpStatus.CREATED);
         }
@@ -113,7 +113,7 @@ public class OrderController {
         order.setPaymentMethod(orderDto.getPaymentMethod());
         order.setCreatedAt(orderDto.getCreatedAt());
         order.setPhoneList(orderDto.getPhoneList());
-        order.setOrderOwner(userService.getUserByPhoneNumber(orderDto.getUsername()));
+        order.setOrderOwner(userService.getUserByPhoneNumber(orderDto.getEmail()));
 
         return order;
     }

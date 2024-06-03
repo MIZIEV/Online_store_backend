@@ -1,10 +1,8 @@
 package com.storeApp.dto;
 
 import com.storeApp.models.Phone;
-import com.storeApp.models.User;
 import com.storeApp.models.order.DeliveryMethod;
 import com.storeApp.models.order.PaymentMethod;
-import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
@@ -35,7 +33,7 @@ public class OrderDto {
 
     private String phoneNumber;
 
-    private String username;
+    private String email;
 
     private List<Phone> phoneList;
 
@@ -88,12 +86,12 @@ public class OrderDto {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<Phone> getPhoneList() {
