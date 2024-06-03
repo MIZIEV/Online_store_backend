@@ -28,11 +28,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = false)
-    public void addNewOrder(Order order, String username) {
+    public void addNewOrder(Order order, String userEmail) {
         User orderOwner = null;
 
-        if (userRepository.findByPhoneNumber(username).isPresent()) {
-            orderOwner = userRepository.findByPhoneNumber(username).get();
+        if (userRepository.findByEmail(userEmail).isPresent()) {
+            orderOwner = userRepository.findByEmail(userEmail).get();
             order.setOrderOwner(orderOwner);
         }
 

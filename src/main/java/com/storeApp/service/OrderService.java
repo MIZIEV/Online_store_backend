@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface OrderService {
 
-    void addNewOrder(Order order,String username);
+    void addNewOrder(Order order, String userEmail);
 
     Optional<Order> getProductById(long id);
 
