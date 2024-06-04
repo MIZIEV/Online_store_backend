@@ -6,7 +6,6 @@ import com.storeApp.models.Phone;
 import com.storeApp.models.PhoneRating;
 import com.storeApp.models.User;
 import com.storeApp.repository.UserRepository;
-import com.storeApp.security.CustomUserDetailService;
 import com.storeApp.service.PhoneService;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import jakarta.validation.Valid;
@@ -31,7 +30,7 @@ public class PhoneController {
     private final UserRepository userRepository;
 
     @Autowired
-    public PhoneController(PhoneService phoneService, CustomUserDetailService customUserDetailService, UserRepository userRepository) {
+    public PhoneController(PhoneService phoneService, UserRepository userRepository) {
         this.phoneService = phoneService;
         this.userRepository = userRepository;
     }
@@ -68,33 +67,7 @@ public class PhoneController {
                                     @RequestParam(name = "countOfSimCard", required = false) String countOfSimCard,
                                     @RequestParam(name = "price", required = false) String price) {
 
-        /*List<Phone> filteredList = new ArrayList<>();
-
-        if (searchTerm != null && !searchTerm.isEmpty()) {
-            String[] searchTerms = searchTerm.split("\\s+");
-
-            List<Phone> phoneList = null;
-
-            phoneList = phoneService.getAllPhones(sort);
-
-            for (Phone element : phoneList) {
-                StringBuffer stringBuffer = new StringBuffer();
-
-                stringBuffer.append(element.getBrand()).append(" ").append(element.getModel());
-
-                if (containsAllWord(stringBuffer.toString(), searchTerms)) {
-                    filteredList.add(element);
-                }
-            }
-
-            return filteredList;
-        } else if (sort == null && searchTerm == null) {
-            return filteredList;
-        } else {
-            filteredList = phoneService.getAllPhones(sort);
-        }
-        return filteredList;*/
-        return phoneService.getAllPhones(sort, brand, screenSize, isUsed,
+        return phoneService.getAllPhones(sort,searchTerm, brand, screenSize, isUsed,
                 resolution, ram, rom, countOfCores, countOfSimCard, price);
     }
 
@@ -152,14 +125,12 @@ public class PhoneController {
     @PatchMapping("/{id}/wishList/{email}/add")
     public ResponseEntity<?> addPhoneToWishList(@PathVariable("id") Long id,
                                                 @PathVariable("email") String email) {
-
         return new ResponseEntity<>(phoneService.addPhoneToWishList(id, email), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/wishList/{email}/remove")
     public ResponseEntity<?> deletePhoneFromWishList(@PathVariable("id") Long id,
                                                      @PathVariable("email") String email) {
-
         return new ResponseEntity<>(phoneService.deletePhoneFromWishList(id, email), HttpStatus.OK);
     }
 
@@ -169,18 +140,7 @@ public class PhoneController {
     }
 
     private Phone convertToProduct(PhoneDto phoneDto) {
-
         ModelMapper modelMapper = new ModelMapper();
-
         return modelMapper.map(phoneDto, Phone.class);
-    }
-
-    private static boolean containsAllWord(String text, String... words) {
-        for (String word : words) {
-            if (!text.toLowerCase().contains(word.toLowerCase())) {
-                return false;
-            }
-        }
-        return true;
     }
 }
