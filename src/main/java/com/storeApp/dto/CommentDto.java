@@ -17,6 +17,8 @@ public class CommentDto {
 
     private Phone phone;
 
+    private String authorEmail;
+
     public CommentDto() {
     }
 
@@ -58,5 +60,13 @@ public class CommentDto {
 
     public void setPhone(Phone phone) {
         this.phone = phone;
+    }
+
+    public String getAuthorEmail() {
+        return authorEmail;
+    }
+
+    public void setAuthorEmail(String authorEmail) {
+        this.authorEmail = authorEmail;
     }
 }

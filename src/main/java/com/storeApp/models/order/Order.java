@@ -1,9 +1,13 @@
-package com.storeApp.models;
+package com.storeApp.models.order;
+
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.storeApp.models.Phone;
+import com.storeApp.models.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,16 +18,41 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "total_amount")
     private Double totalAmount;
+
     @Column(name = "status")
     private Boolean status;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    private DeliveryMethod deliveryMethod;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "full_name")
+    private String fullName;
+
+    @Column(name = "phone_numbae")
+    private String phoneNumber;
+
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonBackReference
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User orderOwner;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "order_phone",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "phone_id"))
+    private List<Phone> phoneList;
 
     public Order() {}
 
@@ -72,6 +101,54 @@ public class Order {
 
     public void setOrderOwner(User user) {
         this.orderOwner = user;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public DeliveryMethod getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(DeliveryMethod deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+
+    public List<Phone> getPhoneList() {
+        return phoneList;
+    }
+
+    public void setPhoneList(List<Phone> phoneList) {
+        this.phoneList = phoneList;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

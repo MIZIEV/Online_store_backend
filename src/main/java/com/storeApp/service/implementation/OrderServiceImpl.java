@@ -1,12 +1,15 @@
 package com.storeApp.service.implementation;
 
-import com.storeApp.models.Order;
+import com.storeApp.models.User;
+import com.storeApp.models.order.Order;
 import com.storeApp.repository.OrderRepository;
+import com.storeApp.repository.UserRepository;
 import com.storeApp.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,15 +18,25 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository) {
         this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void addNewOrder(Order order) {
+    public void addNewOrder(Order order, String userEmail) {
+        User orderOwner = null;
+
+        if (userRepository.findByEmail(userEmail).isPresent()) {
+            orderOwner = userRepository.findByEmail(userEmail).get();
+            order.setOrderOwner(orderOwner);
+        }
+
+        order.setCreatedAt(LocalDateTime.now());
         orderRepository.save(order);
     }
 
@@ -35,6 +48,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getOrderList() {
         return orderRepository.findAll();
+    }
+
+
+    @Override
+    public List<Order> getOrderListForUser(String email) {
+        return userRepository.findByEmail(email).get().getOrderList();
     }
 
     @Override
