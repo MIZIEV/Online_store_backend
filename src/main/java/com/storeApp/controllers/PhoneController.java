@@ -68,32 +68,6 @@ public class PhoneController {
                                     @RequestParam(name = "countOfSimCard", required = false) String countOfSimCard,
                                     @RequestParam(name = "price", required = false) String price) {
 
-        /*List<Phone> filteredList = new ArrayList<>();
-
-        if (searchTerm != null && !searchTerm.isEmpty()) {
-            String[] searchTerms = searchTerm.split("\\s+");
-
-            List<Phone> phoneList = null;
-
-            phoneList = phoneService.getAllPhones(sort);
-
-            for (Phone element : phoneList) {
-                StringBuffer stringBuffer = new StringBuffer();
-
-                stringBuffer.append(element.getBrand()).append(" ").append(element.getModel());
-
-                if (containsAllWord(stringBuffer.toString(), searchTerms)) {
-                    filteredList.add(element);
-                }
-            }
-
-            return filteredList;
-        } else if (sort == null && searchTerm == null) {
-            return filteredList;
-        } else {
-            filteredList = phoneService.getAllPhones(sort);
-        }
-        return filteredList;*/
         return phoneService.getAllPhones(sort, brand, screenSize, isUsed,
                 resolution, ram, rom, countOfCores, countOfSimCard, price);
     }
@@ -173,14 +147,5 @@ public class PhoneController {
         ModelMapper modelMapper = new ModelMapper();
 
         return modelMapper.map(phoneDto, Phone.class);
-    }
-
-    private static boolean containsAllWord(String text, String... words) {
-        for (String word : words) {
-            if (!text.toLowerCase().contains(word.toLowerCase())) {
-                return false;
-            }
-        }
-        return true;
     }
 }
