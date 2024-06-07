@@ -48,7 +48,7 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User orderOwner;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "order_phone",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "phone_id"))

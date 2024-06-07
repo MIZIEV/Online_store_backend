@@ -57,7 +57,7 @@ public class Phone {
     @Transient
     private Double rating;
 
-    @ManyToMany(mappedBy = "phoneList")
+    @ManyToMany(mappedBy = "phoneList",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Order> orders;
 
@@ -102,7 +102,7 @@ public class Phone {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Description> descriptionList;
 
-    @ManyToMany(mappedBy = "wishList")
+    @ManyToMany(mappedBy = "wishList",cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<User> userWithWishList;
 
