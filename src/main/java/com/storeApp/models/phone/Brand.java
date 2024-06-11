@@ -1,4 +1,4 @@
-package com.storeApp.models;
+package com.storeApp.models.phone;
 
 public enum Brand {
     APPLE,SAMSUNG,XIAOMI

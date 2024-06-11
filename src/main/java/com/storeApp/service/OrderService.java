@@ -18,4 +18,6 @@ public interface OrderService {
     boolean deleteOrder(long id);
 
     Order updateOrder(Order editedOrder, long id);
+
+    String changeCompleteStatus(Long orderId);
 }

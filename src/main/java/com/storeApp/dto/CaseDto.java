@@ -1,6 +1,6 @@
 package com.storeApp.dto;
 
-import com.storeApp.models.*;
+import com.storeApp.models.phone.Brand;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Max;
