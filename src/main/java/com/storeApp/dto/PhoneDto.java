@@ -3,6 +3,7 @@ package com.storeApp.dto;
 
 import com.storeApp.models.*;
 import com.storeApp.models.order.Order;
+import com.storeApp.models.phone.Brand;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -93,7 +94,6 @@ public class PhoneDto {
     @NotNull(message = "The field `isUsed` mustn't be null!")
     private boolean isUsed;
 
-    private Order order;
     private Set<Color> colors;
     private List<Comment> comments;
     private List<PhoneRom> romList;
@@ -285,14 +285,6 @@ public class PhoneDto {
 
     public void setProducingCountry(String producingCountry) {
         this.producingCountry = producingCountry;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public boolean isUsed() {

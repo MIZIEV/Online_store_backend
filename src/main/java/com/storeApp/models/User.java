@@ -2,6 +2,7 @@ package com.storeApp.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.storeApp.models.order.Order;
+import com.storeApp.models.phone.Phone;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 

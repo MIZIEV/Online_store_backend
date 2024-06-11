@@ -1,11 +1,12 @@
 package com.storeApp.service.implementation;
 
-import com.storeApp.models.Phone;
+import com.storeApp.models.Color;
+import com.storeApp.models.PhoneRom;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.models.User;
 import com.storeApp.models.order.Order;
-import com.storeApp.repository.OrderRepository;
-import com.storeApp.repository.PhoneRepository;
-import com.storeApp.repository.UserRepository;
+import com.storeApp.models.phone.SelectedPhone;
+import com.storeApp.repository.*;
 import com.storeApp.service.OrderService;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,12 +27,16 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final PhoneRepository phoneRepository;
+    private final ColorRepository colorRepository;
+    private final PhoneRomRepository phoneRomRepository;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, PhoneRepository phoneRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, PhoneRepository phoneRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.phoneRepository = phoneRepository;
+        this.colorRepository = colorRepository;
+        this.phoneRomRepository = phoneRomRepository;
     }
 
     @Override
@@ -40,19 +46,29 @@ public class OrderServiceImpl implements OrderService {
         User orderOwner = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        List<SelectedPhone> selectedPhones = new ArrayList<>();
+
+        for (SelectedPhone selectedPhone : order.getPhoneList()) {
+            Phone phone = phoneRepository.findById(selectedPhone.getId())
+                    .orElseThrow(() -> new RuntimeException("Phone not found"));
+            Color color = colorRepository.findById(selectedPhone.getColor().getId())
+                    .orElseThrow(() -> new RuntimeException("Color not found"));
+            PhoneRom phoneRom = phoneRomRepository.findPhoneRomById(selectedPhone.getRom().getId())
+                    .orElseThrow(() -> new RuntimeException("Rom not found"));
+
+            SelectedPhone newSelectedPhone = new SelectedPhone();
+            newSelectedPhone.setBrand(phone.getBrand().toString());
+            newSelectedPhone.setModel(phone.getModel());
+            newSelectedPhone.setPrice(phone.getPrice());
+            newSelectedPhone.setQuantity(selectedPhone.getQuantity());
+            newSelectedPhone.setColor(color);
+            newSelectedPhone.setRom(phoneRom);
+
+            selectedPhones.add(newSelectedPhone);
+        }
+
+        order.setPhoneList(selectedPhones);
         order.setOrderOwner(orderOwner);
-
-        List<Phone> managedPhones = order.getPhoneList().stream()
-                .map(phone -> {
-                    if (phone.getId() != null) {
-                        return phoneRepository.findById(phone.getId())
-                                .orElseThrow(() -> new IllegalArgumentException("Phone not found"));
-                    } else {
-                        return phoneRepository.save(phone);
-                    }
-                }).collect(Collectors.toList());
-
-        order.setPhoneList(managedPhones);
         order.setCreatedAt(LocalDateTime.now());
         orderRepository.save(order);
     }

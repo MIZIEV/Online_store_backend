@@ -1,6 +1,7 @@
 package com.storeApp.service.implementation;
 
 import com.storeApp.models.*;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.repository.*;
 import com.storeApp.service.PhoneService;
 

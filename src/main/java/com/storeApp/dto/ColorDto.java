@@ -1,7 +1,7 @@
 package com.storeApp.dto;
 
 import com.storeApp.models.Case;
-import com.storeApp.models.Phone;
+import com.storeApp.models.phone.Phone;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
