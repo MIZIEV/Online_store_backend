@@ -239,6 +239,7 @@ public class PhoneServiceImpl implements PhoneService {
         phoneForUpdating.setVoteCount(editedPhone.getVoteCount());
         phoneForUpdating.setBrand(editedPhone.getBrand());
         phoneForUpdating.setUsed(editedPhone.isUsed());
+        phoneForUpdating.setProducingCountry(editedPhone.getProducingCountry());
         phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
         phoneForUpdating.setCommunicationStandardList(editedPhone.getCommunicationStandardList());
         phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());

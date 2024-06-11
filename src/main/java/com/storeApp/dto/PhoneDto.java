@@ -88,6 +88,8 @@ public class PhoneDto {
     @Enumerated(EnumType.STRING)
     private Brand brand;
 
+    private String producingCountry;
+
     @NotNull(message = "The field `isUsed` mustn't be null!")
     private boolean isUsed;
 
@@ -275,6 +277,22 @@ public class PhoneDto {
 
     public void setBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public String getProducingCountry() {
+        return producingCountry;
+    }
+
+    public void setProducingCountry(String producingCountry) {
+        this.producingCountry = producingCountry;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public boolean isUsed() {

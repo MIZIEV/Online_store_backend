@@ -53,6 +53,8 @@ public class Phone {
     private Brand brand;
     @Column(name = "is_used")
     private boolean isUsed;
+    @Column(name = "producing_county")
+    private String producingCountry;
 
     @Transient
     private Double rating;
@@ -280,6 +282,14 @@ public class Phone {
 
     public void setBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public String getProducingCountry() {
+        return producingCountry;
+    }
+
+    public void setProducingCountry(String producingCountry) {
+        this.producingCountry = producingCountry;
     }
 
     public boolean isUsed() {
