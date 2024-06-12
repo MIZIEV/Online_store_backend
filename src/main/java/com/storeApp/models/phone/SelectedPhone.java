@@ -108,4 +108,12 @@ public class SelectedPhone {
     public void setRom(PhoneRom rom) {
         this.rom = rom;
     }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 }

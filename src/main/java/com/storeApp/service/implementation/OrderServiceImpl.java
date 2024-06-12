@@ -93,10 +93,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = false)
     public boolean deleteOrder(long id) {
 
-        Optional<Order> order = orderRepository.findOrderById(id);
+        Order order = null;
 
-        if (order.isPresent()) {
-            orderRepository.delete(orderRepository.findOrderById(id).get());
+        if (orderRepository.findOrderById(id).isPresent()) {
+            order = orderRepository.findOrderById(id).get();
+            order.getPhoneList().clear();
+            orderRepository.save(order); // Save the order to update the join table
+            orderRepository.delete(order);
+
             return true;
         } else {
             return false;
