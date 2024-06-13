@@ -4,6 +4,7 @@ import com.storeApp.dto.OrderDto;
 import com.storeApp.service.OrderService;
 import com.storeApp.service.UserService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrder(@PathVariable long id) {
+    public ResponseEntity<?> getOrder(@PathVariable("id") Long id) {
 
         Optional<Order> order = orderService.getProductById(id);
 
@@ -74,7 +75,7 @@ public class OrderController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@Valid @RequestBody OrderDto editedOrder,
-                                         @PathVariable long id, BindingResult result) {
+                                         @PathVariable("id") Long id, BindingResult result) {
 
         if (result.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder("Validation error:\n");
@@ -88,8 +89,13 @@ public class OrderController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable long id) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> changeCompleteStatus(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(orderService.changeCompleteStatus(id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/remove")
+    public ResponseEntity<?> deleteOrder(@PathVariable("id") Long id) {
         boolean isDelete = orderService.deleteOrder(id);
 
         if (isDelete) {

@@ -2,8 +2,9 @@ package com.storeApp.models.order;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.storeApp.models.Phone;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.models.User;
+import com.storeApp.models.phone.SelectedPhone;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -48,11 +49,11 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User orderOwner;
 
-    @ManyToMany
-    @JoinTable(name = "order_phone",
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "order_selected_phone",
             joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "phone_id"))
-    private List<Phone> phoneList;
+            inverseJoinColumns = @JoinColumn(name = "selected_phone_id"))
+    private List<SelectedPhone> phoneList;
 
     public Order() {}
 
@@ -119,11 +120,11 @@ public class Order {
         this.deliveryMethod = deliveryMethod;
     }
 
-    public List<Phone> getPhoneList() {
+    public List<SelectedPhone> getPhoneList() {
         return phoneList;
     }
 
-    public void setPhoneList(List<Phone> phoneList) {
+    public void setPhoneList(List<SelectedPhone> phoneList) {
         this.phoneList = phoneList;
     }
 

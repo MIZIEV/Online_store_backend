@@ -2,6 +2,7 @@ package com.storeApp.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.storeApp.models.phone.Phone;
 import jakarta.persistence.*;
 
 @Entity

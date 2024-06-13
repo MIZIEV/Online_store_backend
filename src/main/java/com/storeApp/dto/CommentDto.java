@@ -1,6 +1,6 @@
 package com.storeApp.dto;
 
-import com.storeApp.models.Phone;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.models.User;
 
 import java.time.LocalDateTime;

@@ -50,7 +50,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String register(RegisterDto registerDto) {
 
-        if (userRepository.existsByEmail(registerDto.getEmail())) {
+        if (userRepository.existsByPhoneNumber(registerDto.getEmail())) {
+            throw new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "Username already exists!!!");
+        }
+
+        if (userRepository.existsByEmail(registerDto.getPhoneNumber())) {
+
             throw new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "Email already exists!!!");
         }
 
@@ -58,8 +63,8 @@ public class AuthServiceImpl implements AuthService {
 
         user.setFirstName(registerDto.getFirstName());
         user.setLastName(registerDto.getLastName());
-        user.setPhoneNumber(registerDto.getUsername());
-        user.setEmail(registerDto.getPhoneNumber());
+        user.setPhoneNumber(registerDto.getPhoneNumber());
+        user.setEmail(registerDto.getEmail());
         user.setCreatedAt(LocalDateTime.now());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 

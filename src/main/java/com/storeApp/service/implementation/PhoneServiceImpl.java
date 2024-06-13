@@ -1,6 +1,7 @@
 package com.storeApp.service.implementation;
 
 import com.storeApp.models.*;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.repository.*;
 import com.storeApp.service.PhoneService;
 
@@ -247,6 +248,7 @@ public class PhoneServiceImpl implements PhoneService {
         phoneForUpdating.setVoteCount(editedPhone.getVoteCount());
         phoneForUpdating.setBrand(editedPhone.getBrand());
         phoneForUpdating.setUsed(editedPhone.isUsed());
+        phoneForUpdating.setProducingCountry(editedPhone.getProducingCountry());
         phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
         phoneForUpdating.setCommunicationStandardList(editedPhone.getCommunicationStandardList());
         phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());

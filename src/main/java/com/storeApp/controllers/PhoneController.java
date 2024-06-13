@@ -2,7 +2,7 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.PhoneDto;
 import com.storeApp.dto.PhoneRatingDto;
-import com.storeApp.models.Phone;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.models.PhoneRating;
 import com.storeApp.models.User;
 import com.storeApp.repository.UserRepository;

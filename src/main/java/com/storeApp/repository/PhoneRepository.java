@@ -1,6 +1,6 @@
 package com.storeApp.repository;
 
-import com.storeApp.models.Phone;
+import com.storeApp.models.phone.Phone;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
