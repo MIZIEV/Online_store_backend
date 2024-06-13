@@ -59,7 +59,7 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public List<Phone> getAllPhones(String sort, String brand, String screenSize,
+    public List<Phone> getAllPhones(String sort, String searchTerm, String brand, String screenSize,
                                     Boolean isUsed, String resolution, String ram, String rom,
                                     String countOfCores, String countOfSimCard, String price) {
 
@@ -155,6 +155,14 @@ public class PhoneServiceImpl implements PhoneService {
                     .filter(phone -> phone.getRomList().stream()
                             .anyMatch(phoneRom -> romSizes.contains(phoneRom.getRomSize())))
                     .collect(Collectors.toList());
+        }
+
+        if (searchTerm == null) {
+            phones = phoneRepository.findAll();
+        } else if (searchTerm != null && !searchTerm.isEmpty() && !searchTerm.equals("all")) {
+            phones = filterPhonesBySearchTerm(phones, searchTerm);
+        } else if (searchTerm.equals("all")) {
+            phones = phoneRepository.findAll();
         }
 
         phones = applyNumericFilter(phones, ram, Phone::getRam, Short::parseShort);
@@ -371,5 +379,28 @@ public class PhoneServiceImpl implements PhoneService {
     private Phone findPhoneByIdOrThrow(Long id) {
         return phoneRepository.findPhoneById(id).
                 orElseThrow(() -> new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found"));
+    }
+
+    private static boolean containsAllWord(String text, String... words) {
+        for (String word : words) {
+            if (!text.toLowerCase().contains(word.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<Phone> filterPhonesBySearchTerm(List<Phone> phones, String searchTerm) {
+        List<Phone> filteredList = new ArrayList<>();
+        String[] searchTerms = searchTerm.split("\\s+");
+
+        for (Phone phone : phones) {
+            String phoneDetails = phone.getBrand() + " " + phone.getModel();
+            if (containsAllWord(phoneDetails, searchTerms)) {
+                filteredList.add(phone);
+            }
+        }
+
+        return filteredList;
     }
 }

@@ -7,6 +7,7 @@ public class RegisterDto {
     private String email;
     private String phoneNumber;
     private String password;
+    private String email;
 
     public RegisterDto(){}
 
@@ -56,5 +57,13 @@ public class RegisterDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -55,6 +55,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (userRepository.existsByEmail(registerDto.getPhoneNumber())) {
+
             throw new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "Email already exists!!!");
         }
 
