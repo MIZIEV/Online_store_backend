@@ -65,6 +65,14 @@ public class PhoneServiceImpl implements PhoneService {
 
         List<Phone> phones = phoneRepository.findAll();
 
+        if (searchTerm == null) {
+            phones = phoneRepository.findAll();
+        } else if (searchTerm != null && !searchTerm.isEmpty() && !searchTerm.equals("all")) {
+            phones = filterPhonesBySearchTerm(phones, searchTerm);
+        } else if (searchTerm.equals("all")) {
+            phones = phoneRepository.findAll();
+        }
+
         if ("minPrice".equalsIgnoreCase(sort)) {
             phones.sort(Comparator.comparing(Phone::getPrice));
         } else if ("maxPrice".equalsIgnoreCase(sort)) {
@@ -157,13 +165,7 @@ public class PhoneServiceImpl implements PhoneService {
                     .collect(Collectors.toList());
         }
 
-        if (searchTerm == null) {
-            phones = phoneRepository.findAll();
-        } else if (searchTerm != null && !searchTerm.isEmpty() && !searchTerm.equals("all")) {
-            phones = filterPhonesBySearchTerm(phones, searchTerm);
-        } else if (searchTerm.equals("all")) {
-            phones = phoneRepository.findAll();
-        }
+
 
         phones = applyNumericFilter(phones, ram, Phone::getRam, Short::parseShort);
         phones = applyNumericFilter(phones, countOfCores, Phone::getCountOfCores, Byte::parseByte);
