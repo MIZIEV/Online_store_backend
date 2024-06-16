@@ -67,7 +67,7 @@ public class PhoneController {
                                     @RequestParam(name = "countOfSimCard", required = false) String countOfSimCard,
                                     @RequestParam(name = "price", required = false) String price) {
 
-        return phoneService.getAllPhones(sort,searchTerm, brand, screenSize, isUsed,
+        return phoneService.getAllPhones(sort, searchTerm, brand, screenSize, isUsed,
                 resolution, ram, rom, countOfCores, countOfSimCard, price);
     }
 
@@ -93,7 +93,7 @@ public class PhoneController {
     }
 
     @GetMapping("/{id}/{email}/hasRated")
-    public ResponseEntity<Boolean> hasUserRatedPhone(@PathVariable("id") Long id,@PathVariable("email") String email) {
+    public ResponseEntity<Boolean> hasUserRatedPhone(@PathVariable("id") Long id, @PathVariable("email") String email) {
         User user = userRepository.findByEmail(email).get();
         boolean hasRated = phoneService.hasUserRatedPhone(user, id);
         return new ResponseEntity<>(hasRated, HttpStatus.OK);

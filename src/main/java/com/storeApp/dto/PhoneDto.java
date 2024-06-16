@@ -49,7 +49,6 @@ public class PhoneDto {
 
     @NotNull(message = "The field `frontCamera` mustn't be null!")
     @Positive(message = "The frontCamera field mustn't be a negative value or equal to zero!")
-    @Max(value = 100, message = "The frontCamera field mustn't be bigger than 100!")
     private Short frontCamera;
 
     @NotNull(message = "The field `processor` mustn't be null!")
@@ -89,6 +88,8 @@ public class PhoneDto {
     @Enumerated(EnumType.STRING)
     private Brand brand;
 
+    @NotNull(message = "The field `producingCountry` mustn't be null!")
+    @Size(min = 3, message = "The field `producingCountry` must be longer than 3 characters!")
     private String producingCountry;
 
     @NotNull(message = "The field `isUsed` mustn't be null!")
