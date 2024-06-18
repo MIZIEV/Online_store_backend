@@ -9,6 +9,7 @@ import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class CommentController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> addNewComment(@PathVariable("phoneId") Long phoneId,
                                            @RequestBody Comment comment) {
 
@@ -43,6 +45,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/remove/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> deleteComment(@PathVariable("id") Long id) {
         commentService.deleteComment(id);
         return new ResponseEntity<>(HttpStatus.OK);

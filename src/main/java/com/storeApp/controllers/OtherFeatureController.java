@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,8 @@ public class OtherFeatureController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<?> addNewFeature(@PathVariable("id") Long phoneId,
                                            @RequestBody OtherFeaturesDto otherFeaturesDto) {
         return new ResponseEntity<>(otherFeaturesService.
@@ -38,6 +41,7 @@ public class OtherFeatureController {
 
 
     @PutMapping("/{featureId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateCharacteristic(@RequestBody OtherFeaturesDto editedFeatureDto,
                                                   @PathVariable("featureId") Long id) {
         OtherFeatures updatedCharacteristic =
@@ -47,6 +51,7 @@ public class OtherFeatureController {
     }
 
     @DeleteMapping("/{featureId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCharacteristic(@PathVariable("featureId") Long id) {
         otherFeaturesService.deleteFeature(id);
         return new ResponseEntity<>("Feature deleted successfully.", HttpStatus.OK);

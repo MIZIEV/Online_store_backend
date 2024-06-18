@@ -43,8 +43,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = false)
     public void addNewOrder(Order order, String userEmail) {
 
-        User orderOwner = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User orderOwner = null;
+        if (userEmail != null && !userEmail.isEmpty()) {
+            orderOwner = userRepository.findByEmail(userEmail).get();
+        }
 
         List<SelectedPhone> selectedPhones = new ArrayList<>();
 

@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -36,7 +37,7 @@ public class PhoneController {
     }
 
     @PostMapping("/add")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addNewPhone(@Valid @RequestBody PhoneDto phoneDto, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -105,13 +106,13 @@ public class PhoneController {
     }
 
     @PutMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updatePhone(@RequestBody Phone editedPhone, @PathVariable Long id) {
         return new ResponseEntity<>(phoneService.updatePhone(editedPhone, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")
-    //PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deletePhone(@PathVariable("id") long id) {
         phoneService.deletePhone(id);
         return ResponseEntity.ok(HttpStatus.OK);

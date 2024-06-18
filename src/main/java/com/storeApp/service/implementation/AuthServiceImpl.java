@@ -88,6 +88,7 @@ public class AuthServiceImpl implements AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String token = jwtTokenProvider.generateToken(authentication);
+            String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
 
             Optional<User> userOptional = userRepository.findByPhoneNumberOrEmail(loginDto.getEmail(),
                     loginDto.getEmail());
@@ -109,6 +110,7 @@ public class AuthServiceImpl implements AuthService {
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setRole(role);
             jwtAuthResponse.setAccessToken(token);
+            jwtAuthResponse.setRefreshToken(refreshToken);
             jwtAuthResponse.setFirstName(user.getFirstName());
             jwtAuthResponse.setLastName(user.getLastName());
             jwtAuthResponse.setPhoneNumber(user.getPhoneNumber());
