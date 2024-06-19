@@ -1,27 +1,16 @@
-package com.storeApp.models;
+package com.storeApp.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+import com.storeApp.models.phone.Phone;
 
-@Entity
-@Table(name = "picture_url")
-public class PhonePictureURL {
+public class PhonePictureUrlDto {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "picture_url")
     private String url;
-
-    @ManyToOne
-    @JsonBackReference
-    @JoinColumn(name = "phone_id", referencedColumnName = "id")
     private Phone phone;
 
-    public PhonePictureURL(){}
+    public PhonePictureUrlDto() {}
 
-    public PhonePictureURL(Long id, String url, Phone phone) {
+    public PhonePictureUrlDto(Long id, String url, Phone phone) {
         this.id = id;
         this.url = url;
         this.phone = phone;

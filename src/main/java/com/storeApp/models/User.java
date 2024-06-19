@@ -1,6 +1,8 @@
 package com.storeApp.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.storeApp.models.order.Order;
+import com.storeApp.models.phone.Phone;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
@@ -22,16 +24,16 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "phone_number")
+    private String phoneNumber;
     @Column(name = "email")
     private String email;
 
     @Column(name = "role")
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",
-    joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> role;
 
     private String password;
@@ -43,14 +45,21 @@ public class User {
     @JsonManagedReference
     private List<Order> orderList;
 
+
+    @ManyToMany
+    @JoinTable(name = "user_wish_list",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "phone_id"))
+    private Set<Phone> wishList;
+
     public User() {}
 
-    public User(Long id, String firstName, String lastName,String username,
+    public User(Long id, String firstName, String lastName, String phoneNumber,
                 String email, Set<Role> role, LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username=username;
+        this.phoneNumber = phoneNumber;
         this.email = email;
         this.role = role;
         this.createdAt = createdAt;
@@ -80,12 +89,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setPhoneNumber(String username) {
+        this.phoneNumber = username;
     }
 
     public String getEmail() {
@@ -120,13 +129,25 @@ public class User {
         this.password = password;
     }
 
-    public List<Order> getOrderList() { return orderList; }
+    public List<Order> getOrderList() {
+        return orderList;
+    }
 
-    public void setOrderList(List<Order> orderList) { this.orderList = orderList; }
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
+    }
+
+    public Set<Phone> getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(Set<Phone> wishList) {
+        this.wishList = wishList;
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName,username, email, role, createdAt);
+        return Objects.hash(id, firstName, lastName, phoneNumber, email, role, createdAt);
     }
 
     @Override
@@ -139,7 +160,7 @@ public class User {
         return Objects.equals(id, user.id) &&
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
-                Objects.equals(username, user.username) &&
+                Objects.equals(phoneNumber, user.phoneNumber) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(role, user.role) &&
                 Objects.equals(createdAt, user.createdAt);

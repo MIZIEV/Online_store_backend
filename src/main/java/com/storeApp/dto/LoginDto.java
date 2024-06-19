@@ -1,22 +1,22 @@
 package com.storeApp.dto;
 
 public class LoginDto {
-    private String usernameOrEmail;
+    private String email;
     private String password;
 
     public LoginDto(){}
 
-    public LoginDto(String usernameOrEmail, String password) {
-        this.usernameOrEmail = usernameOrEmail;
+    public LoginDto(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 
-    public String getUsernameOrEmail() {
-        return usernameOrEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsernameOrEmail(String usernameOrEmail) {
-        this.usernameOrEmail = usernameOrEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

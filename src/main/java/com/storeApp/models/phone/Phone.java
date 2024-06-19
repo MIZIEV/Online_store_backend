@@ -1,6 +1,9 @@
-package com.storeApp.models;
+package com.storeApp.models.phone;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.storeApp.models.*;
+import com.storeApp.models.order.Order;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
@@ -37,8 +40,6 @@ public class Phone {
     private Byte countOfCores;
     @Column(name = "ram")
     private Short ram;
-    @Column(name = "rom")
-    private Short rom;
     @Column(name = "weight")
     private Short weight;
     @Column(name = "battary_capacity")
@@ -47,16 +48,18 @@ public class Phone {
     private Byte countOfSimCard;
     @Column(name = "price")
     private Double price;
-    @Column(name = "rating")
-    private Double rating;
     @Column(name = "vote_count")
     private Long voteCount;
-    @Column(name = "description")
-    private String description;
     @Enumerated(EnumType.STRING)
     private Brand brand;
     @Column(name = "is_used")
     private boolean isUsed;
+    @Column(name = "producing_county")
+    private String producingCountry;
+
+    @Transient
+    private Double rating;
+
 
     @ManyToMany
     @JoinTable(name = "phone_color",
@@ -67,23 +70,49 @@ public class Phone {
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<PhonePictureURL> phonePictureURLS;
+    private List<PhoneRating> ratings;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<MobileCommunicationStandard> standardList;
+    private List<Comment> comments;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "phone")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<PhoneRom> romList;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "phone")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<PhonePictureUrl> phonePictureUrls;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "phone")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<MobileCommunicationStandard> communicationStandardList;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "phone")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<OtherFeatures> featuresList;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "phone")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Description> descriptionList;
+
+    @ManyToMany(mappedBy = "wishList",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<User> userWithWishList;
+
     public Phone() {}
 
     public Phone(Long id, String model, String mainPictureURL, String os, String osVersion, Double screenSize,
                  String resolution, String mainCamera, Short frontCamera, String processor, Byte countOfCores,
-                 Short ram, Short rom, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
-                 Double rating, Long voteCount, String description, Brand brand, boolean isUsed,
-                 List<PhonePictureURL> phonePictureURLS, List<MobileCommunicationStandard> standardList,
+                 Short ram, Short weight, Short batteryCapacity, Byte countOfSimCard, Double price,
+                 Long voteCount, Brand brand, boolean isUsed,
+                 List<PhonePictureUrl> phonePictureUrls, List<MobileCommunicationStandard> communicationStandardList,
                  List<OtherFeatures> featuresList) {
         this.id = id;
         this.model = model;
@@ -97,18 +126,15 @@ public class Phone {
         this.processor = processor;
         this.countOfCores = countOfCores;
         this.ram = ram;
-        this.rom = rom;
         this.weight = weight;
         this.batteryCapacity = batteryCapacity;
         this.countOfSimCard = countOfSimCard;
         this.price = price;
-        this.rating = rating;
         this.voteCount = voteCount;
-        this.description = description;
         this.brand = brand;
         this.isUsed = isUsed;
-        this.phonePictureURLS = phonePictureURLS;
-        this.standardList = standardList;
+        this.phonePictureUrls = phonePictureUrls;
+        this.communicationStandardList = communicationStandardList;
         this.featuresList = featuresList;
     }
 
@@ -208,14 +234,6 @@ public class Phone {
         this.ram = ram;
     }
 
-    public Short getRom() {
-        return rom;
-    }
-
-    public void setRom(Short rom) {
-        this.rom = rom;
-    }
-
     public Short getWeight() {
         return weight;
     }
@@ -248,14 +266,6 @@ public class Phone {
         this.price = price;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
     public Long getVoteCount() {
         return voteCount;
     }
@@ -264,20 +274,20 @@ public class Phone {
         this.voteCount = voteCount;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Brand getBrand() {
         return brand;
     }
 
     public void setBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public String getProducingCountry() {
+        return producingCountry;
+    }
+
+    public void setProducingCountry(String producingCountry) {
+        this.producingCountry = producingCountry;
     }
 
     public boolean isUsed() {
@@ -296,20 +306,28 @@ public class Phone {
         this.colors = colors;
     }
 
-    public List<PhonePictureURL> getPhonePictureURLS() {
-        return phonePictureURLS;
+    public List<PhoneRom> getRomList() {
+        return romList;
     }
 
-    public void setPhonePictureURLS(List<PhonePictureURL> phonePictureURLS) {
-        this.phonePictureURLS = phonePictureURLS;
+    public void setRomList(List<PhoneRom> romList) {
+        this.romList = romList;
     }
 
-    public List<MobileCommunicationStandard> getStandardList() {
-        return standardList;
+    public List<PhonePictureUrl> getPhonePictureURLS() {
+        return phonePictureUrls;
     }
 
-    public void setStandardList(List<MobileCommunicationStandard> standartList) {
-        this.standardList = standartList;
+    public void setPhonePictureURLS(List<PhonePictureUrl> phonePictureUrls) {
+        this.phonePictureUrls = phonePictureUrls;
+    }
+
+    public List<MobileCommunicationStandard> getCommunicationStandardList() {
+        return communicationStandardList;
+    }
+
+    public void setCommunicationStandardList(List<MobileCommunicationStandard> standartList) {
+        this.communicationStandardList = standartList;
     }
 
     public List<OtherFeatures> getFeaturesList() {
@@ -318,5 +336,53 @@ public class Phone {
 
     public void setFeaturesList(List<OtherFeatures> featuresList) {
         this.featuresList = featuresList;
+    }
+
+    public List<Description> getDescriptionList() {
+        return descriptionList;
+    }
+
+    public void setDescriptionList(List<Description> descriptionList) {
+        this.descriptionList = descriptionList;
+    }
+
+    public List<PhonePictureUrl> getPhonePictureUrls() {
+        return phonePictureUrls;
+    }
+
+    public void setPhonePictureUrls(List<PhonePictureUrl> phonePictureUrls) {
+        this.phonePictureUrls = phonePictureUrls;
+    }
+
+    public List<PhoneRating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<PhoneRating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Set<User> getUserWithWishList() {
+        return userWithWishList;
+    }
+
+    public void setUserWithWishList(Set<User> userWithWishList) {
+        this.userWithWishList = userWithWishList;
     }
 }

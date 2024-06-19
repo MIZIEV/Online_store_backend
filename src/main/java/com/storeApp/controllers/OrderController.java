@@ -2,14 +2,17 @@ package com.storeApp.controllers;
 
 import com.storeApp.dto.OrderDto;
 import com.storeApp.service.OrderService;
+import com.storeApp.service.UserService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import com.storeApp.models.Order;
+import com.storeApp.models.order.Order;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -20,19 +23,29 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
+    private final UserService userService;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllOrders() {
         return new ResponseEntity<>(orderService.getOrderList(), HttpStatus.OK);
     }
 
+    @GetMapping("/list/{email}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<?> getAllOrdersForUser(@PathVariable("email") String email) {
+        return new ResponseEntity<>(orderService.getOrderListForUser(email), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrder(@PathVariable long id) {
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<?> getOrder(@PathVariable("id") Long id) {
 
         Optional<Order> order = orderService.getProductById(id);
 
@@ -58,15 +71,16 @@ public class OrderController {
         } else {
 
             Order order = convertToOrder(orderDto);
-            orderService.addNewOrder(order);
+            orderService.addNewOrder(order, orderDto.getEmail());
 
             return new ResponseEntity<>(order, HttpStatus.CREATED);
         }
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> updateOrder(@Valid @RequestBody OrderDto editedOrder,
-                                         @PathVariable long id, BindingResult result) {
+                                         @PathVariable("id") Long id, BindingResult result) {
 
         if (result.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder("Validation error:\n");
@@ -80,8 +94,15 @@ public class OrderController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable long id) {
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> changeCompleteStatus(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(orderService.changeCompleteStatus(id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/remove")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<?> deleteOrder(@PathVariable("id") Long id) {
         boolean isDelete = orderService.deleteOrder(id);
 
         if (isDelete) {
@@ -96,10 +117,16 @@ public class OrderController {
     private Order convertToOrder(OrderDto orderDto) {
         Order order = new Order();
 
-        order.setTotalAmount(orderDto.getTotalAmount());
+        order.setCity(orderDto.getCity());
+        order.setFullName(orderDto.getFullName());
+        order.setPhoneNumber(orderDto.getPhoneNumber());
         order.setStatus(orderDto.getStatus());
-        order.setCreatedAt(LocalDateTime.now());
-        order.setOrderOwner(null);
+        order.setTotalAmount(orderDto.getTotalAmount());
+        order.setDeliveryMethod(orderDto.getDeliveryMethod());
+        order.setPaymentMethod(orderDto.getPaymentMethod());
+        order.setCreatedAt(orderDto.getCreatedAt());
+        order.setPhoneList(orderDto.getPhoneList());
+        order.setOrderOwner(userService.getUserByPhoneNumber(orderDto.getEmail()));
 
         return order;
     }
