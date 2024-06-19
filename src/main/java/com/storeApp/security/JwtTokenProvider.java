@@ -1,6 +1,8 @@
 package com.storeApp.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,6 +20,8 @@ public class JwtTokenProvider {
     private String jwtSecret;
     @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpiration;
+    @Value("${app.jwt-refresh-expiration-milliseconds}")
+    private long jwtRefreshExpiration;
 
     public String generateToken(Authentication authentication) {
 
@@ -26,6 +30,23 @@ public class JwtTokenProvider {
         Date currentDate = new Date();
 
         Date expirationDate = new Date(currentDate.getTime() + jwtExpiration);
+
+        String token = Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(expirationDate)
+                .signWith(key())
+                .compact();
+
+        return token;
+    }
+
+    public String generateRefreshToken(Authentication authentication) {
+        String username = authentication.getName();
+
+        Date currentDate = new Date();
+
+        Date expirationDate = new Date(currentDate.getTime() + jwtRefreshExpiration);
 
         String token = Jwts.builder()
                 .setSubject(username)
@@ -55,10 +76,18 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
-        Jwts.parserBuilder()
-                .setSigningKey(key())
-                .build()
-                .parse(token);
-        return true;
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key())
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException ex) {
+            System.out.println("Token expired");
+            return false;
+        } catch (JwtException | IllegalArgumentException ex) {
+            System.out.println("Invalid token");
+            return false;
+        }
     }
 }
