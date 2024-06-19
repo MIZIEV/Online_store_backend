@@ -8,6 +8,7 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -31,16 +32,19 @@ public class OrderController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllOrders() {
         return new ResponseEntity<>(orderService.getOrderList(), HttpStatus.OK);
     }
 
     @GetMapping("/list/{email}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> getAllOrdersForUser(@PathVariable("email") String email) {
         return new ResponseEntity<>(orderService.getOrderListForUser(email), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> getOrder(@PathVariable("id") Long id) {
 
         Optional<Order> order = orderService.getProductById(id);
@@ -74,6 +78,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> updateOrder(@Valid @RequestBody OrderDto editedOrder,
                                          @PathVariable("id") Long id, BindingResult result) {
 
@@ -90,11 +95,13 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeCompleteStatus(@PathVariable("id") Long id) {
         return new ResponseEntity<>(orderService.changeCompleteStatus(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/remove")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> deleteOrder(@PathVariable("id") Long id) {
         boolean isDelete = orderService.deleteOrder(id);
 

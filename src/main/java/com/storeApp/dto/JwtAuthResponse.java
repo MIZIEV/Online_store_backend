@@ -1,7 +1,9 @@
 package com.storeApp.dto;
 
 public class JwtAuthResponse {
+
     private String accessToken;
+    private String refreshToken;
     private String tokenType = "Bearer";
     private String role;
     private String firstName;
@@ -9,18 +11,7 @@ public class JwtAuthResponse {
     private String phoneNumber;
     private String email;
 
-    public JwtAuthResponse() {
-    }
-
-    public JwtAuthResponse(String accessToken, String tokenType, String role, String firstName, String lastName, String phoneNumber, String email) {
-        this.accessToken = accessToken;
-        this.tokenType = tokenType;
-        this.role = role;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-    }
+    public JwtAuthResponse() {}
 
     public String getAccessToken() {
         return accessToken;
@@ -28,6 +19,14 @@ public class JwtAuthResponse {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public String getTokenType() {

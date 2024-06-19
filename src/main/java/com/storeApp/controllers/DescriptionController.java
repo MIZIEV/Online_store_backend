@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class DescriptionController {
 
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addNewDescription(@PathVariable("id") Long phoneId,
                                                @RequestBody DescriptionDto descriptionDto) {
         Description newDescription = descriptionService.addNewDescription(phoneId,
@@ -36,6 +38,7 @@ public class DescriptionController {
     }
 
     @DeleteMapping("/remove/{descriptionId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteDescription(@PathVariable("descriptionId") Long descriptionId){
         descriptionService.deleteDescription(descriptionId);
         return new ResponseEntity<>(HttpStatus.OK);

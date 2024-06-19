@@ -42,14 +42,21 @@ public class SpringSecurityConfiguration {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) -> {
 
-//                    authorize.requestMatchers("/api/auth/**").permitAll();
-//                    authorize.requestMatchers("/api/product/list").permitAll();
-//                    authorize.requestMatchers("/api/product/list/search").permitAll();
-//                    authorize.requestMatchers("/api/product/{id}").permitAll();
-//                    authorize.requestMatchers("/api/category/**").permitAll();
-//                    authorize.requestMatchers("/api/product/{id}/mark").permitAll();
-//                    authorize.requestMatchers("/api/product/{id}/characteristic/**").permitAll();
-                    authorize.requestMatchers("/**").permitAll();
+                    authorize.requestMatchers("/api/auth/**").permitAll();
+                    authorize.requestMatchers("/api/phone/{id}").permitAll();
+                    authorize.requestMatchers("/api/phone/list").permitAll();
+                    authorize.requestMatchers("/api/phone/list/search").permitAll();
+                    authorize.requestMatchers("/api/phone/{id}/feature/list").permitAll();
+                    authorize.requestMatchers("/api/phone/{id}/description/list").permitAll();
+                    authorize.requestMatchers("/api/phone/{phoneId}/comment/list").permitAll();
+                    authorize.requestMatchers("/api/phone/{id}/characteristic/list").permitAll();
+                    authorize.requestMatchers("/api/phone/{id}/pctureUrl/list").permitAll();
+
+                    authorize.requestMatchers("/api/blog/list").permitAll();
+                    authorize.requestMatchers("/api/blog/{id}").permitAll();
+
+                    authorize.requestMatchers("/api/order/add").permitAll();
+
                     authorize.anyRequest().authenticated();
 
                 }).httpBasic(Customizer.withDefaults());
