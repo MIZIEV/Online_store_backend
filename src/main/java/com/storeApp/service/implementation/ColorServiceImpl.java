@@ -1,7 +1,7 @@
 package com.storeApp.service.implementation;
 
 import com.storeApp.models.Color;
-import com.storeApp.models.Phone;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.repository.ColorRepository;
 import com.storeApp.repository.PhoneRepository;
 import com.storeApp.service.ColorService;

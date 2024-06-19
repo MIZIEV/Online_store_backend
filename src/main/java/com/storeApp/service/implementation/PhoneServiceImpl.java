@@ -1,6 +1,7 @@
 package com.storeApp.service.implementation;
 
 import com.storeApp.models.*;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.repository.*;
 import com.storeApp.service.PhoneService;
 
@@ -58,11 +59,19 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
-    public List<Phone> getAllPhones(String sort, String brand, String screenSize,
+    public List<Phone> getAllPhones(String sort, String searchTerm, String brand, String screenSize,
                                     Boolean isUsed, String resolution, String ram, String rom,
                                     String countOfCores, String countOfSimCard, String price) {
 
         List<Phone> phones = phoneRepository.findAll();
+
+        if (searchTerm == null) {
+            phones = phoneRepository.findAll();
+        } else if (searchTerm != null && !searchTerm.isEmpty() && !searchTerm.equals("all")) {
+            phones = filterPhonesBySearchTerm(phones, searchTerm);
+        } else if (searchTerm.equals("all")) {
+            phones = phoneRepository.findAll();
+        }
 
         if ("minPrice".equalsIgnoreCase(sort)) {
             phones.sort(Comparator.comparing(Phone::getPrice));
@@ -156,6 +165,8 @@ public class PhoneServiceImpl implements PhoneService {
                     .collect(Collectors.toList());
         }
 
+
+
         phones = applyNumericFilter(phones, ram, Phone::getRam, Short::parseShort);
         phones = applyNumericFilter(phones, countOfCores, Phone::getCountOfCores, Byte::parseByte);
         phones = applyNumericFilter(phones, countOfSimCard, Phone::getCountOfSimCard, Byte::parseByte);
@@ -239,6 +250,7 @@ public class PhoneServiceImpl implements PhoneService {
         phoneForUpdating.setVoteCount(editedPhone.getVoteCount());
         phoneForUpdating.setBrand(editedPhone.getBrand());
         phoneForUpdating.setUsed(editedPhone.isUsed());
+        phoneForUpdating.setProducingCountry(editedPhone.getProducingCountry());
         phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
         phoneForUpdating.setCommunicationStandardList(editedPhone.getCommunicationStandardList());
         phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());
@@ -369,5 +381,28 @@ public class PhoneServiceImpl implements PhoneService {
     private Phone findPhoneByIdOrThrow(Long id) {
         return phoneRepository.findPhoneById(id).
                 orElseThrow(() -> new OnlineStoreApiException(HttpStatus.NOT_FOUND, "Phone with id - " + id + " not found"));
+    }
+
+    private static boolean containsAllWord(String text, String... words) {
+        for (String word : words) {
+            if (!text.toLowerCase().contains(word.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<Phone> filterPhonesBySearchTerm(List<Phone> phones, String searchTerm) {
+        List<Phone> filteredList = new ArrayList<>();
+        String[] searchTerms = searchTerm.split("\\s+");
+
+        for (Phone phone : phones) {
+            String phoneDetails = phone.getBrand() + " " + phone.getModel();
+            if (containsAllWord(phoneDetails, searchTerms)) {
+                filteredList.add(phone);
+            }
+        }
+
+        return filteredList;
     }
 }

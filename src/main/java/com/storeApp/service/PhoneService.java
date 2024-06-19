@@ -1,6 +1,6 @@
 package com.storeApp.service;
 
-import com.storeApp.models.Phone;
+import com.storeApp.models.phone.Phone;
 import com.storeApp.models.User;
 
 import java.io.Serializable;
@@ -12,7 +12,7 @@ public interface PhoneService {
 
     void addNewPhone(Phone phone);
 
-    List<Phone> getAllPhones(String sort, String brand, String screenSize,
+    List<Phone> getAllPhones(String sort,String searchTerm, String brand, String screenSize,
                              Boolean isUsed, String resolution, String ram, String rom,
                              String countOfCores, String countOfSimCard, String price);
 

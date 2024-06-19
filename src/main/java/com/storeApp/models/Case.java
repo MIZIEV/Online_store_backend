@@ -1,5 +1,6 @@
 package com.storeApp.models;
 
+import com.storeApp.models.phone.Brand;
 import jakarta.persistence.*;
 
 import java.util.Objects;

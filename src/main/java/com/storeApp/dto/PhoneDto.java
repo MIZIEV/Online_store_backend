@@ -3,6 +3,7 @@ package com.storeApp.dto;
 
 import com.storeApp.models.*;
 import com.storeApp.models.order.Order;
+import com.storeApp.models.phone.Brand;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -48,7 +49,6 @@ public class PhoneDto {
 
     @NotNull(message = "The field `frontCamera` mustn't be null!")
     @Positive(message = "The frontCamera field mustn't be a negative value or equal to zero!")
-    @Max(value = 100, message = "The frontCamera field mustn't be bigger than 100!")
     private Short frontCamera;
 
     @NotNull(message = "The field `processor` mustn't be null!")
@@ -88,10 +88,13 @@ public class PhoneDto {
     @Enumerated(EnumType.STRING)
     private Brand brand;
 
+    @NotNull(message = "The field `producingCountry` mustn't be null!")
+    @Size(min = 3, message = "The field `producingCountry` must be longer than 3 characters!")
+    private String producingCountry;
+
     @NotNull(message = "The field `isUsed` mustn't be null!")
     private boolean isUsed;
 
-    private Order order;
     private Set<Color> colors;
     private List<Comment> comments;
     private List<PhoneRom> romList;
@@ -275,6 +278,14 @@ public class PhoneDto {
 
     public void setBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public String getProducingCountry() {
+        return producingCountry;
+    }
+
+    public void setProducingCountry(String producingCountry) {
+        this.producingCountry = producingCountry;
     }
 
     public boolean isUsed() {

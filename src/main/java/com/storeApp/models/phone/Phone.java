@@ -1,7 +1,8 @@
-package com.storeApp.models;
+package com.storeApp.models.phone;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.storeApp.models.*;
 import com.storeApp.models.order.Order;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
@@ -53,13 +54,12 @@ public class Phone {
     private Brand brand;
     @Column(name = "is_used")
     private boolean isUsed;
+    @Column(name = "producing_county")
+    private String producingCountry;
 
     @Transient
     private Double rating;
 
-    @ManyToMany(mappedBy = "phoneList",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Order> orders;
 
     @ManyToMany
     @JoinTable(name = "phone_color",
@@ -282,6 +282,14 @@ public class Phone {
         this.brand = brand;
     }
 
+    public String getProducingCountry() {
+        return producingCountry;
+    }
+
+    public void setProducingCountry(String producingCountry) {
+        this.producingCountry = producingCountry;
+    }
+
     public boolean isUsed() {
         return isUsed;
     }
@@ -368,14 +376,6 @@ public class Phone {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
     }
 
     public Set<User> getUserWithWishList() {
