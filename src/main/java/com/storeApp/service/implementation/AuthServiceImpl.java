@@ -35,26 +35,21 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomUserDetailService userDetailService;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, CustomUserDetailService userDetailService) {
+    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
+                           AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userDetailService = userDetailService;
     }
 
     @Override
     public String register(RegisterDto registerDto) {
 
-        if (userRepository.existsByPhoneNumber(registerDto.getEmail())) {
-            throw new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "Username already exists!!!");
-        }
-
-        if (userRepository.existsByEmail(registerDto.getPhoneNumber())) {
+        if (userRepository.existsByEmail(registerDto.getEmail())) {
 
             throw new OnlineStoreApiException(HttpStatus.BAD_REQUEST, "Email already exists!!!");
         }

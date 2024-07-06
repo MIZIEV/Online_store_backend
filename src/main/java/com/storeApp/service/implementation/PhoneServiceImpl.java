@@ -26,15 +26,17 @@ public class PhoneServiceImpl implements PhoneService {
     private final PhoneRomRepository phoneRomRepository;
     private final MobileCommunicationStandardRepository mobileCommunicationStandardRepository;
     private final UserRepository userRepository;
+    private final SelectedPhoneRepository selectedPhoneRepository;
 
     @Autowired
-    public PhoneServiceImpl(PhoneRepository phoneRepository, PhoneRatingRepository phoneRatingRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository, MobileCommunicationStandardRepository mobileCommunicationStandardRepository, UserRepository userRepository) {
+    public PhoneServiceImpl(PhoneRepository phoneRepository, PhoneRatingRepository phoneRatingRepository, ColorRepository colorRepository, PhoneRomRepository phoneRomRepository, MobileCommunicationStandardRepository mobileCommunicationStandardRepository, UserRepository userRepository, SelectedPhoneRepository selectedPhoneRepository) {
         this.phoneRepository = phoneRepository;
         this.phoneRatingRepository = phoneRatingRepository;
         this.colorRepository = colorRepository;
         this.phoneRomRepository = phoneRomRepository;
         this.mobileCommunicationStandardRepository = mobileCommunicationStandardRepository;
         this.userRepository = userRepository;
+        this.selectedPhoneRepository = selectedPhoneRepository;
     }
 
     @Override
@@ -252,11 +254,15 @@ public class PhoneServiceImpl implements PhoneService {
         phoneForUpdating.setUsed(editedPhone.isUsed());
         phoneForUpdating.setProducingCountry(editedPhone.getProducingCountry());
         phoneForUpdating.setPhonePictureURLS(editedPhone.getPhonePictureURLS());
-        phoneForUpdating.setCommunicationStandardList(editedPhone.getCommunicationStandardList());
         phoneForUpdating.setFeaturesList(editedPhone.getFeaturesList());
+
         phoneRepository.save(phoneForUpdating);
 
         if (editedPhone.getRomList() != null) {
+           // selectedPhoneRepository.deleteAllByRomIdIn(phoneForUpdating.getRomList().stream().map(PhoneRom::getId).collect(Collectors.toList()));
+
+            phoneRomRepository.deleteAllByPhoneId(id);
+
             for (PhoneRom element : editedPhone.getRomList()) {
                 element.setPhone(phoneForUpdating);
                 phoneRomRepository.save(element);
@@ -264,11 +270,16 @@ public class PhoneServiceImpl implements PhoneService {
         }
 
         if (editedPhone.getCommunicationStandardList() != null) {
+
+            mobileCommunicationStandardRepository.deleteAllByPhoneId(id);
+
             for (MobileCommunicationStandard element : editedPhone.getCommunicationStandardList()) {
                 element.setPhone(phoneForUpdating);
                 mobileCommunicationStandardRepository.save(element);
             }
         }
+
+        phoneRepository.save(phoneForUpdating);
         return phoneForUpdating;
     }
 
