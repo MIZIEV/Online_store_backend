@@ -14,4 +14,6 @@ public interface UserService {
     Set<Phone> getWishListForUser(String username);
 
     String changeUserPassword(String email, String password);
+
+    String deleteUser(String email);
 }

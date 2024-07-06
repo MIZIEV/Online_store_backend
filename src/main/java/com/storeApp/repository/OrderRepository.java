@@ -1,7 +1,11 @@
 package com.storeApp.repository;
 
 import com.storeApp.models.order.Order;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -10,4 +14,10 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findOrderById(long id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM order_selected_phone WHERE order_id = :orderId", nativeQuery = true)
+    void deleteOrderPhoneByOrderId(@Param("orderId") Long orderId);
+
 }

@@ -40,8 +40,7 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "orderOwner")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "orderOwner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Order> orderList;
 

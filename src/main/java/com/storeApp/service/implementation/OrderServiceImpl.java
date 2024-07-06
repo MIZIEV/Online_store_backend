@@ -100,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
         if (orderRepository.findOrderById(id).isPresent()) {
             order = orderRepository.findOrderById(id).get();
             order.getPhoneList().clear();
-            orderRepository.save(order); // Save the order to update the join table
+            orderRepository.save(order);
             orderRepository.delete(order);
 
             return true;

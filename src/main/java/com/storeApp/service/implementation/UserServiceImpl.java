@@ -1,7 +1,9 @@
 package com.storeApp.service.implementation;
 
+import com.storeApp.models.order.Order;
 import com.storeApp.models.phone.Phone;
 import com.storeApp.models.User;
+import com.storeApp.repository.OrderRepository;
 import com.storeApp.repository.UserRepository;
 import com.storeApp.service.UserService;
 import com.storeApp.util.exception.OnlineStoreApiException;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -19,12 +22,14 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, OrderRepository orderRepository) {
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
     }
 
 
@@ -80,5 +85,32 @@ public class UserServiceImpl implements UserService {
             throw new OnlineStoreApiException(HttpStatus.NOT_FOUND, "User not found");
         }
         return "Password changed successfully";
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public String deleteUser(String email) {
+
+        User user = null;
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            user = userRepository.findByEmail(email).get();
+
+            deleteOrders(user.getOrderList());
+            user.getRole().clear();
+            user.getWishList().clear();
+
+            userRepository.delete(user);
+            return "User with email - " + email + ", deleted successfully";
+        } else {
+            return "user with email - " + email + " not found";
+        }
+    }
+
+    private void deleteOrders(List<Order> orders) {
+        for (Order order : orders) {
+            orderRepository.deleteOrderPhoneByOrderId(order.getId());
+            orderRepository.delete(order);
+        }
     }
 }
