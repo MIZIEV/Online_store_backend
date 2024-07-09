@@ -1,10 +1,11 @@
 package com.storeApp.service.implementation;
 
+import com.storeApp.models.Comment;
+import com.storeApp.models.PhoneRating;
 import com.storeApp.models.order.Order;
 import com.storeApp.models.phone.Phone;
 import com.storeApp.models.User;
-import com.storeApp.repository.OrderRepository;
-import com.storeApp.repository.UserRepository;
+import com.storeApp.repository.*;
 import com.storeApp.service.UserService;
 import com.storeApp.util.exception.OnlineStoreApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+    private final PhoneRatingRepository phoneRatingRepository;
+    private final CommentRepository commentRepository;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, OrderRepository orderRepository) {
+    public UserServiceImpl(UserRepository userRepository, OrderRepository orderRepository, PhoneRatingRepository phoneRatingRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
+        this.phoneRatingRepository = phoneRatingRepository;
+        this.commentRepository = commentRepository;
     }
 
 
@@ -99,6 +104,12 @@ public class UserServiceImpl implements UserService {
             deleteOrders(user.getOrderList());
             user.getRole().clear();
             user.getWishList().clear();
+
+            List<PhoneRating> phoneRatings = phoneRatingRepository.findByUser(user);
+            phoneRatings.forEach(phoneRating -> phoneRating.setUser(null));
+
+            List<Comment> commentsList = commentRepository.findByAuthor(user);
+            commentsList.forEach(comment -> comment.setAuthor(null));
 
             userRepository.delete(user);
             return "User with email - " + email + ", deleted successfully";
