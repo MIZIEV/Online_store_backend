@@ -46,7 +46,7 @@ public class Order {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = true)
     private User orderOwner;
 
     @ManyToMany(cascade = CascadeType.ALL)

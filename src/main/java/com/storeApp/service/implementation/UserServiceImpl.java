@@ -101,7 +101,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(email).isPresent()) {
             user = userRepository.findByEmail(email).get();
 
-            deleteOrders(user.getOrderList());
             user.getRole().clear();
             user.getWishList().clear();
 
@@ -111,17 +110,16 @@ public class UserServiceImpl implements UserService {
             List<Comment> commentsList = commentRepository.findByAuthor(user);
             commentsList.forEach(comment -> comment.setAuthor(null));
 
+            List<Order> orderList = orderRepository.findByOrderOwner(user);
+            orderList.forEach(order -> {
+                order.setOrderOwner(null);
+                orderRepository.save(order);
+            });
+
             userRepository.delete(user);
             return "User with email - " + email + ", deleted successfully";
         } else {
             return "user with email - " + email + " not found";
-        }
-    }
-
-    private void deleteOrders(List<Order> orders) {
-        for (Order order : orders) {
-            orderRepository.deleteOrderPhoneByOrderId(order.getId());
-            orderRepository.delete(order);
         }
     }
 }
