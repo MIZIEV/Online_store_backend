@@ -40,7 +40,7 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "orderOwner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "orderOwner", cascade = CascadeType.PERSIST)
     @JsonManagedReference
     private List<Order> orderList;
 
