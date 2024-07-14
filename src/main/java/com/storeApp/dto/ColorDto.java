@@ -1,6 +1,5 @@
 package com.storeApp.dto;
 
-import com.storeApp.models.Case;
 import com.storeApp.models.phone.Phone;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -17,7 +16,6 @@ public class ColorDto {
     private String colorName;
 
     private List<Phone> phoneList;
-    private List<Case> caseList;
 
     public ColorDto() {}
 
@@ -48,14 +46,6 @@ public class ColorDto {
 
     public void setPhoneList(List<Phone> phoneList) {
         this.phoneList = phoneList;
-    }
-
-    public List<Case> getCaseList() {
-        return caseList;
-    }
-
-    public void setCaseList(List<Case> caseList) {
-        this.caseList = caseList;
     }
 
     @Override

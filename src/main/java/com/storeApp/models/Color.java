@@ -21,9 +21,7 @@ public class Color {
     @ManyToMany(mappedBy = "colors")
     @JsonIgnore
     private List<Phone> phones;
-    @ManyToMany(mappedBy = "colors")
-    @JsonIgnore
-    private List<Case> cases;
+
 
     public Color() {
     }
@@ -55,14 +53,6 @@ public class Color {
 
     public void setPhones(List<Phone> phoneList) {
         this.phones = phoneList;
-    }
-
-    public List<Case> getCases() {
-        return cases;
-    }
-
-    public void setCases(List<Case> caseList) {
-        this.cases = caseList;
     }
 
     @Override
